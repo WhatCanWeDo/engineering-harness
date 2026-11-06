@@ -29,7 +29,6 @@ class PortableInstallationTests(unittest.TestCase):
         for key in ('CODEX_HOME', 'CLAUDE_CONFIG_DIR', 'HARNESS_KNOWLEDGE_DB',
                     'HARNESS_RUNTIME_PROFILE', 'HARNESS_KNOWLEDGE_PROFILE', 'PYTHONPATH'):
             self.env.pop(key, None)
-        self.env['HOME'] = str(self.base / 'process-home')
 
     def install(self, *args, success=True):
         process = subprocess.run(

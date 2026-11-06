@@ -109,6 +109,7 @@ Agents/Ghostty могут отсутствовать при setup; doctor пом
 
 ```sh
 .venv/bin/python -m unittest discover -s tests -p test_installation.py -v
+.venv/bin/python scripts/check_portability.py --output /tmp/new-harness-install-check
 ```
 
 Это отдельная явно запускаемая проверка, setup сам regression suite не выполняет.

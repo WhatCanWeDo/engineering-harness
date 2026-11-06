@@ -36,3 +36,9 @@ caches; `--lexical-only` исключает модель. Скрипт пров�
 uv/Python/package caches могли переиспользоваться. Intel Mac не испытан. Авторизацию новых
 Codex/Claude/GitHub нужно выполнить отдельно; повторный live Claude fork не запускался.
 По явному выбору пользователя никакой snapshot накопленных знаний не создаётся и не публикуется.
+
+Финальный автоматизированный прогон `check_portability.py` на ревизии `642b482`:
+clone, setup, setup-repeat, doctor, project-init — passed; global/project БД пусты.
+Использованы offline caches и bundle, успешно скачанный отдельным online прогоном выше.
+После этого прогона менялся только этот отчёт. Приватность
+`WhatCanWeDo/engineering-harness` подтверждена GitHub API перед отправкой кода.

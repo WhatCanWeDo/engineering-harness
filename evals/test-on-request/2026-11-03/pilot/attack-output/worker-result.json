@@ -1,0 +1,104 @@
+{
+  "version": 1,
+  "task_id": "stable-unique-pilot",
+  "spec_version": "66d01c19d1c69a58fe12f6a1e9167e34619bfd5f065350fa77cabc121bf9277e",
+  "role": "adversarial",
+  "provenance": "post_hoc",
+  "candidate_ref": "210035843cbcfc219ce4fd89595d3bfc88f8af05953f1b7481e00ff3093b23d5",
+  "generation_status": "ready",
+  "suite_version": "sha256:bc234d3ffa6c794401ae362b5d46b5d78478e76f8d8568c94850d69937d9fff8",
+  "test_paths": [
+    "/tmp/harness-test-on-request-pilot-20261103/attack-output/cases.json",
+    "/tmp/harness-test-on-request-pilot-20261103/attack-output/test_stable_unique.py"
+  ],
+  "requirements": [
+    "R1",
+    "R2",
+    "R3",
+    "R4"
+  ],
+  "execution": {
+    "status": "fail",
+    "checks": [
+      {
+        "argv": [
+          "/Users/mshekhunov/.venvs/python3.14/bin/python3",
+          "-I",
+          "/tmp/harness-test-on-request-pilot-20261103/attack-output/test_stable_unique.py"
+        ],
+        "cwd": "/tmp/harness-test-on-request-pilot-20261103/attack-output",
+        "exit_code": 1,
+        "duration_seconds": 0.036463917000219226,
+        "output_path": "/tmp/harness-test-on-request-pilot-20261103/attack-output/suite.log"
+      },
+      {
+        "argv": [
+          "/Users/mshekhunov/.venvs/python3.14/bin/python3",
+          "-I",
+          "/tmp/harness-test-on-request-pilot-20261103/attack-output/test_stable_unique.py",
+          "--case",
+          "ordering-minimal"
+        ],
+        "cwd": "/tmp/harness-test-on-request-pilot-20261103/attack-output",
+        "exit_code": 1,
+        "duration_seconds": 0.035826042003463954,
+        "output_path": "/tmp/harness-test-on-request-pilot-20261103/attack-output/reproduction.log"
+      }
+    ],
+    "environment": {
+      "python": "3.14.1 (main, Dec  2 2025, 12:51:37) [Clang 17.0.0 (clang-1700.4.4.1)]",
+      "executable": "/Users/mshekhunov/.venvs/python3.14/bin/python3",
+      "platform": "macOS-15.7.3-arm64-arm-64bit-Mach-O",
+      "seed": null,
+      "generation": "deterministic explicit cases",
+      "candidate_execution": "copy in output_scope with Python -I"
+    }
+  },
+  "search_outcome": "counterexample_found",
+  "budget_usage": {
+    "execution_seconds": 0.07275549997575581,
+    "generated_cases": 8,
+    "case_evaluations": 9,
+    "confirmed_findings": 1,
+    "enforcement": "advisory",
+    "measurement": "time.perf_counter wall time across suite and independent reproduction; includes subprocess launch and evidence-log writes; generation and analysis excluded; no iterative minimization needed",
+    "execution_seconds_limit": 30,
+    "exceeded": false,
+    "stop_reason": "finite targeted suite completed; all observed order failures consolidated into one defect class"
+  },
+  "findings": [
+    {
+      "requirement_id": "R2",
+      "candidate_ref": "210035843cbcfc219ce4fd89595d3bfc88f8af05953f1b7481e00ff3093b23d5",
+      "expected": [
+        "b",
+        "a"
+      ],
+      "actual": [
+        "a",
+        "b"
+      ],
+      "reproducer_path": "/tmp/harness-test-on-request-pilot-20261103/attack-output/cases.json",
+      "reproduction_argv": [
+        "/Users/mshekhunov/.venvs/python3.14/bin/python3",
+        "-I",
+        "/tmp/harness-test-on-request-pilot-20261103/attack-output/test_stable_unique.py",
+        "--case",
+        "ordering-minimal"
+      ],
+      "classification": "bug",
+      "minimized": true,
+      "evidence_path": "/tmp/harness-test-on-request-pilot-20261103/attack-output/finding-order.json",
+      "origin": "adversarial",
+      "visibility": "public"
+    }
+  ],
+  "questions": [],
+  "limitations": [
+    "Public pilot, not private holdout. Eight unique deterministic cases cannot establish overall correctness.",
+    "The task interface file was copied; no unrelated tree files were read. Python -I isolates interpreter import configuration, not filesystem permissions. Candidate source inspected is a pure sorted(set(items)) function.",
+    "Post-hoc attacks were designed after reading the authorized frozen candidate."
+  ],
+  "origin": "adversarial",
+  "visibility": "public"
+}

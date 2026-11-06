@@ -1,0 +1,7 @@
+{
+  "initial_exit": 2,
+  "initial_stderr": "Render error: [Errno 17] File exists: '/tmp/harness-skill-eval-20261103/independent/history-parent-file'",
+  "output_exists_after_failure": true,
+  "retry_with_valid_history_exit": 2,
+  "retry_stderr": "Render error: [Errno 17] File exists: '/tmp/harness-skill-eval-20261103/independent/partial.html'"
+}

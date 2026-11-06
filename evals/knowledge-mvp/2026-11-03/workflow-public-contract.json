@@ -1,0 +1,45 @@
+{
+  "date": "2026-11-03",
+  "suite": "knowledge-workflow-public",
+  "classification": "public_development_suite",
+  "private_holdout": false,
+  "author": {
+    "agent_task": "/root/knowledge_public_tests",
+    "role": "independent public contract test author"
+  },
+  "basis": "docs/contracts/knowledge-mvp.md#автоматизированные-lifecycle-команды",
+  "generation_boundary": {
+    "workflow_implementation_read": false,
+    "tests_saved_before_execution": true,
+    "product_files_modified": false
+  },
+  "test_file": "tests/test_knowledge_workflow.py",
+  "test_file_sha256": "2c2ac38dfa8e6dbb457a92fc8ab3e59da06d9ebf5b76171784086477074036ab",
+  "test_count": 6,
+  "test_names": [
+    "test_start_initializes_store_and_only_requested_role_briefs",
+    "test_start_reconciles_existing_queue_and_refuses_existing_directory",
+    "test_finish_creates_curator_and_ingest_empty_closes_curation",
+    "test_finish_refuses_existing_directory_without_overwriting",
+    "test_ingest_and_context_persist_concrete_authorized_packet",
+    "test_workflow_inputs_remain_inert_and_no_agent_or_test_outputs_appear"
+  ],
+  "requirements": [
+    "start initializes store and writes exactly selected role briefs plus task binding",
+    "start deterministically reconciles queue",
+    "start and finish refuse existing directory without overwriting user files",
+    "finish persists curator brief and drains outcome job",
+    "ingest empty proposals produces no_change and completes curation",
+    "ingest proposals, explicit review, selected-reference context persist JSON/text packet usable by expand",
+    "unknown selected reference fails explicitly with not_found",
+    "shell/agent-looking goals remain inert and no test artifacts or common agent/test tool invocations appear"
+  ],
+  "limitations": [
+    "CLI output and filesystem tests do not prove universal absence of subprocess/network activity; tripwires detect common unintended agent/test executables and shell payload execution."
+  ],
+  "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p 'test_knowledge_workflow.py' -v",
+  "execution": {
+    "status": "waiting_for_implementation",
+    "tests_run": false
+  }
+}

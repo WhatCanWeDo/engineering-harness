@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "task_id": "knowledge-mvp1",
+  "spec_version": "b6c07f27531a971c28e5d813a0c81a06c9b1ed4e8fed8744c5af875cfecaaef7",
+  "spec_sha256": "b6c07f27531a971c28e5d813a0c81a06c9b1ed4e8fed8744c5af875cfecaaef7",
+  "phase": "after",
+  "selected_suites": [
+    "public",
+    "adversarial"
+  ],
+  "private_available": false,
+  "private_suite_ref": null,
+  "candidate_ref": null,
+  "feedback": "release_minimal_reproducer",
+  "budgets": {
+    "execution_seconds": 600,
+    "generated_cases": 1000,
+    "confirmed_findings": 5,
+    "private_queries_per_task": 3,
+    "enforcement": "advisory"
+  }
+}

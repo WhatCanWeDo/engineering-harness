@@ -1,0 +1,605 @@
+{
+  "version": 1,
+  "spec_id": "spec-init-design",
+  "revision": 3,
+  "project_id": "engineering-harness",
+  "title": "/spec-init: от описания к проверяемой постановке",
+  "request": "Создать /spec-init для сложных ML engineering задач: scouting по базе знаний, подробная спека фиксированного формата и визуальный HTML для проверки понимания задачи. Сначала черновик с пробелами; обязательно подчеркнуть их и объяснить, как агент их разрешил.",
+  "summary": "Ты описываешь сложную задачу. /spec-init находит релевантный проектный контекст, предлагает подробную постановку и показывает её в HTML. Главный результат — возможность исправить неверное понимание и недостающие условия до реализации. Здесь показан дизайн самого нового skill, который теперь реализуется в harness.",
+  "scouting": {
+    "status": "ready",
+    "task_id": "spec-init-20261106",
+    "packet_id": "P-10a38d86f5e347599dc63ef85d7f311d",
+    "notes": "Свежий Scout; snapshot 52. Получены сведения о project DB, routing и карте кода; формат ML spec и HTML не был найден в выдаче. Важные skill references прочитаны напрямую."
+  },
+  "sources": [
+    {
+      "id": "U1",
+      "kind": "user",
+      "locator": "chat:2026-11-06/spec-init-request",
+      "note": "Исходный запрос и ответ: черновик с подчёркнутыми пробелами и их временным разрешением."
+    },
+    {
+      "id": "K1",
+      "kind": "knowledge",
+      "locator": "K-adcda7d944824ff1a79526f6bbd23946@1",
+      "note": "Project-local store и legacy fallback; это наблюдение источника, не новая проверка runtime."
+    },
+    {
+      "id": "C1",
+      "kind": "code",
+      "locator": "skills/knowledge-cycle/SKILL.md; skills/understand-changes/SKILL.md",
+      "note": "Канонические локальные правила Scout/Curator, HTML и quiz прочитаны 2026-11-06."
+    },
+    {
+      "id": "W1",
+      "kind": "web",
+      "locator": "https://arc42.org/overview/",
+      "note": "Контекст, ограничения, архитектурные решения и риски; адаптируем к масштабу задачи. Просмотрено 2026-11-06."
+    },
+    {
+      "id": "W2",
+      "kind": "web",
+      "locator": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+      "note": "Измеримая цель, простой baseline, корректный pipeline. Просмотрено 2026-11-06."
+    },
+    {
+      "id": "W3",
+      "kind": "web",
+      "locator": "https://research.google/pubs/the-ml-test-score-a-rubric-for-ml-production-readiness-and-technical-debt-reduction/",
+      "note": "ML-специфические вопросы проверки данных, модели, инфраструктуры и мониторинга. Просмотрено 2026-11-06."
+    },
+    {
+      "id": "W4",
+      "kind": "web",
+      "locator": "https://www.tensorflow.org/tfx/guide/mlmd",
+      "note": "Происхождение результата: inputs, execution и artifacts. Просмотрено 2026-11-06."
+    },
+    {
+      "id": "W5",
+      "kind": "web",
+      "locator": "https://c4model.com/diagrams/system-context",
+      "note": "Общая карта системы, пользователя и внешних зависимостей. Просмотрено 2026-11-06."
+    },
+    {
+      "id": "U2",
+      "kind": "user",
+      "locator": "chat:2026-11-06/copy-feedback",
+      "note": "Вместо скачивания TXT пользователь попросил генерировать текст правок в отдельном блоке для копирования."
+    }
+  ],
+  "sections": [
+    {
+      "id": "intent",
+      "items": [
+        {
+          "text": "До реализации сложной задачи пользователь должен проверить, правильно ли агент понял результат и достаточно ли исходных условий. Результат skill — подробная спека и HTML review.",
+          "status": "user_statement",
+          "source_ids": [
+            "U1"
+          ],
+          "gap_ids": []
+        }
+      ]
+    },
+    {
+      "id": "context",
+      "items": [
+        {
+          "text": "Knowledge Core уже выбирает проектный store; knowledge-cycle готовит отдельного Scout и короткий packet. Understand-changes уже предоставляет автономный HTML, quiz и loopback preview.",
+          "status": "evidence",
+          "source_ids": [
+            "K1",
+            "C1"
+          ],
+          "gap_ids": []
+        }
+      ]
+    },
+    {
+      "id": "scope",
+      "items": [
+        {
+          "text": "В scope: scouting, формализация задачи, пробелы, критерии, граф, review и пересборка ревизии. Реализация продукта, запуск GPU, генерация тестов и deployment требуют отдельного поручения.",
+          "status": "proposal",
+          "source_ids": [],
+          "gap_ids": []
+        }
+      ]
+    },
+    {
+      "id": "requirements",
+      "items": [
+        {
+          "text": "R1–R6 отражают пользовательскую цель. AC описывают наблюдаемый результат; структурная проверка не удостоверяет, что агент правильно понял смысл.",
+          "status": "proposal",
+          "source_ids": [],
+          "gap_ids": []
+        }
+      ]
+    },
+    {
+      "id": "data",
+      "items": [
+        {
+          "text": "Для ML-задачи фиксируются schema/labels, происхождение, версии, slices, splits и leakage. Для других engineering задач раздел поясняет неприменимость ML-частей.",
+          "status": "proposal",
+          "source_ids": [
+            "W2",
+            "W3"
+          ],
+          "gap_ids": []
+        }
+      ]
+    },
+    {
+      "id": "approach",
+      "items": [
+        {
+          "text": "Предлагается ML Task Spec v1: 12 фиксированных разделов + R/AC/source/gap IDs. JSON — канонический источник; Markdown и HTML производные. Альтернативы: чистый arc42 слишком широк для одной задачи, Model Card описывает модель с результатами; обычный TODO-план не фиксирует эксперимент.",
+          "status": "proposal",
+          "source_ids": [
+            "W1",
+            "W2"
+          ],
+          "gap_ids": []
+        }
+      ]
+    },
+    {
+      "id": "evaluation",
+      "items": [
+        {
+          "text": "Спека описывает protocol оценки: baseline, metric definition, dataset/slices, threshold, повторения/uncertainty и stop rule. Unknown threshold остаётся связанным с gap. Отрицательный научный результат может быть корректным завершением. Сам /spec-init тесты не запускает.",
+          "status": "proposal",
+          "source_ids": [
+            "W3"
+          ],
+          "gap_ids": []
+        }
+      ]
+    },
+    {
+      "id": "reproducibility",
+      "items": [
+        {
+          "text": "Для задачи: code/data/model/config/environment/hardware и lineage. Для самой спеки: ID/revision, SHA-256 и manifest файлов; HTML/MD из одного JSON.",
+          "status": "proposal",
+          "source_ids": [
+            "W4"
+          ],
+          "gap_ids": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "items": [
+        {
+          "text": "Новая embedding-модель не нужна: используется установленный knowledge runtime. Скрипты validation/render требуют только Python и соседний renderer. Стоимость native Scout/Curator зависит от агента; жёсткий token/cost budget для spec-init пока не согласован.",
+          "status": "unknown",
+          "source_ids": [],
+          "gap_ids": [
+            "G2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "items": [
+        {
+          "text": "Документ автономный, без CDN и отправки замечаний. Preview локальный, срок 2 часа; файл остаётся. Локальные marks и quiz не утверждают спецификацию. Для самого skill отдельный daemon не требуется.",
+          "status": "proposal",
+          "source_ids": [],
+          "gap_ids": []
+        }
+      ]
+    },
+    {
+      "id": "delivery",
+      "items": [
+        {
+          "text": "Этапы: описание → существующий knowledge workflow → Scout packet → draft.json → структурная проверка → HTML/MD → обсуждение. После ответов — новая revision; исполнитель читает согласованную спеку напрямую и получает новый task_id.",
+          "status": "proposal",
+          "source_ids": [],
+          "gap_ids": []
+        }
+      ]
+    },
+    {
+      "id": "risks",
+      "items": [
+        {
+          "text": "Риски: stale memory, выдуманные требования, ложная полнота формата, скрытое смешение proposals и facts. Mitigations: source/status IDs, выделенные gaps, packet binding и ручной review. Жёстких гарантий понимания или изоляции локальные инструкции не дают.",
+          "status": "proposal",
+          "source_ids": [],
+          "gap_ids": []
+        }
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "R1",
+      "text": "Перед подготовкой спеки использовать релевантный контекст базы знаний.",
+      "status": "user_statement",
+      "source_ids": [
+        "U1"
+      ],
+      "gap_ids": []
+    },
+    {
+      "id": "R2",
+      "text": "Готовить подробную спеку фиксированного формата для ML engineering.",
+      "status": "user_statement",
+      "source_ids": [
+        "U1"
+      ],
+      "gap_ids": []
+    },
+    {
+      "id": "R3",
+      "text": "Создавать визуальный и текстовый HTML разбор понимания задачи.",
+      "status": "user_statement",
+      "source_ids": [
+        "U1"
+      ],
+      "gap_ids": []
+    },
+    {
+      "id": "R4",
+      "text": "Сначала черновик; явно показать пробелы и способ их временного разрешения.",
+      "status": "user_statement",
+      "source_ids": [
+        "U1"
+      ],
+      "gap_ids": []
+    },
+    {
+      "id": "R5",
+      "text": "Дать пользователю проверить и поправить постановку до реализации.",
+      "status": "user_statement",
+      "source_ids": [
+        "U1"
+      ],
+      "gap_ids": []
+    },
+    {
+      "id": "R6",
+      "text": "Собирать текст правок в отдельном блоке для копирования, без скачивания TXT.",
+      "status": "user_statement",
+      "source_ids": [
+        "U2"
+      ],
+      "gap_ids": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "AC1",
+      "requirement_ids": [
+        "R1"
+      ],
+      "measure": "Происхождение использованного контекста",
+      "method": "Отдельный Scout; packet_id/task_id/project/refs связываются builder с артефактом.",
+      "threshold": "Ready/empty соответствует packet; unavailable явно объяснён.",
+      "artifact": "scout brief, selection и packet",
+      "status": "proposal",
+      "source_ids": [],
+      "gap_ids": []
+    },
+    {
+      "id": "AC2",
+      "requirement_ids": [
+        "R2"
+      ],
+      "measure": "Формат и связность",
+      "method": "Проверка обязательных разделов, источников, R → AC, unknown → gap.",
+      "threshold": "12 разделов; все R покрыты AC; dangling IDs отклоняются.",
+      "artifact": "spec.json, SPEC.md, manifest",
+      "status": "proposal",
+      "source_ids": [],
+      "gap_ids": []
+    },
+    {
+      "id": "AC3",
+      "requirement_ids": [
+        "R3"
+      ],
+      "measure": "Понятность задачи в HTML",
+      "method": "Просмотр общей схемы, текста и quiz на широком/узком экране; клики по узлам.",
+      "threshold": "Схема показывает предметную задачу, подписи и ответы читаются.",
+      "artifact": "review.html и авторская browser проверка",
+      "status": "proposal",
+      "source_ids": [],
+      "gap_ids": []
+    },
+    {
+      "id": "AC4",
+      "requirement_ids": [
+        "R4"
+      ],
+      "measure": "Видимость неизвестных и временных решений",
+      "method": "Сопоставить исходное описание, gaps и связанные items/AC.",
+      "threshold": "У каждого gap есть resolution/basis/impact/question; proposal не выдаётся за confirmed.",
+      "artifact": "gaps в JSON и выделенные карточки HTML",
+      "status": "proposal",
+      "source_ids": [],
+      "gap_ids": []
+    },
+    {
+      "id": "AC5",
+      "requirement_ids": [
+        "R5"
+      ],
+      "measure": "Обсуждение точной ревизии",
+      "method": "Текст правок содержит ID/revision/digest; новая правка создаёт новую ревизию.",
+      "threshold": "Нет автоматического approval или запуска реализации из HTML.",
+      "artifact": "Блок правок для чата и новая revision при ответе",
+      "status": "proposal",
+      "source_ids": [],
+      "gap_ids": []
+    },
+    {
+      "id": "AC6",
+      "requirement_ids": [
+        "R6"
+      ],
+      "measure": "Актуальность и копируемость текста правок",
+      "method": "Изменить gap note, отметку требования и общую поправку; проверить блок, кнопку и ручной fallback.",
+      "threshold": "Блок содержит текущие значения, ID/revision/digest; скачивание не запускается.",
+      "artifact": "review.html и авторская browser проверка",
+      "status": "user_statement",
+      "source_ids": [
+        "U2"
+      ],
+      "gap_ids": []
+    }
+  ],
+  "gaps": [
+    {
+      "id": "G1",
+      "missing": "Не задано, как долго хранить пользовательские отметки review",
+      "resolution": "Отметки живут в текущей вкладке; текст автоматически собирается в отдельном блоке для копирования в чат.",
+      "basis": "Автономный HTML не требует сервера и не отправляет данные скрыто.",
+      "impact": "При закрытии вкладки без копирования замечания потеряются.",
+      "question": "Достаточно копирования или позже нужно постоянное локальное сохранение?",
+      "blocking": false,
+      "status": "proposed"
+    },
+    {
+      "id": "G2",
+      "missing": "Не задан жёсткий budget на разведку сложной задачи",
+      "resolution": "Предлагаю один свежий Scout и packet около 1200 tokens; детерминированные шаги выполняют скрипты.",
+      "basis": "В проекте уже есть такой workflow; новый agent loop не требуется.",
+      "impact": "Для очень широкой задачи может потребоваться дополнительный узкий поиск и явное расширение контекста.",
+      "question": "Нужен ли жёсткий предел стоимости или пока достаточно компактного контекста?",
+      "blocking": false,
+      "status": "proposed"
+    }
+  ],
+  "diagrams": [
+    {
+      "title": "Место /spec-init в общей системе harness",
+      "description": "Новый skill связывает существующий knowledge workflow с проверкой постановки человеком. Передача в разработку происходит после обсуждения конкретной ревизии.",
+      "nodes": [
+        {
+          "id": "N1",
+          "label": "Ты и описание задачи",
+          "detail": "Цель, ограничения, затем поправки",
+          "state": "external"
+        },
+        {
+          "id": "N2",
+          "label": "Нативный агент + /spec-init",
+          "detail": "Новый способ подготовки сложной задачи",
+          "state": "proposed"
+        },
+        {
+          "id": "N3",
+          "label": "Knowledge Core + проектная БД",
+          "detail": "Существующий поиск и snapshot",
+          "state": "existing"
+        },
+        {
+          "id": "N4",
+          "label": "Отдельный Scout",
+          "detail": "Короткая выжимка со ссылками",
+          "state": "existing"
+        },
+        {
+          "id": "N5",
+          "label": "spec.json → MD + HTML",
+          "detail": "Фиксированные разделы, gaps, схема и quiz",
+          "state": "proposed"
+        },
+        {
+          "id": "N6",
+          "label": "Review и следующая задача",
+          "detail": "Явное согласование ревизии перед реализацией",
+          "state": "external"
+        }
+      ],
+      "edges": [
+        {
+          "from": "N1",
+          "to": "N2",
+          "label": "Передаёт описание и пожелания"
+        },
+        {
+          "from": "N2",
+          "to": "N3",
+          "label": "Запрашивает проектный контекст"
+        },
+        {
+          "from": "N3",
+          "to": "N4",
+          "label": "Формирует ограниченный brief"
+        },
+        {
+          "from": "N4",
+          "to": "N2",
+          "label": "Возвращает выбранные refs через context packet"
+        },
+        {
+          "from": "N2",
+          "to": "N5",
+          "label": "Формализует понимание и временные решения"
+        },
+        {
+          "from": "N5",
+          "to": "N1",
+          "label": "Показывает постановку и пробелы"
+        },
+        {
+          "from": "N1",
+          "to": "N6",
+          "label": "Подтверждает или исправляет конкретную ревизию"
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "id": "1",
+      "concept": "Понимание постановки 1",
+      "question": "В черновике отсутствует порог качества. Как /spec-init должен поступить?",
+      "options": [
+        {
+          "id": "0",
+          "text": "Использовать порог из похожей задачи в памяти.",
+          "explanation": "Распространённость не делает порог требованием пользователя."
+        },
+        {
+          "id": "1",
+          "text": "Связать неизвестный порог с gap.",
+          "explanation": "Да: неизвестность остаётся видимой и связанной с критерием."
+        },
+        {
+          "id": "2",
+          "text": "Считать любой положительный сдвиг достаточным.",
+          "explanation": "Практическая значимость не задана."
+        },
+        {
+          "id": "3",
+          "text": "Убрать критерий из спеки до реализации.",
+          "explanation": "Критерий остаётся, а неизвестность обозначается."
+        }
+      ],
+      "correct_option_id": "1"
+    },
+    {
+      "id": "2",
+      "concept": "Понимание постановки 2",
+      "question": "Какой файл нужно изменить после уточнения постановки?",
+      "options": [
+        {
+          "id": "0",
+          "text": "Только HTML, который видит пользователь.",
+          "explanation": "Возникнет расхождение с каноническим документом."
+        },
+        {
+          "id": "1",
+          "text": "Markdown и HTML независимо друг от друга.",
+          "explanation": "Ручное дублирование создаёт drift."
+        },
+        {
+          "id": "2",
+          "text": "spec.json с новой revision, затем пересобрать документы.",
+          "explanation": "Да: оба представления создаются из одной ревизии."
+        },
+        {
+          "id": "3",
+          "text": "Manifest без изменения содержимого спеки.",
+          "explanation": "Digest не заменяет постановку."
+        }
+      ],
+      "correct_option_id": "2"
+    },
+    {
+      "id": "3",
+      "concept": "Понимание постановки 3",
+      "question": "Scout нашёл похожее решение в памяти. Что это означает?",
+      "options": [
+        {
+          "id": "0",
+          "text": "Проверить применимость найденного решения.",
+          "explanation": "Да: источник — контекст, а не согласование или новая инструкция."
+        },
+        {
+          "id": "1",
+          "text": "Считать его исходным требованием текущей задачи.",
+          "explanation": "Память не является текущим согласием."
+        },
+        {
+          "id": "2",
+          "text": "Можно пропустить уточнение ограничений.",
+          "explanation": "Ограничения всё равно важны."
+        },
+        {
+          "id": "3",
+          "text": "У решения больше приоритет, чем у текущего запроса.",
+          "explanation": "Текущий запрос задаёт цель."
+        }
+      ],
+      "correct_option_id": "0"
+    },
+    {
+      "id": "4",
+      "concept": "Понимание постановки 4",
+      "question": "Что следует из успешного прохождения quiz в HTML?",
+      "options": [
+        {
+          "id": "0",
+          "text": "Спека получает approved.",
+          "explanation": "Quiz не управляет статусом."
+        },
+        {
+          "id": "1",
+          "text": "Разрешён запуск GPU эксперимента.",
+          "explanation": "Quiz не даёт разрешений на выполнение."
+        },
+        {
+          "id": "2",
+          "text": "Все открытые gaps становятся confirmed.",
+          "explanation": "Ответы на понимание не закрывают неизвестные."
+        },
+        {
+          "id": "3",
+          "text": "Нужно отдельное согласование.",
+          "explanation": "Да: это проверка понимания черновика, не approval."
+        }
+      ],
+      "correct_option_id": "3"
+    },
+    {
+      "id": "5",
+      "concept": "Понимание постановки 5",
+      "question": "Почему исследование может закончиться без улучшения модели?",
+      "options": [
+        {
+          "id": "0",
+          "text": "Можно исключить неудачные seeds.",
+          "explanation": "Такое исключение искажает результат."
+        },
+        {
+          "id": "1",
+          "text": "Гипотеза может не подтвердиться.",
+          "explanation": "Да: успех исследования и выигрыш метрики различаются."
+        },
+        {
+          "id": "2",
+          "text": "У исследования нет требования воспроизводимости.",
+          "explanation": "Воспроизводимость нужна."
+        },
+        {
+          "id": "3",
+          "text": "Можно изменить порог после результата.",
+          "explanation": "Менять критерий задним числом нельзя выдавать за исходный успех."
+        }
+      ],
+      "correct_option_id": "1"
+    }
+  ]
+}

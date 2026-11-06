@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "engineering-harness"
+version = "0.1.0"
+description = "Native-first portable knowledge and context tools"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+semantic = ["fastembed==0.9.1"]
+
+[project.scripts]
+harness = "harness.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["harness*"]

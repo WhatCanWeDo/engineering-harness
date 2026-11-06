@@ -1,0 +1,11 @@
+test_finish_creates_curator_and_ingest_empty_closes_curation (test_knowledge_workflow.KnowledgeWorkflowContractTests.test_finish_creates_curator_and_ingest_empty_closes_curation) ... ok
+test_finish_refuses_existing_directory_without_overwriting (test_knowledge_workflow.KnowledgeWorkflowContractTests.test_finish_refuses_existing_directory_without_overwriting) ... ok
+test_ingest_and_context_persist_concrete_authorized_packet (test_knowledge_workflow.KnowledgeWorkflowContractTests.test_ingest_and_context_persist_concrete_authorized_packet) ... ok
+test_start_initializes_store_and_only_requested_role_briefs (test_knowledge_workflow.KnowledgeWorkflowContractTests.test_start_initializes_store_and_only_requested_role_briefs) ... ok
+test_start_reconciles_existing_queue_and_refuses_existing_directory (test_knowledge_workflow.KnowledgeWorkflowContractTests.test_start_reconciles_existing_queue_and_refuses_existing_directory) ... ok
+test_workflow_inputs_remain_inert_and_no_agent_or_test_outputs_appear (test_knowledge_workflow.KnowledgeWorkflowContractTests.test_workflow_inputs_remain_inert_and_no_agent_or_test_outputs_appear) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.200s
+
+OK

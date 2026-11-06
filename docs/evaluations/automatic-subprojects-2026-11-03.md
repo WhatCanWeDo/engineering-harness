@@ -1,0 +1,11 @@
+# Automatic subprojects — реализация и проверки, 2026-11-03
+
+Knowledge workflow автоматически обнаруживает компоненты и повторяющиеся темы внутри одной project DB. Subproject init не требуется. Компоненты выводятся из имён файлов/package markers; topic появляется по предметному tag в active entries из двух разных origin_task. Affiliation не изменяет applicability, state или project/general scope.
+
+Task catalog сохраняется при workflow start; Scout может уточнить выбор до первого context packet. Одна задача может относиться к нескольким группам. После первого packet routing фиксирован для всех ролей. Старые задачи не получают поздние темы при повторном start. Удалённые компоненты при полном discovery становятся retired, их записи не удаляются. Directory rename/topic synonym merge пока не реализованы.
+
+Авторский технический прогон: 25 CLI шагов в отдельной временной SQLite. Созданы training/evaluation components; single/crosscutting/project-wide routing отработали. Две fixture-задачи создали telemetry topic. Lexical и настоящий локальный semantic search вернули обе записи из общего корпуса. Уточнение Scout до packet принято; после packet отклонено с conflict. Direct context prepare также фиксирует routing. Replay старой задачи сохранил каталог. После удаления evaluation его группа осталась retired. Curator получает ограниченный vocabulary групп.
+
+Source hashes, исходные ответы и ожидаемый отказ: [operational.json](../../evals/automatic-subprojects/2026-11-03/operational.json). Дополнительно проверено, что fallback root resolution не выбирает HOME и находит текущий repository. Compileall и structural skill validator прошли; локальные ссылки разрешаются.
+
+Это авторские runtime diagnostics, не независимо написанный test suite. Новые тесты не генерировались и существующие suites не запускались по умолчанию. Точность группировки на реальном разнообразном workload пока не измерена; синонимы, переименования и неоднозначные границы могут дать неполную структуру. Система оставляет fallback и shared retrieval. Частичный inventory отмечается явно и не служит доказательством удаления. Новой модели и дополнительного LLM-вызова для организации не требуется; смысловую помощь оказывают уже существующие Scout/Curator.

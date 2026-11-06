@@ -1,0 +1,2 @@
+Knowledge all: gate pass; source_stable=True; private=unavailable.
+test_*.py: pass

@@ -1,0 +1,137 @@
+[
+  {
+    "test": "initial miss",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "fresh hit does not load",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "TTL boundary reload",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "LRU reading changes eviction",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "None invalidate semantics",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "expired loader error removes key",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "expiration measured after load",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "baseline retains value",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "positive parameter checks",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "code excerpt matches source",
+    "passed": true,
+    "detail": "/tmp/harness-skill-eval-20261103/input/after.py: FeatureCache.get — попадание"
+  },
+  {
+    "test": "code excerpt matches source",
+    "passed": true,
+    "detail": "/tmp/harness-skill-eval-20261103/input/after.py: FeatureCache.invalidate"
+  },
+  {
+    "test": "medium no external resource refs",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "medium unique HTML ids",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "medium quiz dimensions",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "medium no unresolved template tokens",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "brief no external resource refs",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "brief unique HTML ids",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "brief quiz dimensions",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "brief no unresolved template tokens",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "one-shot brief/on_request",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "override not persisted",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "bad stored preference rejects even override",
+    "passed": true,
+    "detail": "Preferences error: Invalid stored depth: 'invalid'"
+  },
+  {
+    "test": "refuses overwrite",
+    "passed": true,
+    "detail": "Render error: [Errno 17] File exists: '/tmp/harness-skill-eval-20261103/independent/medium.html'"
+  },
+  {
+    "test": "identical quiz no duplicate history",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "reject four questions",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "escape fixture rendered",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "test": "source markup is escaped",
+    "passed": true,
+    "detail": ""
+  }
+]

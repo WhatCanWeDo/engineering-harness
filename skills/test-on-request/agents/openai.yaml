@@ -1,0 +1,6 @@
+interface:
+  display_name: "Test on Request"
+  short_description: "Тестирование по запросу с тремя видами проверок"
+  default_prompt: "Используй $test-on-request: подготовь публичные тесты отдельным агентом по контракту текущей задачи."
+policy:
+  allow_implicit_invocation: false

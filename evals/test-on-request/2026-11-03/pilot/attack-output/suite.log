@@ -1,0 +1,8 @@
+{"case": "empty", "input": [], "expected": [], "actual": [], "checks": {"R1": true, "R2": true, "R3": true, "R4": true}}
+{"case": "singleton", "input": ["b"], "expected": ["b"], "actual": ["b"], "checks": {"R1": true, "R2": true, "R3": true, "R4": true}}
+{"case": "ordering-minimal", "input": ["b", "a"], "expected": ["b", "a"], "actual": ["a", "b"], "checks": {"R1": true, "R2": false, "R3": true, "R4": true}}
+{"case": "duplicates", "input": ["b", "b", "a", "b", "a"], "expected": ["b", "a"], "actual": ["a", "b"], "checks": {"R1": true, "R2": false, "R3": true, "R4": true}}
+{"case": "case-sensitive", "input": ["z", "Z", "z", "Z"], "expected": ["z", "Z"], "actual": ["Z", "z"], "checks": {"R1": true, "R2": false, "R3": true, "R4": true}}
+{"case": "unicode-exact", "input": ["é", "é", "é"], "expected": ["é", "é"], "actual": ["é", "é"], "checks": {"R1": true, "R2": false, "R3": true, "R4": true}}
+{"case": "empty-string", "input": ["a", "", "a", ""], "expected": ["a", ""], "actual": ["", "a"], "checks": {"R1": true, "R2": false, "R3": true, "R4": true}}
+{"case": "reverse-order", "input": ["c", "b", "a"], "expected": ["c", "b", "a"], "actual": ["a", "b", "c"], "checks": {"R1": true, "R2": false, "R3": true, "R4": true}}

@@ -1,0 +1,63 @@
+[
+  {
+    "id": "empty",
+    "items": []
+  },
+  {
+    "id": "singleton",
+    "items": [
+      "b"
+    ]
+  },
+  {
+    "id": "ordering-minimal",
+    "items": [
+      "b",
+      "a"
+    ]
+  },
+  {
+    "id": "duplicates",
+    "items": [
+      "b",
+      "b",
+      "a",
+      "b",
+      "a"
+    ]
+  },
+  {
+    "id": "case-sensitive",
+    "items": [
+      "z",
+      "Z",
+      "z",
+      "Z"
+    ]
+  },
+  {
+    "id": "unicode-exact",
+    "items": [
+      "é",
+      "é",
+      "é"
+    ]
+  },
+  {
+    "id": "empty-string",
+    "items": [
+      "a",
+      "",
+      "a",
+      ""
+    ]
+  },
+  {
+    "id": "reverse-order",
+    "items": [
+      "c",
+      "b",
+      "a"
+    ]
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "document": "corrected",
+    "initial_hidden": true,
+    "initial_unselected": true,
+    "questions": 5,
+    "click_paths_tested": 20,
+    "reselection": true,
+    "verdicts_and_feedback": true
+  }
+]

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Harness A/B"
+  short_description: "Парное сравнение skills по качеству и затратам"
+  default_prompt: "Используй $harness-ab: подготовь сравнение текущего skill с новой версией на согласованных задачах и бюджете."
+policy:
+  allow_implicit_invocation: false

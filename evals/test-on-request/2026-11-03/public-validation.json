@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "date": "2026-11-03",
+  "scope": "Public black-box CLI checks for test-on-request plus existing repository regression suite",
+  "test_file": "tests/test_test_on_request.py",
+  "authorship": {
+    "implementation_read_during_test_creation": false,
+    "implementation_source_read_during_validation": false,
+    "basis": "CLI contract supplied before implementation; agreed clarifications after first execution",
+    "private_tests_created": false,
+    "hidden_holdout_independence_claimed": false
+  },
+  "contract_clarifications": [
+    "After-phase provenance is the structured value post_hoc; prompt may use underscores.",
+    "Public brief excludes candidate data; explicitly passing --candidate is rejected rather than ignored."
+  ],
+  "runs": [
+    {
+      "command": "python3 -m py_compile tests/test_test_on_request.py",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p test_test_on_request.py -v",
+      "stage": "before_contract_clarifications",
+      "exit_code": 1,
+      "counts": {
+        "total": 21,
+        "passed": 19,
+        "failures": 2,
+        "errors": 0
+      },
+      "classification": "Two test expectations clarified; no product fix required."
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "execution": "sandbox",
+      "exit_code": 1,
+      "duration_seconds": 4.569,
+      "counts": {
+        "total": 40,
+        "passed": 37,
+        "failures": 1,
+        "errors": 2
+      },
+      "limitation": "Three pre-existing test_preview cases could not bind 127.0.0.1: PermissionError. All 21 test-on-request cases passed."
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "execution": "auto-review-approved escalation allowing loopback server",
+      "exit_code": 0,
+      "duration_seconds": 7.144,
+      "counts": {
+        "total": 40,
+        "passed": 40,
+        "failures": 0,
+        "errors": 0
+      }
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p test_test_on_request.py -v",
+      "execution": "sandbox",
+      "stage": "final",
+      "exit_code": 0,
+      "duration_seconds": 4.073,
+      "counts": {
+        "total": 21,
+        "passed": 21,
+        "failures": 0,
+        "errors": 0
+      }
+    }
+  ],
+  "limitations": [
+    "Public development tests; no protected evaluator or independent hidden holdout was exercised.",
+    "CLI artifact checks do not establish OS-enforced isolation of agents or exhaustive absence of out-of-scope reads."
+  ]
+}

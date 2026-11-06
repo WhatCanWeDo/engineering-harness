@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "spec_sha256": "d35a1532f0561672e4b2446819c17e52d6069630e830b2c3ce4a770a12c18c10",
+  "files": [
+    {
+      "path": "docs/contracts/knowledge-mvp.md",
+      "sha256": "27066526430fba739429ee0c1696542ad8ca9433809655a19ceb903cad1e3186",
+      "executable": false
+    },
+    {
+      "path": "docs/contracts/knowledge-mvp2.md",
+      "sha256": "d35a1532f0561672e4b2446819c17e52d6069630e830b2c3ce4a770a12c18c10",
+      "executable": false
+    },
+    {
+      "path": "harness/__init__.py",
+      "sha256": "16990c27355dd70ead7df53f85e3eb473f44630265b8ef8488eef6f9b09a5a2b",
+      "executable": false
+    },
+    {
+      "path": "harness/__main__.py",
+      "sha256": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "executable": false
+    },
+    {
+      "path": "harness/cli.py",
+      "sha256": "7eabaec62640832ba62e73adbea6c9ce3bfbc6fb65bea8ebeebc136e44d30210",
+      "executable": false
+    },
+    {
+      "path": "harness/embeddings.py",
+      "sha256": "fcfef39538ba97253f08e46b1d5b8b074c582ca9a956823f191345bfc3b79355",
+      "executable": false
+    },
+    {
+      "path": "harness/knowledge.py",
+      "sha256": "b4924da31d307c9cee6f2661f1ce124d136bb4f64f1dd190ec2fd8ba46bb02e3",
+      "executable": false
+    },
+    {
+      "path": "harness/semantic.py",
+      "sha256": "6a890928a138426a974dc982e88d3862597da280d2bbd7bb7dd0fe55bfdd5279",
+      "executable": false
+    },
+    {
+      "path": "harness/workflow.py",
+      "sha256": "8b58d31b4bfeced7500b78513e7f45c00de9ee73e9d3b727abb13ceaac0f2261",
+      "executable": false
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "9fb3763bef70ee76363246fdf7b8cc02cc9535c2eb5eb50643d1d78c5096d844",
+      "executable": false
+    },
+    {
+      "path": "skills/knowledge-cycle/SKILL.md",
+      "sha256": "a6419e6c168dc772681adb8181606e4f9b53feb27929599445702c36ed0772cb",
+      "executable": false
+    },
+    {
+      "path": "skills/knowledge-cycle/scripts/knowledge.py",
+      "sha256": "3cc9cc3dcc548f221ec5d2fff8b1f8fcfd7cf262bed8220e9ab578c5d4609949",
+      "executable": false
+    }
+  ],
+  "environment": {
+    "python": "3.14.1 (main, Dec  2 2025, 12:51:37) [Clang 17.0.0 (clang-1700.4.4.1)]",
+    "sqlite": "3.51.2",
+    "platform": "macOS-15.7.3-arm64-arm-64bit-Mach-O"
+  },
+  "candidate_ref": "b3b8b15509d898b11cbbbb2d0a1e81d2f1ea7774098cf6f9c7c9e0a4c6f56302"
+}

@@ -1,0 +1,32 @@
+{
+  "status": "ready",
+  "clean_checkout_install": "ready",
+  "offline_repeat": "ready",
+  "source_matches_executed_copy": true,
+  "source_sha256": {
+    "scripts/setup.sh": "90ed964b33cd6ad04be369355df0278d80e59f6efe18135831b4dc8973eb7693",
+    "scripts/setup_knowledge.py": "6c822213e1744b09fa79faf34e0d5921ad641d11944c113df311a692e51021d1",
+    "scripts/knowledge_resources.py": "0e8ce8fbbd9be5b6c720ef65287d38ba3883e123353518ed6debaf8ada1f6ef5",
+    "harness/cli.py": "5e3934fb648f63e5a0bbe48730b0d1794326f07db6a429bb724fdd040647c57e",
+    "harness/embeddings.py": "cc410704ec7b6d73707896ca288eac5987a8e7815e7fcb7cbd9e195ef76a2864",
+    "uv.lock": "0e8414699437d55514803fa418a354600120801ad43bf7744e5a358509ad72c3"
+  },
+  "platform": "macOS arm64",
+  "fresh_components": [
+    "project .venv",
+    "project uv bootstrap binary",
+    "model bundle",
+    "local profile",
+    "isolated database"
+  ],
+  "reused_components": [
+    "uv-managed Python 3.12",
+    "package download cache"
+  ],
+  "regression_suites": "not_requested_not_run",
+  "limitations": [
+    "Not a physically new machine",
+    "Linux/WSL not exercised",
+    "Memory is observed peak for bounded probe, not a worst-case guarantee"
+  ]
+}

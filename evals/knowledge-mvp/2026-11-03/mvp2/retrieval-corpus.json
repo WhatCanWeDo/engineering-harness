@@ -1,0 +1,110 @@
+{
+  "documents": [
+    {
+      "id": "D01",
+      "title": "Срок жизни записи в кэше",
+      "claim": "В проверке Cache.get значение считалось просроченным при now >= expires_at. Часы подменяли детерминированным источником времени; ожидание через sleep не требовалось."
+    },
+    {
+      "id": "D02",
+      "title": "Durable outbox after process termination",
+      "claim": "The worker committed an operation and its outgoing event in one SQLite transaction. After the process was killed, a restarted worker delivered the pending event using its stable event identifier without repeating the operation."
+    },
+    {
+      "id": "D03",
+      "title": "Проверка восстановления резервной копии",
+      "claim": "Перед изменением схемы базу восстановили из резервной копии в отдельный каталог. Сверка количества строк и контрольных сумм завершилась успешно; наличие файла копии само по себе не доказывало возможность восстановления."
+    },
+    {
+      "id": "D04",
+      "title": "Validation leakage from preprocessing",
+      "claim": "Fitting the feature scaler on all rows before the train-validation split leaked validation statistics. Fitting preprocessing only on the training partition removed this contamination in the experiment."
+    },
+    {
+      "id": "D05",
+      "title": "Права доступа при использовании старого пакета",
+      "claim": "После отзыва роли повторное раскрытие источника из ранее созданного пакета контекста вернуло not_found. Сохранённая ссылка и готовый поисковый вектор не заменяли текущую проверку прав доступа."
+    },
+    {
+      "id": "D06",
+      "title": "Cosine comparison of embedding vectors",
+      "claim": "The retrieval experiment divided each nonzero embedding by its Euclidean norm before taking a dot product. This removed vector magnitude from the cosine ranking; NaN and infinite components were rejected."
+    },
+    {
+      "id": "D07",
+      "title": "Предел числа открытых файлов",
+      "claim": "Нагрузочный прогон завершался ошибкой EMFILE, когда обработчик не закрывал файловые дескрипторы. После использования контекстного менеджера число открытых дескрипторов перестало расти между запросами."
+    },
+    {
+      "id": "D08",
+      "title": "Optimistic locking during concurrent edits",
+      "claim": "Two writers read revision 7 of the same record. The first update created revision 8; the second update with expected_revision=7 returned a conflict instead of silently overwriting the first writer's change."
+    },
+    {
+      "id": "D09",
+      "title": "Идемпотентный повтор платёжного запроса",
+      "claim": "В интеграционном стенде одинаковый Idempotency-Key и одинаковое тело повторного запроса возвращали исходный результат списания. Повторное использование ключа с другой суммой отклонялось как конфликт."
+    },
+    {
+      "id": "D10",
+      "title": "Tail latency hidden by averages",
+      "claim": "The service's mean response time remained low while a small group of requests stalled behind a saturated connection pool. Reporting p95 and p99 exposed these long waits that the mean concealed."
+    },
+    {
+      "id": "D11",
+      "title": "Очередь с ограниченной вместимостью",
+      "claim": "При перегрузке потребителя ограниченная очередь блокировала производителя до освобождения места. В эксперименте это остановило рост памяти; скорость поступления работы снизилась до скорости обработки."
+    },
+    {
+      "id": "D12",
+      "title": "Model bundle integrity before local inference",
+      "claim": "The local embedding bundle recorded the model version, provenance, and SHA256 hashes of its files. An altered weight file failed verification before inference, and ordinary search did not download replacement weights."
+    },
+    {
+      "id": "D13",
+      "title": "DNS cache expiration",
+      "claim": "A resolver retained an old server address until the DNS record's TTL expired. Changing the application database transaction timeout did not refresh that resolver entry."
+    },
+    {
+      "id": "D14",
+      "title": "Перезапуск контейнера без постоянного тома",
+      "claim": "В испытании файл SQLite лежал в записываемом слое контейнера. После замены контейнера файл исчез; подключение постоянного тома сохранило базу при следующей замене."
+    },
+    {
+      "id": "D15",
+      "title": "Validation of a JSON request body",
+      "claim": "The HTTP handler rejected a missing amount field and a nonnumeric amount before opening a database transaction. JSON schema validation did not measure a predictive model's quality."
+    },
+    {
+      "id": "D16",
+      "title": "Усечение журнала при ротации",
+      "claim": "После ротации журнала сборщик продолжал читать старый inode и пропускал новые сообщения. Повторное открытие файла по имени восстановило поступление строк; настройки прав пользователей не менялись."
+    },
+    {
+      "id": "D17",
+      "title": "Запрет сетевого обмена в автономном прогоне",
+      "claim": "Автономный интеграционный прогон блокировал исходящие соединения. Уже подготовленная локальная модель продолжила вычислять представления текстов; отсутствующий файл модели приводил к явной недоступности backend."
+    },
+    {
+      "id": "D18",
+      "title": "Gradient clipping in recurrent training",
+      "claim": "Clipping the global gradient norm reduced exploding updates in a recurrent-network training run. This training intervention changed optimizer steps and was unrelated to cosine normalization of stored retrieval vectors."
+    }
+  ],
+  "queries": [
+    {"id": "Q01", "text": "Как проверить Cache.get ровно в момент expires_at без ожидания реального времени?", "relevant": ["D01"], "category": "exact_identifier_ru"},
+    {"id": "Q02", "text": "Как после аварийного завершения доставить уже зафиксированное событие и не выполнить исходную операцию второй раз?", "relevant": ["D02"], "category": "cross_language_ru_to_en"},
+    {"id": "Q03", "text": "How can we establish that a database backup is actually usable before a schema change?", "relevant": ["D03"], "category": "cross_language_en_to_ru"},
+    {"id": "Q04", "text": "Почему вычисление параметров масштабирования признаков до разделения данных искажает оценку на отложенной выборке?", "relevant": ["D04"], "category": "cross_language_ru_to_en"},
+    {"id": "Q05", "text": "Can an old context packet still reveal its source after the reader loses access?", "relevant": ["D05"], "category": "cross_language_en_to_ru"},
+    {"id": "Q06", "text": "How do we compare embedding directions without letting a longer vector dominate the retrieval score?", "relevant": ["D06"], "category": "semantic_en"},
+    {"id": "Q07", "text": "Что остановило ошибку EMFILE в обработчике запросов?", "relevant": ["D07"], "category": "exact_identifier_ru"},
+    {"id": "Q08", "text": "What happens when the second concurrent writer sends expected_revision=7 after revision 8 already exists?", "relevant": ["D08"], "category": "exact_identifier_en"},
+    {"id": "Q09", "text": "Повтор запроса с Idempotency-Key: можно ли изменить сумму и использовать прежний ключ?", "relevant": ["D09"], "category": "exact_identifier_ru"},
+    {"id": "Q10", "text": "Среднее время ответа хорошее, но некоторые пользователи долго ждут свободное соединение. Какие показатели обнаружат проблему?", "relevant": ["D10"], "category": "cross_language_ru_to_en"},
+    {"id": "Q11", "text": "How can a slow consumer prevent the producer from filling all available memory with pending work?", "relevant": ["D11"], "category": "cross_language_en_to_ru"},
+    {"id": "Q12", "text": "How are modified embedding model weights detected before local inference?", "relevant": ["D12"], "category": "semantic_en"},
+    {"id": "Q13", "text": "После замены контейнера пропала локальная база. Как в испытании обеспечили сохранность файла при следующем развёртывании?", "relevant": ["D14"], "category": "semantic_ru"},
+    {"id": "Q14", "text": "What permits local text embeddings to run with outbound networking disabled, and what happens when model files are missing?", "relevant": ["D17"], "category": "cross_language_en_to_ru"}
+  ]
+}

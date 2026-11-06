@@ -1,0 +1,839 @@
+{
+  "scope": "Author operational diagnostics on synthetic data; not independent tests or benchmark",
+  "walkthrough": {
+    "synthetic": true,
+    "steps": [
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "plan",
+          "--input",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/plan-input.json",
+          "--output",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment"
+        ],
+        "result": {
+          "experiment": "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "plan_sha256": "2b4c4a4083d38b0efddea2bc27cb3fde41ae2d6aa6cc7e03d9a3c50515148966",
+          "planned_runs": 4,
+          "status": "planned",
+          "execution": "not_started"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "prepare",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment"
+        ],
+        "result": {
+          "status": "prepared",
+          "runs": 4,
+          "isolation": "requires_native_adapter_attestation"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "report",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--output",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/before-report"
+        ],
+        "result": {
+          "output": "/private/tmp/harness-ab-walkthrough-20261103-checked/before-report/report.html",
+          "comparison": "/private/tmp/harness-ab-walkthrough-20261103-checked/before-report/comparison.json",
+          "decision": "synthetic_demonstration"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "dispatch",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment"
+        ],
+        "result": {
+          "status": "assignment_ready",
+          "run_id": "7ef48207e4cf40f383095913dbdfe79d",
+          "assignment": "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment/runs/7ef48207e4cf40f383095913dbdfe79d/assignment.json",
+          "execution": "manual_native_session",
+          "reused": false
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "freeze",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--run",
+          "7ef48207e4cf40f383095913dbdfe79d",
+          "--source",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment/runs/7ef48207e4cf40f383095913dbdfe79d/workspace",
+          "--files",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/files.json"
+        ],
+        "result": {
+          "run_id": "7ef48207e4cf40f383095913dbdfe79d",
+          "revision": "F0",
+          "output_sha256": "0d3ebc05bffe5e34e34245d7872f6b0ff2f2384bde47bd85b28d3b694cd18b4c",
+          "tree": "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment/outputs/7ef48207e4cf40f383095913dbdfe79d/F0/tree"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "receipt",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--run",
+          "7ef48207e4cf40f383095913dbdfe79d"
+        ],
+        "result": {
+          "run_id": "7ef48207e4cf40f383095913dbdfe79d",
+          "config_sha256": "e30e0ee74bdae47d532b8bbfdc2d1a61136c63be4874102dddb2a17036acfb56",
+          "output_sha256": "0d3ebc05bffe5e34e34245d7872f6b0ff2f2384bde47bd85b28d3b694cd18b4c",
+          "status": "completed",
+          "duration_seconds": 20,
+          "session_id": "synthetic-7ef48207e4cf40f383095913dbdfe79d",
+          "fresh_session": true,
+          "isolation": "unavailable",
+          "isolation_evidence": "No real native agent used",
+          "skill_loading_evidence": "Synthetic fixture only",
+          "accounting_complete": true,
+          "request_keys": [
+            [
+              "synthetic",
+              "7ef48207e4cf40f383095913dbdfe79d"
+            ]
+          ]
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "ingest",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--kind",
+          "execution",
+          "--input",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/execution.json"
+        ],
+        "result": {
+          "status": "recorded",
+          "kind": "execution",
+          "record_sha256": "2dd5db62fe2153d7bab54200e3a74c6835f6095e4da6abff1aefd77115d0a060"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "ingest",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--kind",
+          "usage",
+          "--input",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/usage.json"
+        ],
+        "result": {
+          "status": "recorded",
+          "kind": "usage",
+          "record_sha256": "ba9633499ae2131e458b17a3fb6ad1eb93b10d75d0a611d65a11fe25eb3ad307"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "evaluate",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--run",
+          "7ef48207e4cf40f383095913dbdfe79d"
+        ],
+        "result": {
+          "status": "recorded",
+          "kind": "evaluation",
+          "record_sha256": "2d7c659661815913fce54f21e9197b0f989916e6f5696c73e1c2428f75bd8b2e"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "review",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--run",
+          "7ef48207e4cf40f383095913dbdfe79d",
+          "--output",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/review-0.html"
+        ],
+        "result": {
+          "output": "/private/tmp/harness-ab-walkthrough-20261103-checked/review-0.html",
+          "label": "7ef48207",
+          "storage": "browser_localStorage; export JSON then ingest",
+          "blinding": "neutral label, contents may reveal treatment; coordinator knows mapping"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "ingest",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--kind",
+          "review",
+          "--input",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/review.json"
+        ],
+        "result": {
+          "status": "recorded",
+          "kind": "review",
+          "record_sha256": "0f570dc6fe446d99f60f71506ff8be7b3ef9d63bd17a87f46c8e2062cd2f17bb"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "dispatch",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment"
+        ],
+        "result": {
+          "status": "assignment_ready",
+          "run_id": "e86152449a7d43f595b551e5083a6a2c",
+          "assignment": "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment/runs/e86152449a7d43f595b551e5083a6a2c/assignment.json",
+          "execution": "manual_native_session",
+          "reused": false
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "freeze",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--run",
+          "e86152449a7d43f595b551e5083a6a2c",
+          "--source",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment/runs/e86152449a7d43f595b551e5083a6a2c/workspace",
+          "--files",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/files.json"
+        ],
+        "result": {
+          "run_id": "e86152449a7d43f595b551e5083a6a2c",
+          "revision": "F0",
+          "output_sha256": "7ae430b92627347bc17f512d54e2544b8adfedcf02cae277274f4dd38943fd39",
+          "tree": "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment/outputs/e86152449a7d43f595b551e5083a6a2c/F0/tree"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "receipt",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--run",
+          "e86152449a7d43f595b551e5083a6a2c"
+        ],
+        "result": {
+          "run_id": "e86152449a7d43f595b551e5083a6a2c",
+          "config_sha256": "bdac67db6606ea14d3f151959a5267cac76615ac335b799edd68725e48657178",
+          "output_sha256": "7ae430b92627347bc17f512d54e2544b8adfedcf02cae277274f4dd38943fd39",
+          "status": "completed",
+          "duration_seconds": 20,
+          "session_id": "synthetic-e86152449a7d43f595b551e5083a6a2c",
+          "fresh_session": true,
+          "isolation": "unavailable",
+          "isolation_evidence": "No real native agent used",
+          "skill_loading_evidence": "Synthetic fixture only",
+          "accounting_complete": true,
+          "request_keys": [
+            [
+              "synthetic",
+              "e86152449a7d43f595b551e5083a6a2c"
+            ]
+          ]
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "ingest",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--kind",
+          "execution",
+          "--input",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/execution.json"
+        ],
+        "result": {
+          "status": "recorded",
+          "kind": "execution",
+          "record_sha256": "cd0d8bba95bfa5fffb58e0a89b893c2bc0bd3202ebc7d02016e340d735f3d236"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "ingest",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--kind",
+          "usage",
+          "--input",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/usage.json"
+        ],
+        "result": {
+          "status": "recorded",
+          "kind": "usage",
+          "record_sha256": "f08543cf344f5b9bd45f03ec927a21f7dad740281f734a9f353f54eb18fc7bd8"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "evaluate",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--run",
+          "e86152449a7d43f595b551e5083a6a2c"
+        ],
+        "result": {
+          "status": "recorded",
+          "kind": "evaluation",
+          "record_sha256": "cf01694e162ecb67e2778a40fce12104e36a63f72a67b05f550ecf0c05e1da5d"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "review",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--run",
+          "e86152449a7d43f595b551e5083a6a2c",
+          "--output",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/review-1.html"
+        ],
+        "result": {
+          "output": "/private/tmp/harness-ab-walkthrough-20261103-checked/review-1.html",
+          "label": "e8615244",
+          "storage": "browser_localStorage; export JSON then ingest",
+          "blinding": "neutral label, contents may reveal treatment; coordinator knows mapping"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "ingest",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--kind",
+          "review",
+          "--input",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/review.json"
+        ],
+        "result": {
+          "status": "recorded",
+          "kind": "review",
+          "record_sha256": "87a1dc79e23d05ba3166a42502318048752afac4fbfe8f7d67d6ce55569a3693"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "dispatch",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment"
+        ],
+        "result": {
+          "status": "assignment_ready",
+          "run_id": "c80f33ce0a394a8ba613a88f1e833d75",
+          "assignment": "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment/runs/c80f33ce0a394a8ba613a88f1e833d75/assignment.json",
+          "execution": "manual_native_session",
+          "reused": false
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "freeze",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--run",
+          "c80f33ce0a394a8ba613a88f1e833d75",
+          "--source",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment/runs/c80f33ce0a394a8ba613a88f1e833d75/workspace",
+          "--files",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/files.json"
+        ],
+        "result": {
+          "run_id": "c80f33ce0a394a8ba613a88f1e833d75",
+          "revision": "F0",
+          "output_sha256": "a8390ce979ec31b97b6d413a0a0622afa34edd013c555311a5294848de0370f4",
+          "tree": "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment/outputs/c80f33ce0a394a8ba613a88f1e833d75/F0/tree"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "receipt",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--run",
+          "c80f33ce0a394a8ba613a88f1e833d75"
+        ],
+        "result": {
+          "run_id": "c80f33ce0a394a8ba613a88f1e833d75",
+          "config_sha256": "bdac67db6606ea14d3f151959a5267cac76615ac335b799edd68725e48657178",
+          "output_sha256": "a8390ce979ec31b97b6d413a0a0622afa34edd013c555311a5294848de0370f4",
+          "status": "completed",
+          "duration_seconds": 20,
+          "session_id": "synthetic-c80f33ce0a394a8ba613a88f1e833d75",
+          "fresh_session": true,
+          "isolation": "unavailable",
+          "isolation_evidence": "No real native agent used",
+          "skill_loading_evidence": "Synthetic fixture only",
+          "accounting_complete": true,
+          "request_keys": [
+            [
+              "synthetic",
+              "c80f33ce0a394a8ba613a88f1e833d75"
+            ]
+          ]
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "ingest",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--kind",
+          "execution",
+          "--input",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/execution.json"
+        ],
+        "result": {
+          "status": "recorded",
+          "kind": "execution",
+          "record_sha256": "5c0cae8d33f96709bc28ae4d63e26a0472596dce4bfc085723420c2b92cf8e9a"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "ingest",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--kind",
+          "usage",
+          "--input",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/usage.json"
+        ],
+        "result": {
+          "status": "recorded",
+          "kind": "usage",
+          "record_sha256": "79e2b686cc5259c8a2e27e237199dfb7a828733159594a81a50f163e8d3b9d66"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "evaluate",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--run",
+          "c80f33ce0a394a8ba613a88f1e833d75"
+        ],
+        "result": {
+          "status": "recorded",
+          "kind": "evaluation",
+          "record_sha256": "747389ac8109168e780be6daf29325ceb27b95c6b1478b68aa0463dbc6ab17cd"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "review",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--run",
+          "c80f33ce0a394a8ba613a88f1e833d75",
+          "--output",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/review-2.html"
+        ],
+        "result": {
+          "output": "/private/tmp/harness-ab-walkthrough-20261103-checked/review-2.html",
+          "label": "c80f33ce",
+          "storage": "browser_localStorage; export JSON then ingest",
+          "blinding": "neutral label, contents may reveal treatment; coordinator knows mapping"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "ingest",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--kind",
+          "review",
+          "--input",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/review.json"
+        ],
+        "result": {
+          "status": "recorded",
+          "kind": "review",
+          "record_sha256": "c56cdf81ad191aa03dd371457ff7b4252771fdd70f7f52e6c5f25f7ce8d19d06"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "dispatch",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment"
+        ],
+        "result": {
+          "status": "assignment_ready",
+          "run_id": "eb1c5cae04d94c708f0477379d0e4944",
+          "assignment": "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment/runs/eb1c5cae04d94c708f0477379d0e4944/assignment.json",
+          "execution": "manual_native_session",
+          "reused": false
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "freeze",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--run",
+          "eb1c5cae04d94c708f0477379d0e4944",
+          "--source",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment/runs/eb1c5cae04d94c708f0477379d0e4944/workspace",
+          "--files",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/files.json"
+        ],
+        "result": {
+          "run_id": "eb1c5cae04d94c708f0477379d0e4944",
+          "revision": "F0",
+          "output_sha256": "f10f0e76d0dde66b8ef1ad3cd938092456f6946c8782413a43aa42b009ff90a3",
+          "tree": "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment/outputs/eb1c5cae04d94c708f0477379d0e4944/F0/tree"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "receipt",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--run",
+          "eb1c5cae04d94c708f0477379d0e4944"
+        ],
+        "result": {
+          "run_id": "eb1c5cae04d94c708f0477379d0e4944",
+          "config_sha256": "e30e0ee74bdae47d532b8bbfdc2d1a61136c63be4874102dddb2a17036acfb56",
+          "output_sha256": "f10f0e76d0dde66b8ef1ad3cd938092456f6946c8782413a43aa42b009ff90a3",
+          "status": "completed",
+          "duration_seconds": 20,
+          "session_id": "synthetic-eb1c5cae04d94c708f0477379d0e4944",
+          "fresh_session": true,
+          "isolation": "unavailable",
+          "isolation_evidence": "No real native agent used",
+          "skill_loading_evidence": "Synthetic fixture only",
+          "accounting_complete": true,
+          "request_keys": [
+            [
+              "synthetic",
+              "eb1c5cae04d94c708f0477379d0e4944"
+            ]
+          ]
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "ingest",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--kind",
+          "execution",
+          "--input",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/execution.json"
+        ],
+        "result": {
+          "status": "recorded",
+          "kind": "execution",
+          "record_sha256": "e4ec6431b2a1dfb8b280e2ffff68966c6fbeb4f132debfd6006c3955cd7249a5"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "ingest",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--kind",
+          "usage",
+          "--input",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/usage.json"
+        ],
+        "result": {
+          "status": "recorded",
+          "kind": "usage",
+          "record_sha256": "c957c1ec3f9bbcc251084f7ff11696aca157d276f6b1b8d1fd02d6c4e9d80896"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "evaluate",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--run",
+          "eb1c5cae04d94c708f0477379d0e4944"
+        ],
+        "result": {
+          "status": "recorded",
+          "kind": "evaluation",
+          "record_sha256": "0ad0b2221027a9a6b1a5d7ced3cdbad1610ac2de0a8a2e23e67995f5787f2e77"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "review",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--run",
+          "eb1c5cae04d94c708f0477379d0e4944",
+          "--output",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/review-3.html"
+        ],
+        "result": {
+          "output": "/private/tmp/harness-ab-walkthrough-20261103-checked/review-3.html",
+          "label": "eb1c5cae",
+          "storage": "browser_localStorage; export JSON then ingest",
+          "blinding": "neutral label, contents may reveal treatment; coordinator knows mapping"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "ingest",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--kind",
+          "review",
+          "--input",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/review.json"
+        ],
+        "result": {
+          "status": "recorded",
+          "kind": "review",
+          "record_sha256": "700e1e9e0f4aad9bc664d3023ebbb2a43c031277f8761a54d1148aba5224d966"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "report",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--output",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/report"
+        ],
+        "result": {
+          "output": "/private/tmp/harness-ab-walkthrough-20261103-checked/report/report.html",
+          "comparison": "/private/tmp/harness-ab-walkthrough-20261103-checked/report/comparison.json",
+          "decision": "synthetic_demonstration"
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "harness",
+          "ab",
+          "report",
+          "--experiment",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/experiment",
+          "--output",
+          "/private/tmp/harness-ab-walkthrough-20261103-checked/report-replay"
+        ],
+        "result": {
+          "output": "/private/tmp/harness-ab-walkthrough-20261103-checked/report-replay/report.html",
+          "comparison": "/private/tmp/harness-ab-walkthrough-20261103-checked/report-replay/comparison.json",
+          "decision": "synthetic_demonstration"
+        }
+      }
+    ]
+  },
+  "observations": [
+    {
+      "label": "identical usage replay",
+      "exit_code": 0,
+      "output": "{\"status\": \"recorded\", \"kind\": \"usage\", \"record_sha256\": \"ba9633499ae2131e458b17a3fb6ad1eb93b10d75d0a611d65a11fe25eb3ad307\"}"
+    },
+    {
+      "label": "conflicting usage rejected",
+      "exit_code": 2,
+      "output": "{\"status\": \"error\", \"code\": \"input_or_storage_error\", \"message\": \"Immutable record conflict: 649b6ea286a1d98174025a6c23178ba0e8ffa3dd24fe9b172da9fb2ea7ca24ee.json\"}"
+    },
+    {
+      "label": "evaluation wrong output rejected",
+      "exit_code": 2,
+      "output": "{\"status\": \"error\", \"code\": \"input_or_storage_error\", \"message\": \"Evaluation output hash mismatch\"}"
+    },
+    {
+      "label": "F0 overwrite rejected",
+      "exit_code": 2,
+      "output": "{\"status\": \"error\", \"code\": \"input_or_storage_error\", \"message\": \"Output revision already frozen\"}"
+    },
+    {
+      "label": "F1 kept separate",
+      "exit_code": 0,
+      "output": "{\"run_id\": \"7ef48207e4cf40f383095913dbdfe79d\", \"revision\": \"F1\", \"output_sha256\": \"0d3ebc05bffe5e34e34245d7872f6b0ff2f2384bde47bd85b28d3b694cd18b4c\", \"tree\": \"/private/tmp/harness-ab-walkthrough-20261103-checked/experiment/outputs/7ef48207e4cf40f383095913dbdfe79d/F1/tree\"}"
+    },
+    {
+      "label": "F1 evaluator",
+      "exit_code": 0,
+      "output": "{\"status\": \"recorded\", \"kind\": \"evaluation\", \"record_sha256\": \"c1fb63ac966f7881b36ac9619c41da0c2e3d6adc419c5de65802bcac07615c48\"}"
+    },
+    {
+      "label": "close experiment",
+      "exit_code": 0,
+      "output": "{\"experiment_sha256\": \"2b4c4a4083d38b0efddea2bc27cb3fde41ae2d6aa6cc7e03d9a3c50515148966\", \"closed_at\": \"2026-11-03T19:02:20.988977+00:00\", \"reason\": \"Synthetic operational validation complete\", \"knowledge_publication\": \"not_performed; curate experiment evidence separately\"}"
+    },
+    {
+      "label": "closed experiment blocks writes",
+      "exit_code": 2,
+      "output": "{\"status\": \"error\", \"code\": \"input_or_storage_error\", \"message\": \"Experiment is closed; records remain immutable\"}"
+    }
+  ],
+  "source_sha256": {
+    "harness/ab/analysis.py": "f5fe8dc25ce4c1671ba2b5222083251ad67bb833f61f146be9aa130067cfcbe9",
+    "harness/ab/__init__.py": "7093bc20fb7508502f33c5f64389de0fec87f037f4f34bf8ed9b2484080990c3",
+    "harness/ab/core.py": "efe4cce2b15970f28a8621c9da04553739fac88ec78338d8e5f18f706cec104f",
+    "harness/ab/review.py": "77063be96c3dfc25b23b79f35588af25b4b3b91ecafe4cbeb785e00b45b3997a",
+    "harness/ab/cli.py": "f0490f981f219fa66d60799d73a1fd27f0fa0b465fcaa662e545d2d202a09b72",
+    "harness/ab/evaluate.py": "1168ec1eb53280a81e49474814ceb15a15bfcc76d5b6319e86d07acf3ab7423d",
+    "harness/ab/review.html": "04e39f1516e090d1c2ae0bde7070e009009e413ccea64e36f45be724a6ce7744",
+    "harness/cli.py": "f10db322ca62c2c21b2f4f820a7ca7d82f379de681ab1bc4564be818b7d0e269",
+    "scripts/demo_harness_ab.py": "36332873f514ba7d1ba1f27b2d01a9740c64350776b6cb4c2aa4c8df7df25e0b"
+  }
+}

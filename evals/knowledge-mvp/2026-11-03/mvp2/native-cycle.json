@@ -1,0 +1,27 @@
+{
+  "curator": {
+    "agent": "/root/knowledge_first_curator",
+    "fresh_context": true,
+    "proposals": 3,
+    "source_excerpts_committed": 2,
+    "candidates_committed": 1,
+    "curation_status": "complete",
+    "pending": 0
+  },
+  "scout": {
+    "agent": "/root/knowledge_scout_pilot",
+    "fresh_context": true,
+    "store": "isolated SQLite backup of project knowledge",
+    "selected_refs": [
+      "K-16b97d2736274927a86be346e44e9047@1"
+    ],
+    "token_count": 290,
+    "token_method": "utf8_bytes_div3_estimate",
+    "budget": 1200,
+    "sources": 1
+  },
+  "limitations": [
+    "Single local Codex collaboration pilot; no live Claude run.",
+    "Initial bootstrap recorded completed MVP work, not a retroactive before-development context packet."
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "version": 1,
+  "task_id": "knowledge-mvp1-adversarial",
+  "spec_version": "2026-11-03 Knowledge MVP1 frozen contract",
+  "role": "adversarial",
+  "provenance": "post_hoc",
+  "candidate_ref": "evals/knowledge-mvp/2026-11-03/mvp1/candidates/7bc9503f77dc3d63de1c86f1f5b9058619afa9303c9dd65c2531bc95e87853f6",
+  "generation_status": "ready",
+  "suite_version": "sha256:01982c56b8e2d186c0059585978881449c65ea007d6a35c7f727dceea3093387",
+  "test_paths": [
+    "tests/test_knowledge_adversarial.py"
+  ],
+  "requirements": [
+    "propose.task_batch_idempotency",
+    "propose.atomic_batch",
+    "propose.auto_active_basis",
+    "search.scope_snapshot_applicability",
+    "context.budget_source_limit",
+    "expand.current_state_role",
+    "promote.general_projection",
+    "workflow.lifecycle"
+  ],
+  "requirement_id_note": "Contract contains no numbered IDs; identifiers above label its named API clauses.",
+  "execution": {
+    "status": "fail",
+    "checks": [
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests",
+          "-p",
+          "test_knowledge_adversarial.py",
+          "-v"
+        ],
+        "cwd": "/Users/mshekhunov/engineering-harness",
+        "exit_code": 1,
+        "duration_seconds": 0.40483195800334215,
+        "output_path": "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp1/adversarial-output.txt",
+        "note": "Initial 11-method suite before two additional boundary tests; same confirmed collision failures."
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests",
+          "-p",
+          "test_knowledge_adversarial.py",
+          "-v"
+        ],
+        "cwd": "/Users/mshekhunov/engineering-harness",
+        "exit_code": 1,
+        "duration_seconds": 0.4142629170091823,
+        "output_path": "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp1/adversarial-suite-output.txt"
+      },
+      {
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests",
+          "-p",
+          "test_knowledge_adversarial.py",
+          "-k",
+          "delimiter_collision",
+          "-v"
+        ],
+        "cwd": "/Users/mshekhunov/engineering-harness",
+        "exit_code": 1,
+        "duration_seconds": 0.06315491700661369,
+        "output_path": "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp1/adversarial-minimal-output.txt"
+      }
+    ],
+    "environment": {
+      "python": "3.14.1 (main, Dec  2 2025, 12:51:37) [Clang 17.0.0 (clang-1700.4.4.1)]",
+      "platform": "darwin",
+      "HARNESS_CANDIDATE_ROOT": "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp1/adversarial-work/tree",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "seed": "deterministic explicit cases; UUID values are nondeterministic but equality assertions are stable"
+    }
+  },
+  "search_outcome": "counterexample_found",
+  "budget_usage": {
+    "execution_seconds": 0.8822497920191381,
+    "generated_cases": 53,
+    "confirmed_findings": 1,
+    "enforcement": "advisory",
+    "measurement": "time.monotonic around subprocesses; 13 unittest methods plus 40 additional matrix variants; analysis/generation time excluded",
+    "limits": {
+      "execution_seconds": 480,
+      "cases": 1000,
+      "findings": 5
+    }
+  },
+  "findings": [
+    {
+      "requirement_id": "propose.task_batch_idempotency",
+      "candidate_ref": "evals/knowledge-mvp/2026-11-03/mvp1/candidates/7bc9503f77dc3d63de1c86f1f5b9058619afa9303c9dd65c2531bc95e87853f6",
+      "expected": "Distinct (task_id,batch_id) pairs enqueue independently, including valid IDs containing colon. Retries deduplicate only the identical pair.",
+      "actual": "Pairs (a:b,c) and (a,b:c) map to proposal:a:b:c. Same payload returns the first task job_id with idempotent=true and skips the second proposal; different payload raises conflict.",
+      "reproducer_path": "tests/test_knowledge_adversarial.py",
+      "reproduction_argv": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_knowledge_adversarial.py",
+        "-k",
+        "delimiter_collision",
+        "-v"
+      ],
+      "reproduction_environment": {
+        "HARNESS_CANDIDATE_ROOT": "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp1/adversarial-work/tree"
+      },
+      "classification": "bug",
+      "minimized": true,
+      "evidence_path": "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp1/adversarial-minimal-output.txt",
+      "minimal_steps": [
+        "begin a:b in project one; begin a in project two",
+        "finish both with status success",
+        "propose a:b with batch c and an empty or valid proposal list",
+        "propose a with batch b:c and same payload: job IDs are equal; with different payload: conflict"
+      ]
+    }
+  ],
+  "questions": [],
+  "limitations": [
+    "Local cooperative profile only; no private backend/hidden tests inspected.",
+    "No OS access isolation or hostile filesystem race testing.",
+    "Deterministic serial scenarios; no process-kill fault injection or concurrent writers.",
+    "11 of 13 test methods pass; 2 fail for the same confirmed delimiter-collision bug.",
+    "Execution budget excludes source reading and test generation; elapsed working time approximately 6 minutes."
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "requirement_id": "R2",
+  "input": [
+    "b",
+    "a"
+  ],
+  "expected": [
+    "b",
+    "a"
+  ],
+  "actual": [
+    "a",
+    "b"
+  ],
+  "minimality": "Length two is minimal: empty and singleton inputs cannot reorder distinct values. Both boundary cases executed successfully. Removing either element from this reproducer leaves a singleton.",
+  "reproduced": true,
+  "related_failing_cases": [
+    "ordering-minimal",
+    "duplicates",
+    "case-sensitive",
+    "unicode-exact",
+    "empty-string",
+    "reverse-order"
+  ]
+}

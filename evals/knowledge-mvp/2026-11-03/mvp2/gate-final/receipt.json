@@ -1,0 +1,52 @@
+{
+  "stage": "all",
+  "status": "pass",
+  "source_stable": true,
+  "source_sha256": {
+    "harness/__init__.py": "16990c27355dd70ead7df53f85e3eb473f44630265b8ef8488eef6f9b09a5a2b",
+    "harness/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "harness/cli.py": "7eabaec62640832ba62e73adbea6c9ce3bfbc6fb65bea8ebeebc136e44d30210",
+    "harness/embeddings.py": "fcfef39538ba97253f08e46b1d5b8b074c582ca9a956823f191345bfc3b79355",
+    "harness/knowledge.py": "b4924da31d307c9cee6f2661f1ce124d136bb4f64f1dd190ec2fd8ba46bb02e3",
+    "harness/semantic.py": "6a890928a138426a974dc982e88d3862597da280d2bbd7bb7dd0fe55bfdd5279",
+    "harness/workflow.py": "8b58d31b4bfeced7500b78513e7f45c00de9ee73e9d3b727abb13ceaac0f2261",
+    "pyproject.toml": "9fb3763bef70ee76363246fdf7b8cc02cc9535c2eb5eb50643d1d78c5096d844",
+    "scripts/benchmark_knowledge.py": "08c8def9bbb318d17e3103e971b0bb32568820f4644d3a819d17584328312be6",
+    "scripts/check_knowledge.py": "259e1d2112226ab8339445cf97090aa46673d9a5233781ac29fabaa7075951be",
+    "skills/knowledge-cycle/SKILL.md": "a6419e6c168dc772681adb8181606e4f9b53feb27929599445702c36ed0772cb",
+    "skills/knowledge-cycle/agents/openai.yaml": "e2852b1e5c4850e6c362e88a30f0b35e138ba9c58c65871a64b2fac9c376e7cc",
+    "skills/knowledge-cycle/scripts/knowledge.py": "3cc9cc3dcc548f221ec5d2fff8b1f8fcfd7cf262bed8220e9ab578c5d4609949",
+    "tests/test_knowledge_adversarial.py": "01982c56b8e2d186c0059585978881449c65ea007d6a35c7f727dceea3093387",
+    "tests/test_knowledge_mvp.py": "c85e0d8624f2091ae1dae17e4bda304870e11e0176893af7fb0505874f09fec9",
+    "tests/test_knowledge_semantic.py": "387e8ac8c5b3b3e7ea5c60d5995c0290406b8dd5c0ab494a0d15dd38e8b0a604",
+    "tests/test_knowledge_semantic_adversarial.py": "18dc21a4d6f56afd5307b43f176c61fe4f0b6e265ac138839b247380879c3d35",
+    "tests/test_knowledge_workflow.py": "2c2ac38dfa8e6dbb457a92fc8ab3e59da06d9ebf5b76171784086477074036ab",
+    "tests/test_preview.py": "56c0bdc7658872b8885d34dffa3c0b6611bef02e01b63f097308b4c5a1f60436",
+    "tests/test_test_on_request.py": "7f375fb46c4de821f34df74f05b4f835930e6cb09edcba15d8de90328b9adbc5",
+    "tests/test_understand_changes.py": "b19a828702c09112da0d4dc16d26e50ad3501c523ab8719117eb88ef283e5903",
+    "uv.lock": "0e8414699437d55514803fa418a354600120801ad43bf7744e5a358509ad72c3"
+  },
+  "suites": [
+    {
+      "suite": "test_*.py",
+      "status": "pass",
+      "exit_code": 0,
+      "elapsed_seconds": 7.264,
+      "command": [
+        "/Users/mshekhunov/engineering-harness/.venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_*.py",
+        "-v"
+      ]
+    }
+  ],
+  "private": "unavailable",
+  "python": "3.12.14 (main, Aug 14 2026, 15:24:41) [Clang 22.1.3 ]",
+  "platform": "macOS-15.7.3-arm64-arm-64bit",
+  "limitations": "Public and adaptive adversarial regressions; not a fresh private holdout."
+}

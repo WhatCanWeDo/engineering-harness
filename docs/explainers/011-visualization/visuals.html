@@ -1,0 +1,31 @@
+<!-- visual:background -->
+<figure class="system-card"><h3>Один дополнительный путь после задачи</h3>
+<div class="system-map" role="img" aria-label="Нативный агент сохраняет результат и предлагает демо. Согласие пользователя активирует visualization. Роутер читает реальные артефакты, выбирает мини-workflow и выдаёт HTML пользователю.">
+<div class="map-node">Нативный агент<br><small>завершает задачу</small></div><div class="connector">↓ сохраняет результат</div>
+<div class="map-branch"><div class="map-node">Артефакты / evidence<br><small>inputs, outputs, run IDs</small></div><div class="map-node">Предложение демо<br><small>конкретная польза + твой выбор</small></div></div>
+<div class="map-branch"><div class="connector">↓ читает фактические данные</div><div class="connector">↓ только после согласия</div></div>
+<div class="map-node proposed">Visualization · предлагается<br><small>выбрать мини-workflow → проверить привязки → собрать viewer</small></div><div class="connector">↓ результат и его ограничения</div>
+<div class="map-node">Ты исследуешь HTML<br><small>исходник ↔ результат, примеры, преобразования</small></div>
+</div><figcaption>Установленный native agent остаётся исполнителем. Новая ветка не заменяет его loop и не меняет статус проверок.</figcaption></figure>
+<!-- /visual -->
+<!-- visual:intuition -->
+<article class="demo-card" id="segmentation-demo">
+<div class="demo-heading"><span class="demo-number">01</span><h3>Изображение и маска рядом</h3></div>
+<p class="provenance"><strong>ILLUSTRATIVE · учебная сцена.</strong> SVG-изображение и маски заданы вручную. Здесь нет камеры, модели или оценки её качества.</p>
+<div class="controls"><label>Пример<select id="seg-sample"><option value="aligned">Геометрически согласованная маска</option><option value="shifted">Учебная ошибка: маска объекта смещена</option></select></label><label>Что показать<select id="seg-class"><option value="all">Все размеченные классы</option><option value="road">Дорога</option><option value="object">Автомобиль</option></select></label></div>
+<div class="image-pair"><figure><figcaption>Слева: учебный исходник</figcaption><div id="seg-input" class="scene"></div></figure><figure><figcaption>Справа: та же сцена + маска</figcaption><div id="seg-output" class="scene"></div></figure></div>
+<label class="range-label" for="seg-opacity">Прозрачность overlay <output id="opacity-value">60%</output></label><input id="seg-opacity" type="range" min="0" max="100" value="60">
+<div class="legend"><span><i class="road-swatch"></i>Дорога</span><span><i class="object-swatch"></i>Автомобиль</span><span>Не показанное — вне выбранной разметки</span></div>
+<p id="seg-status" class="observation" role="status"></p>
+<details><summary>Что можно и чего нельзя заключить</summary><p>Можно исследовать взаимное положение сцены и маски, понять смысл overlay и заметить смещение. Нельзя оценить реальную модель: маски нарисованы для этого дизайна. Ползунок меняет только прозрачность. В настоящем viewer здесь будут вход и prediction одного sample/run, а не вручную заданные фигуры.</p></details>
+</article>
+<article class="demo-card" id="parser-demo">
+<div class="demo-heading"><span class="demo-number">02</span><h3>От участка страницы до конкретного поля</h3></div>
+<p class="provenance"><strong>EXECUTED ON FIXTURE · учебный extractor.</strong> Встроенная вымышленная страница разбирается JavaScript в браузере. Это прототип trace, не запуск твоего production-парсера.</p>
+<div class="controls"><label>Состояние страницы<select id="parser-case"><option value="normal">Обычная карточка</option><option value="missing">Разметка изменилась: selector не находит цену</option><option value="ambiguous">Два совпадения цены</option></select></label><label>Поле результата<select id="parser-field"><option value="price">price</option><option value="title">title</option><option value="stock">in_stock</option></select></label></div>
+<div class="parser-grid"><div><h4>1 · Источник</h4><p class="hint">Выбранный selector подсвечивает все найденные узлы.</p><div id="source-page" class="source-page"></div></div><div><h4>2 · Извлечение и обработка</h4><div id="parser-trace" class="trace" aria-live="polite"></div></div></div>
+<h4>3 · Итоговая запись</h4><pre id="parser-result"></pre><p id="parser-observation" class="observation" role="status"></p>
+<details><summary>Исходный HTML этой fixture</summary><pre id="source-html"></pre></details>
+<details><summary>Как это будет работать с настоящим парсером</summary><p>Snapshot и trace берутся из фактического запуска. Выбранное поле связывается с source node/span и реальными transformations. Если trace не сохранён, viewer покажет ограничение и предложит отдельный replay. Повторная похожая реализация в браузере не подменяет оригинальный extractor.</p></details>
+</article>
+<!-- /visual -->

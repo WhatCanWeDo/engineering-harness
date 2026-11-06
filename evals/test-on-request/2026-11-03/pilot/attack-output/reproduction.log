@@ -1,0 +1,1 @@
+{"case": "ordering-minimal", "input": ["b", "a"], "expected": ["b", "a"], "actual": ["a", "b"], "checks": {"R1": true, "R2": false, "R3": true, "R4": true}}

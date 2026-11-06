@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "spec_sha256": "b6c07f27531a971c28e5d813a0c81a06c9b1ed4e8fed8744c5af875cfecaaef7",
+  "files": [
+    {
+      "path": "docs/contracts/knowledge-mvp.md",
+      "sha256": "b6c07f27531a971c28e5d813a0c81a06c9b1ed4e8fed8744c5af875cfecaaef7",
+      "executable": false
+    },
+    {
+      "path": "harness/__init__.py",
+      "sha256": "16990c27355dd70ead7df53f85e3eb473f44630265b8ef8488eef6f9b09a5a2b",
+      "executable": false
+    },
+    {
+      "path": "harness/__main__.py",
+      "sha256": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "executable": false
+    },
+    {
+      "path": "harness/cli.py",
+      "sha256": "c85e8cd6b1a2d1343c3c2b447d9ce283ab9c8af87a10db3443364c47a2b51483",
+      "executable": false
+    },
+    {
+      "path": "harness/knowledge.py",
+      "sha256": "fa3123b7ea5264d2e069a3696bd71d8551a9757730b70ce0b46a1f58a218d188",
+      "executable": false
+    },
+    {
+      "path": "harness/workflow.py",
+      "sha256": "c2de29d1246477ed008b8f65dfaa6c9febffe0e6232670c7c5ce720c017b9006",
+      "executable": false
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "0acb5704df97af12850bbed1f93c765be0b21f4ac70b208651b48d4c1bcdfd81",
+      "executable": false
+    },
+    {
+      "path": "skills/knowledge-cycle/SKILL.md",
+      "sha256": "b701c2a44ddb35416cf1ec9da890eadf1bb5fa3d2ad1bcedd3058dc3db64cca1",
+      "executable": false
+    },
+    {
+      "path": "skills/knowledge-cycle/scripts/knowledge.py",
+      "sha256": "ca9ed66c2c3ee7ef0dae5b95d3d83ea237aeefd0db97d1986c9a60de590da317",
+      "executable": false
+    }
+  ],
+  "environment": {
+    "python": "3.14.1 (main, Dec  2 2025, 12:51:37) [Clang 17.0.0 (clang-1700.4.4.1)]",
+    "sqlite": "3.51.2",
+    "platform": "macOS-15.7.3-arm64-arm-64bit-Mach-O"
+  },
+  "candidate_ref": "161e00991a8d184ecd044cbf332f8070fb3e476e6bc061a1c841cd84dd3d3923"
+}

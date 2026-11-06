@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "status": "preimplementation",
+  "provenance": "pre_implementation",
+  "date": "2026-11-03",
+  "role": "public",
+  "generation_status": "ready",
+  "execution": {
+    "status": "not_run",
+    "reason": "MVP2 API not yet implemented; coordinator requested no execution"
+  },
+  "production_read": false,
+  "implementation_started_at_freeze": false,
+  "suite_version": "9ac836cf9ced0bb3ddaca28d3945d354a75d2d8f2a0829384331e85e30763b88",
+  "sha256": {
+    "tests/test_knowledge_semantic.py": "387e8ac8c5b3b3e7ea5c60d5995c0290406b8dd5c0ab494a0d15dd38e8b0a604",
+    "evals/knowledge-mvp/2026-11-03/mvp2/retrieval-corpus.json": "34e67593025203e7dc9dea24aef750c4b22380b29ca353a9e862db25b05761fe"
+  },
+  "spec_sha256": {
+    "docs/contracts/knowledge-mvp.md": "b6c07f27531a971c28e5d813a0c81a06c9b1ed4e8fed8744c5af875cfecaaef7",
+    "docs/contracts/knowledge-mvp2.md": "d35a1532f0561672e4b2446819c17e52d6069630e830b2c3ce4a770a12c18c10"
+  },
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_knowledge_semantic.py",
+    "-v"
+  ],
+  "cwd": "/Users/mshekhunov/engineering-harness",
+  "unit_tests": 21,
+  "documents": 18,
+  "queries": 14,
+  "test_names": [
+    "test_empty_index_and_status_do_not_embed",
+    "test_no_provider_status_and_explicit_lexical_fallback",
+    "test_limit_restart_idempotence_and_watermark_not_task_counter",
+    "test_invalid_provider_batch_commits_no_vectors",
+    "test_index_excludes_candidate_hypothesis_and_inactive_entries",
+    "test_cosine_normalization_and_stable_ties",
+    "test_hybrid_uses_equal_weight_rrf_k60",
+    "test_exact_entry_ref_and_symbol_override_vector_rank",
+    "test_hybrid_caps_each_input_rank_at_thirty",
+    "test_lexical_and_empty_queries_never_call_provider",
+    "test_index_lag_and_query_provider_failure_are_honest_fallbacks",
+    "test_unindexed_inaccessible_entries_do_not_degrade_complete_visible_corpus",
+    "test_invalid_query_vectors_fall_back",
+    "test_query_cache_persists_and_is_project_scoped",
+    "test_query_cache_survives_an_actual_new_process",
+    "test_new_model_and_dimensions_never_reuse_old_vectors",
+    "test_revised_entry_gets_new_vector_and_old_snapshot_cannot_read_it",
+    "test_vectors_do_not_bypass_project_cutoff_or_applicability",
+    "test_cached_query_rechecks_retractions_and_stale_states",
+    "test_context_sources_recheck_roles_and_revocation",
+    "test_prepare_and_scout_accept_modes_and_lexical_defaults"
+  ],
+  "requirements": {
+    "MVP2-INDEX": "Active non-hypothesis current revisions, limit, readiness, watermark, normalization and atomic provider validation",
+    "MVP2-RETRIEVAL": "Cosine, stable ties, exact identifiers, equal-weight RRF k=60 and top-30 input caps",
+    "MVP2-CACHE": "Persistent query cache, project/model/dimension isolation, lexical and empty query bypass",
+    "MVP2-POLICY": "Scope, snapshot, applicability, active states, role and packet revalidation",
+    "MVP2-FALLBACK": "Explicit lexical degraded fallback for absent provider, incomplete accessible index and invalid/provider-failed query embeddings",
+    "MVP2-CONTEXT": "prepare_context/scout_brief mode support and lexical defaults",
+    "MVP2-CORPUS": "Frozen RU/EN development corpus, cross-language queries, exact identifiers, distractors"
+  },
+  "oracle": "Public contract, hand-selected vectors and independent cosine/RRF ordering; legacy lexical API provides only its rank input to RRF oracle.",
+  "corpus_policy": "Written before model or lexical measurements. Preserve documents and qrels across baseline/backend comparison; report per-query regressions.",
+  "questions": [
+    "index_sync provider failure envelope is unspecified; suite accepts a returned non-ready result or an exception, and asserts batch atomicity."
+  ],
+  "limitations": [
+    "No tests executed: MVP2 API was not implemented at freeze; AST/JSON structure checks only.",
+    "No production source read; only public contracts, worker instructions and project documentation.",
+    "Synthetic vectors verify mechanics only and provide no evidence of real multilingual retrieval quality.",
+    "CLI mode flags, model setup, bundle integrity and network/download constraints require additional integration/adversarial checks.",
+    "Raw query absence in cache is not asserted without a cache inspection interface or schema; this remains for post-hoc schema-aware review.",
+    "An actual subprocess restart test is included but has not been executed.",
+    "Benchmark is public development/smoke data, not a private holdout or task-success measurement.",
+    "No packages installed, network calls made, or benchmark/model measurements performed."
+  ]
+}

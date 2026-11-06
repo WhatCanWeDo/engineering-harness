@@ -1,0 +1,668 @@
+{
+  "status": "pass",
+  "corpus_sha256": "34e67593025203e7dc9dea24aef750c4b22380b29ca353a9e862db25b05761fe",
+  "model_id": "fastembed:sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2:01b88613b011820582c3bf5616a04b4188ab33778dd5d09d1d6d212d24ba5150",
+  "dimensions": 384,
+  "documents": 18,
+  "queries": 14,
+  "summary": {
+    "lexical": {
+      "recall_at_3": 0.5,
+      "mrr_at_3": 0.4642857142857143,
+      "elapsed_ms": 0.2397142857142857
+    },
+    "semantic": {
+      "recall_at_3": 1.0,
+      "mrr_at_3": 1.0,
+      "elapsed_ms": 11.852214285714286
+    },
+    "hybrid": {
+      "recall_at_3": 0.6428571428571429,
+      "mrr_at_3": 0.6071428571428571,
+      "elapsed_ms": 3.1799285714285714
+    }
+  },
+  "bundle_validation_seconds": 0.12298170800204389,
+  "cold_index_seconds": 1.0346884169848636,
+  "results": [
+    {
+      "id": "Q01",
+      "text": "Как проверить Cache.get ровно в момент expires_at без ожидания реального времени?",
+      "relevant": [
+        "D01"
+      ],
+      "category": "exact_identifier_ru",
+      "modes": {
+        "lexical": {
+          "ranked": [
+            "D01",
+            "D14",
+            "D09"
+          ],
+          "status": "ok",
+          "actual_mode": "lexical",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 0.367
+        },
+        "semantic": {
+          "ranked": [
+            "D01",
+            "D13",
+            "D02"
+          ],
+          "status": "ok",
+          "actual_mode": "semantic",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 11.335
+        },
+        "hybrid": {
+          "ranked": [
+            "D01",
+            "D13",
+            "D14"
+          ],
+          "status": "ok",
+          "actual_mode": "hybrid",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 3.327
+        }
+      }
+    },
+    {
+      "id": "Q02",
+      "text": "Как после аварийного завершения доставить уже зафиксированное событие и не выполнить исходную операцию второй раз?",
+      "relevant": [
+        "D02"
+      ],
+      "category": "cross_language_ru_to_en",
+      "modes": {
+        "lexical": {
+          "ranked": [
+            "D09",
+            "D16",
+            "D05"
+          ],
+          "status": "ok",
+          "actual_mode": "lexical",
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0,
+          "elapsed_ms": 0.26
+        },
+        "semantic": {
+          "ranked": [
+            "D02",
+            "D08",
+            "D09"
+          ],
+          "status": "ok",
+          "actual_mode": "semantic",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 14.129
+        },
+        "hybrid": {
+          "ranked": [
+            "D09",
+            "D03",
+            "D16"
+          ],
+          "status": "ok",
+          "actual_mode": "hybrid",
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0,
+          "elapsed_ms": 3.404
+        }
+      }
+    },
+    {
+      "id": "Q03",
+      "text": "How can we establish that a database backup is actually usable before a schema change?",
+      "relevant": [
+        "D03"
+      ],
+      "category": "cross_language_en_to_ru",
+      "modes": {
+        "lexical": {
+          "ranked": [
+            "D15",
+            "D13",
+            "D08"
+          ],
+          "status": "ok",
+          "actual_mode": "lexical",
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0,
+          "elapsed_ms": 0.252
+        },
+        "semantic": {
+          "ranked": [
+            "D03",
+            "D05",
+            "D14"
+          ],
+          "status": "ok",
+          "actual_mode": "semantic",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 11.442
+        },
+        "hybrid": {
+          "ranked": [
+            "D15",
+            "D12",
+            "D08"
+          ],
+          "status": "ok",
+          "actual_mode": "hybrid",
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0,
+          "elapsed_ms": 3.283
+        }
+      }
+    },
+    {
+      "id": "Q04",
+      "text": "Почему вычисление параметров масштабирования признаков до разделения данных искажает оценку на отложенной выборке?",
+      "relevant": [
+        "D04"
+      ],
+      "category": "cross_language_ru_to_en",
+      "modes": {
+        "lexical": {
+          "ranked": [
+            "D11"
+          ],
+          "status": "ok",
+          "actual_mode": "lexical",
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0,
+          "elapsed_ms": 0.219
+        },
+        "semantic": {
+          "ranked": [
+            "D04",
+            "D12",
+            "D06"
+          ],
+          "status": "ok",
+          "actual_mode": "semantic",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 13.023
+        },
+        "hybrid": {
+          "ranked": [
+            "D11",
+            "D04",
+            "D12"
+          ],
+          "status": "ok",
+          "actual_mode": "hybrid",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 0.5,
+          "elapsed_ms": 3.152
+        }
+      }
+    },
+    {
+      "id": "Q05",
+      "text": "Can an old context packet still reveal its source after the reader loses access?",
+      "relevant": [
+        "D05"
+      ],
+      "category": "cross_language_en_to_ru",
+      "modes": {
+        "lexical": {
+          "ranked": [
+            "D02",
+            "D13",
+            "D12"
+          ],
+          "status": "ok",
+          "actual_mode": "lexical",
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0,
+          "elapsed_ms": 0.233
+        },
+        "semantic": {
+          "ranked": [
+            "D05",
+            "D16",
+            "D07"
+          ],
+          "status": "ok",
+          "actual_mode": "semantic",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 10.494
+        },
+        "hybrid": {
+          "ranked": [
+            "D13",
+            "D02",
+            "D10"
+          ],
+          "status": "ok",
+          "actual_mode": "hybrid",
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0,
+          "elapsed_ms": 3.361
+        }
+      }
+    },
+    {
+      "id": "Q06",
+      "text": "How do we compare embedding directions without letting a longer vector dominate the retrieval score?",
+      "relevant": [
+        "D06"
+      ],
+      "category": "semantic_en",
+      "modes": {
+        "lexical": {
+          "ranked": [
+            "D06",
+            "D02",
+            "D18"
+          ],
+          "status": "ok",
+          "actual_mode": "lexical",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 0.249
+        },
+        "semantic": {
+          "ranked": [
+            "D06",
+            "D18",
+            "D09"
+          ],
+          "status": "ok",
+          "actual_mode": "semantic",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 12.228
+        },
+        "hybrid": {
+          "ranked": [
+            "D06",
+            "D18",
+            "D12"
+          ],
+          "status": "ok",
+          "actual_mode": "hybrid",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 3.154
+        }
+      }
+    },
+    {
+      "id": "Q07",
+      "text": "Что остановило ошибку EMFILE в обработчике запросов?",
+      "relevant": [
+        "D07"
+      ],
+      "category": "exact_identifier_ru",
+      "modes": {
+        "lexical": {
+          "ranked": [
+            "D11",
+            "D07",
+            "D01"
+          ],
+          "status": "ok",
+          "actual_mode": "lexical",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 0.5,
+          "elapsed_ms": 0.196
+        },
+        "semantic": {
+          "ranked": [
+            "D07",
+            "D09",
+            "D10"
+          ],
+          "status": "ok",
+          "actual_mode": "semantic",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 9.878
+        },
+        "hybrid": {
+          "ranked": [
+            "D07",
+            "D11",
+            "D09"
+          ],
+          "status": "ok",
+          "actual_mode": "hybrid",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 3.049
+        }
+      }
+    },
+    {
+      "id": "Q08",
+      "text": "What happens when the second concurrent writer sends expected_revision=7 after revision 8 already exists?",
+      "relevant": [
+        "D08"
+      ],
+      "category": "exact_identifier_en",
+      "modes": {
+        "lexical": {
+          "ranked": [
+            "D08",
+            "D02",
+            "D04"
+          ],
+          "status": "ok",
+          "actual_mode": "lexical",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 0.24
+        },
+        "semantic": {
+          "ranked": [
+            "D08",
+            "D16",
+            "D09"
+          ],
+          "status": "ok",
+          "actual_mode": "semantic",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 12.077
+        },
+        "hybrid": {
+          "ranked": [
+            "D08",
+            "D13",
+            "D02"
+          ],
+          "status": "ok",
+          "actual_mode": "hybrid",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 3.15
+        }
+      }
+    },
+    {
+      "id": "Q09",
+      "text": "Повтор запроса с Idempotency-Key: можно ли изменить сумму и использовать прежний ключ?",
+      "relevant": [
+        "D09"
+      ],
+      "category": "exact_identifier_ru",
+      "modes": {
+        "lexical": {
+          "ranked": [
+            "D09",
+            "D11",
+            "D16"
+          ],
+          "status": "ok",
+          "actual_mode": "lexical",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 0.23
+        },
+        "semantic": {
+          "ranked": [
+            "D09",
+            "D15",
+            "D05"
+          ],
+          "status": "ok",
+          "actual_mode": "semantic",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 11.41
+        },
+        "hybrid": {
+          "ranked": [
+            "D09",
+            "D05",
+            "D16"
+          ],
+          "status": "ok",
+          "actual_mode": "hybrid",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 3.116
+        }
+      }
+    },
+    {
+      "id": "Q10",
+      "text": "Среднее время ответа хорошее, но некоторые пользователи долго ждут свободное соединение. Какие показатели обнаружат проблему?",
+      "relevant": [
+        "D10"
+      ],
+      "category": "cross_language_ru_to_en",
+      "modes": {
+        "lexical": {
+          "ranked": [],
+          "status": "empty",
+          "actual_mode": "lexical",
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0,
+          "elapsed_ms": 0.161
+        },
+        "semantic": {
+          "ranked": [
+            "D10",
+            "D01",
+            "D11"
+          ],
+          "status": "ok",
+          "actual_mode": "semantic",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 12.815
+        },
+        "hybrid": {
+          "ranked": [
+            "D10",
+            "D01",
+            "D11"
+          ],
+          "status": "ok",
+          "actual_mode": "hybrid",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 2.967
+        }
+      }
+    },
+    {
+      "id": "Q11",
+      "text": "How can a slow consumer prevent the producer from filling all available memory with pending work?",
+      "relevant": [
+        "D11"
+      ],
+      "category": "cross_language_en_to_ru",
+      "modes": {
+        "lexical": {
+          "ranked": [
+            "D04",
+            "D02",
+            "D08"
+          ],
+          "status": "ok",
+          "actual_mode": "lexical",
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0,
+          "elapsed_ms": 0.242
+        },
+        "semantic": {
+          "ranked": [
+            "D11",
+            "D10",
+            "D01"
+          ],
+          "status": "ok",
+          "actual_mode": "semantic",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 10.726
+        },
+        "hybrid": {
+          "ranked": [
+            "D02",
+            "D10",
+            "D04"
+          ],
+          "status": "ok",
+          "actual_mode": "hybrid",
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0,
+          "elapsed_ms": 3.148
+        }
+      }
+    },
+    {
+      "id": "Q12",
+      "text": "How are modified embedding model weights detected before local inference?",
+      "relevant": [
+        "D12"
+      ],
+      "category": "semantic_en",
+      "modes": {
+        "lexical": {
+          "ranked": [
+            "D12",
+            "D06",
+            "D15"
+          ],
+          "status": "ok",
+          "actual_mode": "lexical",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 0.194
+        },
+        "semantic": {
+          "ranked": [
+            "D12",
+            "D04",
+            "D06"
+          ],
+          "status": "ok",
+          "actual_mode": "semantic",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 10.362
+        },
+        "hybrid": {
+          "ranked": [
+            "D12",
+            "D06",
+            "D04"
+          ],
+          "status": "ok",
+          "actual_mode": "hybrid",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 3.072
+        }
+      }
+    },
+    {
+      "id": "Q13",
+      "text": "После замены контейнера пропала локальная база. Как в испытании обеспечили сохранность файла при следующем развёртывании?",
+      "relevant": [
+        "D14"
+      ],
+      "category": "semantic_ru",
+      "modes": {
+        "lexical": {
+          "ranked": [
+            "D14",
+            "D16",
+            "D17"
+          ],
+          "status": "ok",
+          "actual_mode": "lexical",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 0.263
+        },
+        "semantic": {
+          "ranked": [
+            "D14",
+            "D03",
+            "D11"
+          ],
+          "status": "ok",
+          "actual_mode": "semantic",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 13.638
+        },
+        "hybrid": {
+          "ranked": [
+            "D14",
+            "D03",
+            "D17"
+          ],
+          "status": "ok",
+          "actual_mode": "hybrid",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 3.17
+        }
+      }
+    },
+    {
+      "id": "Q14",
+      "text": "What permits local text embeddings to run with outbound networking disabled, and what happens when model files are missing?",
+      "relevant": [
+        "D17"
+      ],
+      "category": "cross_language_en_to_ru",
+      "modes": {
+        "lexical": {
+          "ranked": [
+            "D12",
+            "D18",
+            "D15"
+          ],
+          "status": "ok",
+          "actual_mode": "lexical",
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0,
+          "elapsed_ms": 0.25
+        },
+        "semantic": {
+          "ranked": [
+            "D17",
+            "D07",
+            "D05"
+          ],
+          "status": "ok",
+          "actual_mode": "semantic",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "elapsed_ms": 12.374
+        },
+        "hybrid": {
+          "ranked": [
+            "D12",
+            "D18",
+            "D10"
+          ],
+          "status": "ok",
+          "actual_mode": "hybrid",
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0,
+          "elapsed_ms": 3.166
+        }
+      }
+    }
+  ],
+  "limitations": "Development smoke set, no holdout or task-success estimate. Semantic queries run before hybrid: hybrid benefits from query cache. Cold model load is included in index timing."
+}

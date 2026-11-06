@@ -1,0 +1,105 @@
+{
+  "date": "2026-11-03",
+  "suite": "knowledge-mvp-1-public-contract",
+  "classification": "public_development_suite",
+  "private_holdout": false,
+  "author": {
+    "agent_task": "/root/knowledge_public_tests",
+    "role": "independent public contract test author"
+  },
+  "basis": "docs/contracts/knowledge-mvp.md",
+  "generation_boundary": {
+    "product_implementation_read": false,
+    "tests_saved_before_execution": true,
+    "product_files_modified": false
+  },
+  "test_file": "tests/test_knowledge_mvp.py",
+  "test_file_sha256": "c85e0d8624f2091ae1dae17e4bda304870e11e0176893af7fb0505874f09fec9",
+  "test_count": 28,
+  "test_names": [
+    "test_task_binding_idempotency_and_conflict",
+    "test_private_role_unavailable",
+    "test_snapshot_excludes_later_publication_and_stays_fixed",
+    "test_immutable_evidence_hash_and_basis_after_source_change",
+    "test_evidence_regular_utf8_and_size_boundaries",
+    "test_finish_and_propose_retry_conflict_and_recovery",
+    "test_finish_outcomes_and_empty_no_change",
+    "test_invalid_outcome_and_propose_before_finish",
+    "test_evidence_cannot_cross_tasks_even_in_same_project",
+    "test_invalid_batch_is_atomic_and_scope_cannot_be_forged",
+    "test_missing_basis_and_non_observations_stay_candidates",
+    "test_false_basis_rejected_and_mismatched_claim_remains_candidate",
+    "test_applicability_requires_matching_task_values",
+    "test_future_observation_does_not_enter_receiving_task",
+    "test_search_exact_identifiers_symbols_and_fts_punctuation",
+    "test_project_isolation_not_found_and_export_projection",
+    "test_foreign_review_and_promotion_cannot_mutate_source",
+    "test_memory_content_is_data_and_api_never_spawns_processes",
+    "test_review_revisions_and_active_hypothesis_is_not_fact",
+    "test_retracted_sources_cannot_be_read_using_old_revision_or_packet",
+    "test_reject_and_stale_never_appear_as_facts",
+    "test_update_revision_invalidates_old_packet_and_preserves_history",
+    "test_general_promotion_is_new_public_projection",
+    "test_packet_budget_empty_result_and_required_overflow",
+    "test_packet_eight_source_limit_and_selected_ref_filter",
+    "test_packet_role_binding_rechecked_and_expansion_is_packet_scoped",
+    "test_briefs_contain_task_context_without_foreign_evidence",
+    "test_cli_lifecycle_json_and_api_parity"
+  ],
+  "requirements": [
+    "Task binding idempotency, conflicts, fixed snapshot and private role unavailable",
+    "Immutable UTF-8 regular-file evidence, SHA-256, 2 MiB inclusive boundary and invalid files",
+    "Finish/propose durable retry, reopen recovery, deterministic bounded reconciliation, no duplicates",
+    "Outcome statuses, curation pending, explicit empty no-change proposal",
+    "Batch atomicity, cross-task evidence denial and scope/project forgery rejection",
+    "Only exactly evidenced observations automatically active; other kinds remain candidates",
+    "Applicability and observed-at temporal filters",
+    "Exact entry/symbol retrieval, empty query, punctuation and SQL metacharacter handling",
+    "Project isolation and indistinguishable not_found for forbidden/missing entries",
+    "Review optimistic revision conflict, hypothesis factual exclusion, rejection/staleness/retraction",
+    "Revision history and invalidation of replaced/retracted packet sources",
+    "Explicit promotion creates independent general projection without source content/path leakage",
+    "Packet budgets, estimated UTF-8 token method, required-ref errors and max eight sources",
+    "Scout selected-ref filtering and role-revocation recheck during expansion",
+    "Curator/Scout metadata and evidence scope",
+    "CLI lifecycle, JSON errors with exit 2 and API parity",
+    "Unauthorized cross-project review and promotion cannot mutate original entry",
+    "Memory text is inert data; API writes/search/context cannot spawn subprocesses"
+  ],
+  "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p 'test_knowledge_mvp.py' -v",
+  "execution": {
+    "status": "passed",
+    "tests_run": 28,
+    "passed": 28,
+    "errors": 0,
+    "failures": 0,
+    "test_file_sha256": "c85e0d8624f2091ae1dae17e4bda304870e11e0176893af7fb0505874f09fec9",
+    "elapsed_seconds": 0.838,
+    "note": "Rerun after API missing-path normalization and explicit selected_refs contract clarification."
+  },
+  "contract_clarifications": [
+    "Historical revision may be read while current is active and binding permits; packet expansion rejects replaced revisions.",
+    "Non-observation with basis remains candidate. Nonexistent evidence quote rejects batch; existing quote with differing claim leaves candidate.",
+    "After initial public run, owner clarified: forbidden/unknown selected_refs must explicitly fail with not_found; safe omission expectation corrected. No product source was read for this clarification."
+  ],
+  "initial_execution": {
+    "status": "failed_initial_run",
+    "tests_run": 28,
+    "passed": 26,
+    "errors": 2,
+    "failures": 0,
+    "test_file_sha256": "ead40a938e0ac87d1b8b8688f8d3779ecb1e7534fab4dcd7726120c982d6bd75",
+    "issues": [
+      {
+        "test": "test_evidence_regular_utf8_and_size_boundaries",
+        "finding": "Missing evidence path raises raw FileNotFoundError rather than KnowledgeError with stable code.",
+        "disposition": "implementation_corrected_before_successful_rerun"
+      },
+      {
+        "test": "test_packet_eight_source_limit_and_selected_ref_filter",
+        "finding": "Forbidden selected_refs rejected with not_found; test expected safe omission. Contract does not specify reject versus omit.",
+        "disposition": "test_corrected_to_explicit_not_found_per_contract_owner"
+      }
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "html": "/Users/mshekhunov/.local/share/engineering-harness/explainers/2026-11-03-203114-5f1e6006/explanation.html",
+  "renderer": "Google Chrome headless",
+  "checks": [
+    "1280px report and retrieval visualization",
+    "360px question cards and answer feedback",
+    "1280px 200% root font",
+    "360px retrieval visualization"
+  ],
+  "questions": 5,
+  "answer_buttons": 20,
+  "horizontal_overflow": false,
+  "visual_review": "passed",
+  "preview_verified_http": true
+}

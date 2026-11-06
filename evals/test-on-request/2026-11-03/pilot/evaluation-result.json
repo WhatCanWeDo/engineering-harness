@@ -1,0 +1,67 @@
+{
+  "task_id": "stable-unique-pilot",
+  "spec_version": "66d01c19d1c69a58fe12f6a1e9167e34619bfd5f065350fa77cabc121bf9277e",
+  "candidate_ref": "210035843cbcfc219ce4fd89595d3bfc88f8af05953f1b7481e00ff3093b23d5",
+  "operation": "attack",
+  "public": "not_requested",
+  "private": "not_requested",
+  "adversarial": "fail",
+  "search_outcome": "counterexample_found",
+  "provenance": "post_hoc",
+  "origin": "adversarial",
+  "visibility": "public",
+  "suite_version": "sha256:bc234d3ffa6c794401ae362b5d46b5d78478e76f8d8568c94850d69937d9fff8",
+  "worker_result": "/tmp/harness-test-on-request-pilot-20261103/attack-output/worker-result.json",
+  "verify_before": "intact",
+  "verify_after": "intact",
+  "product_matches_frozen": true,
+  "candidate_copy_matches_frozen": true,
+  "workflow_completed": true,
+  "blocking_obstacles": [],
+  "workflow_observations": [
+    "Worker initially used noncanonical status enum values; corrected on coordinator request without changing or rerunning tests."
+  ],
+  "limitations": [
+    "Public post-hoc pilot; no private holdout requested or executed.",
+    "Execution budgets are advisory; no protected filesystem isolation."
+  ],
+  "findings": [
+    {
+      "requirement_id": "R2",
+      "candidate_ref": "210035843cbcfc219ce4fd89595d3bfc88f8af05953f1b7481e00ff3093b23d5",
+      "expected": [
+        "b",
+        "a"
+      ],
+      "actual": [
+        "a",
+        "b"
+      ],
+      "reproducer_path": "/tmp/harness-test-on-request-pilot-20261103/attack-output/cases.json",
+      "reproduction_argv": [
+        "/Users/mshekhunov/.venvs/python3.14/bin/python3",
+        "-I",
+        "/tmp/harness-test-on-request-pilot-20261103/attack-output/test_stable_unique.py",
+        "--case",
+        "ordering-minimal"
+      ],
+      "classification": "bug",
+      "minimized": true,
+      "evidence_path": "/tmp/harness-test-on-request-pilot-20261103/attack-output/finding-order.json",
+      "origin": "adversarial",
+      "visibility": "public"
+    }
+  ],
+  "budget_usage": {
+    "execution_seconds": 0.07275549997575581,
+    "generated_cases": 8,
+    "case_evaluations": 9,
+    "confirmed_findings": 1,
+    "enforcement": "advisory",
+    "measurement": "time.perf_counter wall time across suite and independent reproduction; includes subprocess launch and evidence-log writes; generation and analysis excluded; no iterative minimization needed",
+    "execution_seconds_limit": 30,
+    "exceeded": false,
+    "stop_reason": "finite targeted suite completed; all observed order failures consolidated into one defect class"
+  },
+  "worker_agent_id": "/root/test_skill_forward/adversarial_worker"
+}

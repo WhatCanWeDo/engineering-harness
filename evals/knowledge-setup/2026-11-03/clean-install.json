@@ -1,0 +1,33 @@
+{
+  "status": "ready",
+  "at": "2026-11-03T17:54:02.260678+00:00",
+  "mode": "semantic",
+  "model_dir": "/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-device-install-d0athtok/model",
+  "profile": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-device-install-d0athtok/.harness/knowledge.local.json",
+  "database": "/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-device-install-d0athtok/knowledge.sqlite3",
+  "resources": {
+    "status": "ready",
+    "platform": "macOS-15.7.3-arm64-arm-64bit",
+    "machine": "arm64",
+    "python": "3.12.14 (main, Aug 14 2026, 15:24:41) [Clang 22.1.3 ]",
+    "logical_cpus": 12,
+    "sqlite": "3.53.1",
+    "fts5": true,
+    "venv_file_bytes": 203351785,
+    "gpu_required": false,
+    "bundle_validation_seconds": 0.12265725000179373,
+    "cold_query_seconds": 0.8070190839935094,
+    "query_peak_rss_bytes": 1290420224,
+    "batch32_seconds": 0.7784757919725962,
+    "model_id": "fastembed:sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2:01b88613b011820582c3bf5616a04b4188ab33778dd5d09d1d6d212d24ba5150",
+    "dimensions": 384,
+    "cpu_threads": 2,
+    "model_file_bytes": 266906794,
+    "workload": "2 short RU/EN queries, then 32 documents of 54 words each; batch_size=32",
+    "batch_peak_rss_bytes": 1303281664,
+    "process_peak_rss_bytes": 1303281664,
+    "rss_scope": "Peak RSS of this process including Python/runtime/model; not whole-system RAM or a guaranteed worst-case limit."
+  },
+  "offline": false,
+  "suite_execution": "not_requested_not_run"
+}

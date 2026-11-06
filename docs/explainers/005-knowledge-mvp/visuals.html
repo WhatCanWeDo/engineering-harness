@@ -1,0 +1,23 @@
+<!-- visual:intuition -->
+<div class="system-diagram" aria-label="Цикл работы с памятью">
+ <div class="diagram-label">ДО ЗАДАЧИ</div>
+ <div class="diagram-row"><article><b>1. CLI</b><p>Продолжает очередь, фиксирует snapshot, ищет кандидатов.</p><span>скрипт</span></article><article><b>2. Scout</b><p>Выбирает до 8 полезных ссылок в свежем контексте.</p><span class="agent-tag">отдельный агент</span></article><article><b>3. Compiler</b><p>Проверяет роль, версии и бюджет. Собирает короткий packet.</p><span>скрипт</span></article></div>
+ <div class="diagram-center">Разработчик и автор тестов получают свои пакеты</div>
+ <div class="diagram-label">ПОСЛЕ ЗАДАЧИ</div>
+ <div class="diagram-row"><article><b>4. CLI</b><p>Сохраняет outcome и снимки evidence в SQLite.</p><span>скрипт</span></article><article><b>5. Curator</b><p>Предлагает короткие знания или возвращает пустой список.</p><span class="agent-tag">отдельный агент</span></article><article><b>6. Core</b><p>Проверяет предложения, пишет revisions, обновляет индекс.</p><span>скрипт</span></article></div>
+ <p class="diagram-note">Обязательные project instructions читаются напрямую. Память не выдаёт новых разрешений.</p>
+</div>
+<!-- /visual -->
+<!-- visual:verification -->
+<div class="benchmark-panel">
+ <h3>Реальное сравнение: один корпус, три режима</h3>
+ <p>18 документов · 14 заранее подготовленных запросов · русский и английский. Доля запросов с нужным источником в первых трёх результатах:</p>
+ <div id="metric-bars" class="metric-bars" aria-label="Recall at 3"></div>
+ <p class="diagram-note">Это development smoke benchmark. Ни корпус, ни qrels не менялись после измерения. Выбор режима для пилота сделан по этим данным; свежего holdout пока нет.</p>
+ <label class="query-label" for="query-picker">Посмотреть конкретный запрос</label>
+ <select id="query-picker"></select>
+ <p id="query-text" class="query-text"></p>
+ <div id="query-ranking" class="ranking-grid" aria-live="polite"></div>
+ <p class="diagram-note">В карточке показаны реальные ID документов и попадание в qrels. Полные тексты корпуса и результаты сохранены в evals/knowledge-mvp/2026-11-03/mvp2/.</p>
+</div>
+<!-- /visual -->

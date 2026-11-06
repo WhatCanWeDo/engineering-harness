@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "task_id": "knowledge-mvp2-public-preimplementation",
+  "spec_version": {
+    "docs/contracts/knowledge-mvp.md": "b6c07f27531a971c28e5d813a0c81a06c9b1ed4e8fed8744c5af875cfecaaef7",
+    "docs/contracts/knowledge-mvp2.md": "d35a1532f0561672e4b2446819c17e52d6069630e830b2c3ce4a770a12c18c10"
+  },
+  "role": "public",
+  "provenance": "pre_implementation",
+  "candidate_ref": null,
+  "generation_status": "ready",
+  "suite_version": "9ac836cf9ced0bb3ddaca28d3945d354a75d2d8f2a0829384331e85e30763b88",
+  "test_paths": [
+    "tests/test_knowledge_semantic.py"
+  ],
+  "requirements": [
+    "MVP2-INDEX",
+    "MVP2-RETRIEVAL",
+    "MVP2-CACHE",
+    "MVP2-POLICY",
+    "MVP2-FALLBACK",
+    "MVP2-CONTEXT",
+    "MVP2-CORPUS"
+  ],
+  "execution": {
+    "status": "not_run",
+    "checks": [],
+    "environment": {
+      "python": "3.14.1",
+      "platform": "macOS-15.7.3-arm64-arm-64bit-Mach-O",
+      "seed": "none; explicit deterministic vectors",
+      "reproduction_argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_knowledge_semantic.py",
+        "-v"
+      ],
+      "cwd": "/Users/mshekhunov/engineering-harness"
+    }
+  },
+  "search_outcome": null,
+  "budget_usage": {
+    "execution_seconds": 0,
+    "generated_cases": 21,
+    "confirmed_findings": 0,
+    "enforcement": "advisory"
+  },
+  "findings": [],
+  "questions": [
+    "index_sync provider failure envelope is unspecified; suite accepts a returned non-ready result or an exception, and asserts batch atomicity."
+  ],
+  "limitations": [
+    "No tests executed: MVP2 API was not implemented at freeze; AST/JSON structure checks only.",
+    "No production source read; only public contracts, worker instructions and project documentation.",
+    "Synthetic vectors verify mechanics only and provide no evidence of real multilingual retrieval quality.",
+    "CLI mode flags, model setup, bundle integrity and network/download constraints require additional integration/adversarial checks.",
+    "Raw query absence in cache is not asserted without a cache inspection interface or schema; this remains for post-hoc schema-aware review.",
+    "An actual subprocess restart test is included but has not been executed.",
+    "Benchmark is public development/smoke data, not a private holdout or task-success measurement.",
+    "No packages installed, network calls made, or benchmark/model measurements performed."
+  ]
+}

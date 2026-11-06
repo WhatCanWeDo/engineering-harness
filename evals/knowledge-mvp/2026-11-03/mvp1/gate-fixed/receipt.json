@@ -1,0 +1,80 @@
+{
+  "stage": "mvp1",
+  "status": "pass",
+  "source_stable": true,
+  "source_sha256": {
+    "harness/__init__.py": "16990c27355dd70ead7df53f85e3eb473f44630265b8ef8488eef6f9b09a5a2b",
+    "harness/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "harness/cli.py": "c85e8cd6b1a2d1343c3c2b447d9ce283ab9c8af87a10db3443364c47a2b51483",
+    "harness/knowledge.py": "fa3123b7ea5264d2e069a3696bd71d8551a9757730b70ce0b46a1f58a218d188",
+    "harness/workflow.py": "c2de29d1246477ed008b8f65dfaa6c9febffe0e6232670c7c5ce720c017b9006",
+    "pyproject.toml": "0acb5704df97af12850bbed1f93c765be0b21f4ac70b208651b48d4c1bcdfd81",
+    "scripts/check_knowledge.py": "cdb98ac15739c7b8a2b40e7fb378fcb3e8dd52054c4371d0c7483603ab50b2ba",
+    "skills/knowledge-cycle/SKILL.md": "b701c2a44ddb35416cf1ec9da890eadf1bb5fa3d2ad1bcedd3058dc3db64cca1",
+    "skills/knowledge-cycle/agents/openai.yaml": "e2852b1e5c4850e6c362e88a30f0b35e138ba9c58c65871a64b2fac9c376e7cc",
+    "skills/knowledge-cycle/scripts/knowledge.py": "ca9ed66c2c3ee7ef0dae5b95d3d83ea237aeefd0db97d1986c9a60de590da317",
+    "tests/test_knowledge_adversarial.py": "01982c56b8e2d186c0059585978881449c65ea007d6a35c7f727dceea3093387",
+    "tests/test_knowledge_mvp.py": "c85e0d8624f2091ae1dae17e4bda304870e11e0176893af7fb0505874f09fec9",
+    "tests/test_knowledge_workflow.py": "2c2ac38dfa8e6dbb457a92fc8ab3e59da06d9ebf5b76171784086477074036ab",
+    "tests/test_preview.py": "56c0bdc7658872b8885d34dffa3c0b6611bef02e01b63f097308b4c5a1f60436",
+    "tests/test_test_on_request.py": "7f375fb46c4de821f34df74f05b4f835930e6cb09edcba15d8de90328b9adbc5",
+    "tests/test_understand_changes.py": "b19a828702c09112da0d4dc16d26e50ad3501c523ab8719117eb88ef283e5903"
+  },
+  "suites": [
+    {
+      "suite": "test_knowledge_mvp.py",
+      "status": "pass",
+      "exit_code": 0,
+      "elapsed_seconds": 0.797,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_knowledge_mvp.py",
+        "-v"
+      ]
+    },
+    {
+      "suite": "test_knowledge_workflow.py",
+      "status": "pass",
+      "exit_code": 0,
+      "elapsed_seconds": 1.247,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_knowledge_workflow.py",
+        "-v"
+      ]
+    },
+    {
+      "suite": "test_knowledge_adversarial.py",
+      "status": "pass",
+      "exit_code": 0,
+      "elapsed_seconds": 0.379,
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_knowledge_adversarial.py",
+        "-v"
+      ]
+    }
+  ],
+  "private": "unavailable",
+  "python": "3.14.1 (main, Dec  2 2025, 12:51:37) [Clang 17.0.0 (clang-1700.4.4.1)]",
+  "platform": "macOS-15.7.3-arm64-arm-64bit-Mach-O",
+  "limitations": "Public and adaptive adversarial regressions; not a fresh private holdout."
+}

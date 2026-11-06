@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "task_id": null,
+  "spec_version": null,
+  "role": null,
+  "provenance": null,
+  "candidate_ref": null,
+  "generation_status": "not_run",
+  "suite_version": null,
+  "test_paths": [],
+  "requirements": [],
+  "execution": {"status": "not_run", "checks": [], "environment": {}},
+  "search_outcome": null,
+  "budget_usage": {"execution_seconds": 0, "generated_cases": 0, "confirmed_findings": 0, "enforcement": "advisory"},
+  "findings": [],
+  "questions": [],
+  "limitations": []
+}

@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "frequency": "task_end",
+  "depth": "medium",
+  "delivery": "html",
+  "quiz": {"required": true, "questions": 5, "options": 4},
+  "continuation": "wait_for_user"
+}

@@ -1,0 +1,187 @@
+{
+  "version": 1,
+  "task_id": "knowledge-mvp2-adversarial-2026-11-03",
+  "spec_version": "docs/contracts/knowledge-mvp2.md Draft 2026-11-03 + knowledge-mvp.md",
+  "role": "adversarial",
+  "provenance": "post_hoc",
+  "candidate_ref": "f87b347e0b4f7500ba50e8b5335891453d0476c2000657c1e4fc62497fad28c3",
+  "generation_status": "ready",
+  "suite_version": "sha256:18dc21a4d6f56afd5307b43f176c61fe4f0b6e265ac138839b247380879c3d35",
+  "test_paths": [
+    "tests/test_knowledge_semantic_adversarial.py"
+  ],
+  "requirements": [
+    "MVP2-search-fallback",
+    "MVP2-cli-local-provider-fallback",
+    "MVP2-bundle-identity",
+    "MVP2-index-normalization",
+    "MVP2-revision-race",
+    "MVP2-query-revocation"
+  ],
+  "execution": {
+    "status": "fail",
+    "checks": [
+      {
+        "argv": [
+          "/Users/mshekhunov/engineering-harness/.venv/bin/python",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests",
+          "-p",
+          "test_knowledge_semantic_adversarial.py",
+          "-v"
+        ],
+        "cwd": "/Users/mshekhunov/engineering-harness",
+        "exit_code": 1,
+        "duration_seconds": 0.09048537499620579,
+        "output_path": "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp2/adversarial-run/final-run.txt"
+      },
+      {
+        "argv": [
+          "/Users/mshekhunov/engineering-harness/.venv/bin/python",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests",
+          "-p",
+          "test_knowledge_semantic_adversarial.py",
+          "-v"
+        ],
+        "cwd": "/Users/mshekhunov/engineering-harness",
+        "exit_code": 1,
+        "duration_seconds": 0.033,
+        "duration_measurement": "unittest reported test execution; initial process wall time not instrumented",
+        "output_path": "evals/knowledge-mvp/2026-11-03/mvp2/adversarial-run/first-run.txt"
+      }
+    ],
+    "environment": {
+      "HARNESS_CANDIDATE_ROOT": "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp2/adversarial-run/candidate",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "python": "Python 3.12.14",
+      "platform": "macOS-15.7.3-arm64-arm-64bit-Mach-O"
+    }
+  },
+  "search_outcome": "counterexample_found",
+  "budget_usage": {
+    "execution_seconds": 0.1234853749962058,
+    "generated_cases": 7,
+    "executed_case_invocations": 14,
+    "confirmed_findings": 4,
+    "enforcement": "advisory",
+    "measurement": "Final subprocess monotonic wall time plus first unittest-reported duration; 6 test methods, 7 cases (two retrieval modes); analysis/generation separate, approximately 7 minutes; no budget overrun."
+  },
+  "findings": [
+    {
+      "finding_id": "MVP2-ADV-01",
+      "requirement_id": "MVP2-search-fallback",
+      "candidate_ref": "f87b347e0b4f7500ba50e8b5335891453d0476c2000657c1e4fc62497fad28c3",
+      "expected": "Missing provider yields mode=lexical, status=degraded, including when accessible corpus is empty.",
+      "actual": "Empty store returns mode=semantic/hybrid, status=empty.",
+      "minimal_reproducer": "Empty database, one reader task, no provider, nonempty query.",
+      "reproducer_path": "tests/test_knowledge_semantic_adversarial.py",
+      "reproduction_argv": [
+        "/Users/mshekhunov/engineering-harness/.venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_knowledge_semantic_adversarial.py",
+        "-k",
+        "test_missing_provider_empty_visible_corpus_explicitly_degrades",
+        "-v"
+      ],
+      "classification": "bug",
+      "minimized": true,
+      "evidence_path": "evals/knowledge-mvp/2026-11-03/mvp2/adversarial-run/final-run.txt"
+    },
+    {
+      "finding_id": "MVP2-ADV-02",
+      "requirement_id": "MVP2-cli-local-provider-fallback",
+      "candidate_ref": "f87b347e0b4f7500ba50e8b5335891453d0476c2000657c1e4fc62497fad28c3",
+      "expected": "Malformed local bundle is handled and semantic search falls back without traceback.",
+      "actual": "manifest.json containing [] causes uncaught AttributeError in LocalEmbedder.__init__.",
+      "minimal_reproducer": "One active observation and reader; bundle contains only manifest.json=[]; invoke cli.main semantic search.",
+      "reproducer_path": "tests/test_knowledge_semantic_adversarial.py",
+      "reproduction_argv": [
+        "/Users/mshekhunov/engineering-harness/.venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_knowledge_semantic_adversarial.py",
+        "-k",
+        "test_cli_malformed_bundle_root_has_no_traceback",
+        "-v"
+      ],
+      "classification": "bug",
+      "minimized": true,
+      "evidence_path": "evals/knowledge-mvp/2026-11-03/mvp2/adversarial-run/final-run.txt"
+    },
+    {
+      "finding_id": "MVP2-ADV-03",
+      "requirement_id": "MVP2-bundle-identity",
+      "candidate_ref": "f87b347e0b4f7500ba50e8b5335891453d0476c2000657c1e4fc62497fad28c3",
+      "expected": "Changed runtime bundle configuration must be rejected or have different provider identity.",
+      "actual": "Unlisted tokenizer_config.json is accepted; changing model_max_length 128 to 16 leaves model_id identical.",
+      "minimal_reproducer": "Synthetic two-file hashed manifest plus unlisted tokenizer_config.json; runtime versions stubbed, no model execution.",
+      "reproducer_path": "tests/test_knowledge_semantic_adversarial.py",
+      "reproduction_argv": [
+        "/Users/mshekhunov/engineering-harness/.venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_knowledge_semantic_adversarial.py",
+        "-k",
+        "test_bundle_unhashed_runtime_config_cannot_reuse_identity",
+        "-v"
+      ],
+      "classification": "bug",
+      "minimized": true,
+      "evidence_path": "evals/knowledge-mvp/2026-11-03/mvp2/adversarial-run/final-run.txt"
+    },
+    {
+      "finding_id": "MVP2-ADV-04",
+      "requirement_id": "MVP2-index-normalization",
+      "candidate_ref": "f87b347e0b4f7500ba50e8b5335891453d0476c2000657c1e4fc62497fad28c3",
+      "expected": "Finite nonzero vectors are persisted with unit norm.",
+      "actual": "[5e-324,5e-324] is persisted as [1,1], whose norm is 1.4142135623730951.",
+      "minimal_reproducer": "One active observation; deterministic provider returns the two-component subnormal vector.",
+      "reproducer_path": "tests/test_knowledge_semantic_adversarial.py",
+      "reproduction_argv": [
+        "/Users/mshekhunov/engineering-harness/.venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_knowledge_semantic_adversarial.py",
+        "-k",
+        "test_subnormal_nonzero_vectors_are_normalized_before_storage",
+        "-v"
+      ],
+      "classification": "bug",
+      "minimized": true,
+      "evidence_path": "evals/knowledge-mvp/2026-11-03/mvp2/adversarial-run/final-run.txt"
+    }
+  ],
+  "questions": [],
+  "limitations": [
+    "Private backend unavailable.",
+    "Synthetic providers and synthetic model bundle validate mechanics, not semantic relevance; runtime-version lookup stubbed for bundle identity test.",
+    "No real model inference, network, or original local-model bundle writes.",
+    "Requirement IDs are local descriptive labels for contract paragraphs; source contract has no formal numbered IDs.",
+    "Race tests use deterministic provider callback interleavings, not a scheduler stress test.",
+    "Finding on subnormal normalization is storage-level; ranking regression is not claimed."
+  ]
+}

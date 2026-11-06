@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "/Users/mshekhunov/engineering-harness/.venv/bin/python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_knowledge_semantic_adversarial.py",
+    "-v"
+  ],
+  "cwd": "/Users/mshekhunov/engineering-harness",
+  "exit_code": 1,
+  "duration_seconds": 0.09048537499620579,
+  "output_path": "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp2/adversarial-run/final-run.txt",
+  "environment": {
+    "HARNESS_CANDIDATE_ROOT": "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp2/adversarial-run/candidate",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "python": "Python 3.12.14",
+    "platform": "macOS-15.7.3-arm64-arm-64bit-Mach-O"
+  }
+}

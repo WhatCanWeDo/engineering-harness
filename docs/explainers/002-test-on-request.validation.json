@@ -1,0 +1,28 @@
+{
+  "date": "2026-11-03",
+  "scope": "Design document and procedural skill only; no product tests or private evaluator executed",
+  "skill_format": "quick_validate passed",
+  "implicit_invocation": "disabled in Codex metadata; other agent adapters not installed",
+  "document": "/Users/mshekhunov/.local/share/engineering-harness/explainers/2026-11-03-190709-7dafe19c/explanation.html",
+  "html_sha256": "9702a34afc5bd2f2e59272006587b1fee4bb8686a038cb8b1165ff0fb719d816",
+  "preview_url": "http://127.0.0.1:57110/4Ypg4ZkbRfCJdUbVkqkQ0Si9/explanation.html",
+  "preview_expires_at": "2026-11-03T18:07:24.056113+00:00",
+  "preview_session_id": 39970,
+  "http_verification": "200 and byte-for-byte match by preview helper",
+  "quiz_checks": [
+    {
+      "document": "design",
+      "initial_hidden": true,
+      "initial_unselected": true,
+      "questions": 5,
+      "click_paths_tested": 20,
+      "reselection": true,
+      "verdicts_and_feedback": true
+    }
+  ],
+  "limitations": [
+    "Minimal DOM stand-in, not visual browser verification",
+    "No independent agent evaluation of new skill",
+    "No protected private backend implemented"
+  ]
+}

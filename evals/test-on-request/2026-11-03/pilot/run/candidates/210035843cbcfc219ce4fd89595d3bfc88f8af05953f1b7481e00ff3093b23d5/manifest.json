@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "spec_sha256": "66d01c19d1c69a58fe12f6a1e9167e34619bfd5f065350fa77cabc121bf9277e",
+  "files": [
+    {
+      "path": "product/sequence.py",
+      "sha256": "c2d62d46b6fa12134b08999a0726cc63b8b489605c0f39c8ecc768d94c0ebc1b",
+      "executable": false
+    }
+  ],
+  "environment": {
+    "runtime": "Python 3",
+    "dependencies": "stdlib"
+  },
+  "candidate_ref": "210035843cbcfc219ce4fd89595d3bfc88f8af05953f1b7481e00ff3093b23d5"
+}

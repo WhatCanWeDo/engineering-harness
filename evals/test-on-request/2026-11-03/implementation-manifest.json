@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "files": {
+    "skills/test-on-request/defaults.json": "e3724cc57cc08c9b41ecf359dbb9b9edf41e08bf7dda888102a58c77c18f64aa",
+    "skills/test-on-request/SKILL.md": "290a44fe8dd6f0a88d4c020db9189d21c4f92614e143b75e62de5f16576e098e",
+    "skills/test-on-request/references/private-evaluation.md": "b7ee81dcaf4bb27e99274ca7834f92843487b37791bdc8a8ed1461b5ec0f7d8b",
+    "skills/test-on-request/references/delegation.md": "67dde9b14aeb225acf202ffe638e8008b84a1cfa875b1bf14f1a0979aabe66a4",
+    "skills/test-on-request/references/execution.md": "dbd878e1fc0d23bcaeeef6dc193bf3142a7b1b8b8b92622b1bfd2253d7420d82",
+    "skills/test-on-request/references/worker.md": "70226217ca1ec521cf391be1564de5f6be7fdea37f43ad6f1d49730610968c45",
+    "skills/test-on-request/references/native-adapters.md": "7e1d2d9812cabaecd5771561b73eefebb884cd27a59a16e0a67905736caec1b5",
+    "skills/test-on-request/references/protocol.md": "b4f07d81151567cfabeaef3014f60e2b30d16697622387881efe46dc31c7d0b1",
+    "skills/test-on-request/agents/openai.yaml": "091138516d87e4cb3ca71616811cbae1f5ab89a26de407b9089b465ce82be432",
+    "skills/test-on-request/scripts/testing.py": "159f93eb42d09b5751e6fe95756260b1d7e40ad501263ba44e0579b247e00aea",
+    "skills/test-on-request/assets/worker-result.json": "ea8c5cf5fc31f43cc7887673eb16042ede006b11608cb0f111c90cdd14f4bbdd",
+    "skills/test-on-request/assets/spec.md": "3f445de8389b2037c66f8c903c7aa0412b52153dcfad591ec178794ea9bb3ff7"
+  },
+  "note": "Local content identity, not trusted attestation"
+}

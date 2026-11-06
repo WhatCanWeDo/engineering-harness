@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<title>Кэш признаков: срок свежести, LRU и явное удаление</title>
+<style>
+:root{color-scheme:light;--ink:#182d38;--muted:#4d626b;--line:#ced9dd;--accent:#126355}
+*{box-sizing:border-box}body{margin:0;background:#f4f6f4;color:var(--ink);font:17px/1.65 system-ui,sans-serif}main{max-width:900px;margin:auto;padding:48px 28px 80px}h1{font-size:clamp(1.9rem,5vw,2.8rem);line-height:1.15}h2{line-height:1.3;margin-top:2.5rem}p{white-space:pre-wrap}a{color:var(--accent)}.scope,figcaption{color:var(--muted);font-size:.9rem}.scope{overflow-wrap:anywhere}nav{border-block:1px solid var(--line);padding:12px 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#e7eeeb;padding:20px;border-radius:8px;font-size:.9rem}figure{margin:20px 0}.flow{display:flex;flex-wrap:wrap;gap:12px;padding:0;list-style:none}.flow li{border:1px solid var(--line);padding:8px 14px;border-radius:6px}.flow li+li:before{content:'→ ';color:var(--accent)}fieldset{min-width:0;border:1px solid var(--line);border-radius:10px;padding:20px;margin:28px 0;background:#fff}legend{font-weight:650;padding:0 8px}button{display:block;width:100%;text-align:left;font:inherit;line-height:1.45;padding:12px 14px;margin:10px 0;border:1px solid var(--line);border-radius:6px;background:#f7f9f8;color:var(--ink);cursor:pointer;overflow-wrap:anywhere}button:hover{background:#e8f0ec}button:focus-visible,a:focus-visible{outline:3px solid #b26c00;outline-offset:3px}button[aria-pressed=true]{border:2px solid var(--accent)}.feedback{border-left:4px solid var(--accent);padding:0 16px;margin-top:20px}.feedback p{margin:.6em 0}footer{margin-top:40px;font-size:.9rem;color:var(--muted)}@media(max-width:550px){main{padding:24px 16px}fieldset{padding:12px}}@media print{body{background:white}main{max-width:none}.feedback[hidden]{display:none}button{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<header><p>UNDERSTAND CHANGES</p><h1>Кэш признаков: срок свежести, LRU и явное удаление</h1><p class="scope">Сравнение /tmp/harness-skill-eval-20261103/input/before.py → /tmp/harness-skill-eval-20261103/input/after.py. Глубина medium; разовый учебный документ по готовому изменению. История коммитов и интеграция не предоставлены.</p></header>
+<nav aria-label="Содержание"><ol><li><a href="#background">Зачем изменён кэш</a></li><li><a href="#intuition">Две независимые причины промаха</a></li><li><a href="#changes">Как устроена итоговая версия</a></li><li><a href="#verification">Что известно и что ещё проверить</a></li><li><a href="#quiz">Пять вопросов на понимание</a></li></ol></nav>
+<section id="background"><h2>Зачем изменён кэш</h2><p>Раньше FeatureCache запоминал значение навсегда и без ограничения числа ключей. Теперь он ограничивает срок свежести и количество записей, а invalidate позволяет удалить конкретный ключ. Это помогает понять, когда снова вызывается загрузчик и почему недавно загруженное значение может исчезнуть.</p><p>Границы: before.py — исходная версия, after.py — итоговая. Вызывающий код и тесты проекта не предоставлены. Нельзя утверждать, что интеграция уже обновлена: вместо FeatureCache() теперь обязательны положительные ttl_seconds и max_entries. Неизвестно, какие значения подходят приложению.</p></section><section id="intuition"><h2>Две независимые причины промаха</h2><p>TTL задаёт срок свежести. При сроке 10 и сохранении в t=0 чтение в t=6 вернёт старое значение, а в t=10 запустит loader снова. Раньше оба чтения возвращали бы старое значение. Граница строгая: clock() &lt; expires_at. Чтение не продлевает TTL; срок начинается после завершения загрузчика. Если промах был в t=0, а loader завершился в t=4, запись свежа до t=14, не включая этот момент.</p><p>Лимит размера использует LRU: вытесняется ключ, к которому дольше всего не обращались. При ёмкости 2 последовательность A, B, A, C оставит A и C, если записи свежие. Чтение A переставляет его в конец OrderedDict. TTL и LRU независимы: перестановка не меняет срок.</p><ol class="flow"><li>get(key): проверить наличие</li><li>Свежая запись → передвинуть в конец и вернуть</li><li>Просроченная запись → удалить</li><li>Промах → loader → записать срок → удалить лишние ключи</li></ol></section><section id="changes"><h2>Как устроена итоговая версия</h2><p>after.py: FeatureCache.__init__ хранит пары (value, expires_at) в OrderedDict. По умолчанию время берётся из monotonic; clock можно заменить управляемыми часами в проверке. Неположительные параметры дают ValueError. Проверки целочисленности max_entries и конечности TTL здесь нет.</p><figure><figcaption>/tmp/harness-skill-eval-20261103/input/after.py: FeatureCache.get — попадание</figcaption><pre><code>        if key in self.entries:
+            value, expires_at = self.entries[key]
+            if self.clock() &lt; expires_at:
+                self.entries.move_to_end(key)
+                return value
+            del self.entries[key]</code></pre></figure><p>after.py: FeatureCache.get вызывает loader без аргументов, сохраняет значение со сроком clock() + ttl_seconds, затем удаляет записи с начала, пока len(entries) &gt; max_entries. Если загрузчик падает после удаления просроченной записи, исключение выходит наружу, а этого ключа больше нет. Возврата устаревшего значения при ошибке нет.</p><figure><figcaption>/tmp/harness-skill-eval-20261103/input/after.py: FeatureCache.invalidate</figcaption><pre><code>    def invalidate(self, key):
+        return self.entries.pop(key, None) is not None</code></pre></figure><p>invalidate сообщает, удалил ли запись: True один раз, затем False. Это работает и для сохранённого None, потому что pop возвращает кортеж (value, expires_at), а не само value. Просроченная, но ещё не удалённая запись тоже даёт True. Удаление по TTL ленивое: фоновая очистка отсутствует, непрочитанные просроченные записи могут оставаться до вытеснения или invalidate.</p></section><section id="verification"><h2>Что известно и что ещё проверить</h2><p>Предоставленных результатов проверок нет. Этот документ основан на чтении before.py и after.py; он не доказывает корректность или готовность к эксплуатации. Проверки оценочного стенда описываются отдельно в report.md после генерации документа.</p><p>Ограничение размера уменьшает число записей, но не гарантирует объём памяти в байтах. Потокобезопасность не обеспечена явной синхронизацией. Вызывающий код нужно проверить на новый конструктор; TTL и ёмкость — подобрать под стоимость загрузки и допустимую давность. Реализован ленивый TTL и LRU; альтернативы с фоновым удалением и обновлением TTL при каждом чтении здесь не реализованы.</p></section>
+<section id="quiz"><h2>Пять вопросов на понимание</h2><p>Выбери один ответ в каждом вопросе. После выбора появится объяснение. Можно попробовать снова.</p><noscript>Для интерактивных вопросов включи JavaScript. Объяснение выше доступно без него.</noscript><div id="questions"></div></section>
+<footer>Учебный документ. Ответы обрабатываются локально и не отправляются агенту. После изучения вернись в диалог и напиши «дальше» или задай вопрос.</footer>
+</main>
+<script id="quiz-data" type="application/json">[{"id": "q1", "question": "TTL равен 10. Значение A сохранено в t=0, прочитано в t=6, затем запрошено в t=10. Что произойдёт при последнем запросе?", "concept": "Граница срока", "options": [{"id": "0", "text": "Вернётся A, потому что срок ещё включает t=10.", "explanation": "Условие свежести строгое: clock() \u003c expires_at; равенство уже означает истечение."}, {"id": "3", "text": "Загрузчик вызовется только после invalidate(A).", "explanation": "Просроченная запись удаляется в get без явного invalidate."}, {"id": "2", "text": "Вернётся A, потому что чтение продлило срок.", "explanation": "При попадании срок не продлевается: move_to_end меняет только порядок."}, {"id": "1", "text": "Загрузчик вызовется, потому что срок A истёк.", "explanation": "Чтение в t=6 меняет порядок LRU, но не expires_at=10. В t=10 условие свежести ложно."}], "correct_option_id": "1"}, {"id": "q2", "question": "Ёмкость равна 2; все значения свежие. Выполнены get(A), get(B), get(A), get(C). Какой набор останется в кэше?", "concept": "Порядок вытеснения", "options": [{"id": "2", "text": "A и B: при заполнении C возвращается без сохранения.", "explanation": "Новая запись сохраняется, затем удаляется самая давно использованная."}, {"id": "3", "text": "A, B и C: ограничение действует при следующем чтении.", "explanation": "Цикл ограничения выполняется сразу после вставки C."}, {"id": "1", "text": "B и C: первой была создана запись A.", "explanation": "Алгоритм учитывает последнее обращение, а не только момент создания."}, {"id": "0", "text": "A и C: чтение A сделало B кандидатом на удаление.", "explanation": "Повторное чтение A перемещает его в конец; вставка C вытесняет B из начала."}], "correct_option_id": "0"}, {"id": "q3", "question": "Загрузчик для A вернул None. Сразу после сохранения вызваны invalidate(A) и ещё раз invalidate(A). Каковы результаты?", "concept": "Удаление записи", "options": [{"id": "3", "text": "True, False: запись удаляется только первым вызовом.", "explanation": "Первый pop возвращает кортеж даже при значении None; второй возвращает None."}, {"id": "2", "text": "False, True: первый вызов лишь помечает запись.", "explanation": "Метод удаляет сразу через pop, без стадии пометки."}, {"id": "0", "text": "False, False: None означает отсутствие записи.", "explanation": "В entries хранится кортеж (None, expires_at), он не равен None."}, {"id": "1", "text": "True, True: оба вызова подтверждают отсутствие A.", "explanation": "Возвращаемый bool сообщает факт удаления, второй вызов уже ничего не удаляет."}], "correct_option_id": "3"}, {"id": "q4", "question": "A просрочен. Его get вызывает загрузчик, который выбрасывает исключение. Что наблюдает вызывающий код и что остаётся для A?", "concept": "Отказ загрузчика", "options": [{"id": "0", "text": "Старое A возвращается, а запись остаётся в кэше.", "explanation": "Нет обработки исключения или возврата устаревшего значения."}, {"id": "1", "text": "Исключение выходит наружу, старая запись A остаётся.", "explanation": "Просроченная запись удаляется до вызова loader."}, {"id": "2", "text": "Исключение выходит наружу, записи A больше нет.", "explanation": "del выполняется до loader; исключение прерывает выполнение до новой вставки."}, {"id": "3", "text": "None возвращается, а A сохраняется с новым сроком.", "explanation": "Исключение не перехватывается, присваивание новой записи не выполняется."}], "correct_option_id": "2"}, {"id": "q5", "question": "TTL равен 10. Промах случился в t=0, загрузчик завершился в t=4. Когда сохранённое значение перестанет считаться свежим?", "concept": "Начало срока", "options": [{"id": "2", "text": "В t=4: время загрузки полностью расходует срок.", "explanation": "Прошло четыре секунды, а главное — срок устанавливается после загрузки."}, {"id": "0", "text": "В t=10: срок отсчитывается от начала запроса.", "explanation": "Для промаха часы читаются после завершения loader, а не при входе в get."}, {"id": "3", "text": "В t=20: загрузка даёт два последовательных срока.", "explanation": "Запись получает ровно один ttl_seconds от времени после loader."}, {"id": "1", "text": "В t=14: срок отсчитывается от завершения загрузки.", "explanation": "Запись получает expires_at = clock() + ttl_seconds после loader; при t=4 это 14."}], "correct_option_id": "1"}]</script>
+<script>
+'use strict';
+const quiz = JSON.parse(document.getElementById('quiz-data').textContent);
+const root = document.getElementById('questions');
+quiz.forEach((q, index) => {
+  const field = document.createElement('fieldset');
+  const legend = document.createElement('legend');
+  legend.textContent = `${index + 1}. ${q.question}`;
+  field.append(legend);
+  const feedback = document.createElement('div');
+  feedback.className = 'feedback';
+  feedback.hidden = true;
+  feedback.setAttribute('role', 'status');
+  feedback.setAttribute('aria-live', 'polite');
+  const buttons = [];
+  q.options.forEach((option, optionIndex) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = `${String.fromCharCode(65 + optionIndex)}. ${option.text}`;
+    button.setAttribute('aria-pressed', 'false');
+    buttons.push(button);
+    button.addEventListener('click', () => {
+      buttons.forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+      feedback.replaceChildren();
+      const verdict = document.createElement('strong');
+      verdict.textContent = option.id === q.correct_option_id ? 'Верно.' : 'Не совсем.';
+      const reason = document.createElement('p');
+      reason.textContent = option.explanation;
+      feedback.append(verdict, reason);
+      if (option.id !== q.correct_option_id) {
+        const correct = q.options.find(o => o.id === q.correct_option_id);
+        const answer = document.createElement('p');
+        answer.textContent = `Правильный ответ: ${correct.text} ${correct.explanation}`;
+        feedback.append(answer);
+      }
+      feedback.hidden = false;
+    });
+    field.append(button);
+  });
+  field.append(feedback);
+  root.append(field);
+});
+</script></body></html>

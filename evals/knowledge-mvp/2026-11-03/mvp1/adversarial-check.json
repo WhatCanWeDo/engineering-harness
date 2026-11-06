@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_knowledge_adversarial.py",
+    "-v"
+  ],
+  "cwd": "/Users/mshekhunov/engineering-harness",
+  "exit_code": 1,
+  "duration_seconds": 0.40483195800334215,
+  "output_path": "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp1/adversarial-output.txt",
+  "environment": {
+    "HARNESS_CANDIDATE_ROOT": "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp1/adversarial-work/tree",
+    "python": "3.14.1 (main, Dec  2 2025, 12:51:37) [Clang 17.0.0 (clang-1700.4.4.1)]"
+  }
+}

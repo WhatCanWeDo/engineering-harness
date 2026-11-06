@@ -1,0 +1,92 @@
+test_bundle_unhashed_runtime_config_cannot_reuse_identity (test_knowledge_semantic_adversarial.SemanticAdversarialTests.test_bundle_unhashed_runtime_config_cannot_reuse_identity)
+MVP2 bundle identity: runtime config changes must invalidate identity. ... FAIL
+test_cli_malformed_bundle_root_has_no_traceback (test_knowledge_semantic_adversarial.SemanticAdversarialTests.test_cli_malformed_bundle_root_has_no_traceback)
+MVP2 CLI: unavailable local provider must have a handled fallback. ... FAIL
+test_index_delay_does_not_attach_old_vector_to_new_revision (test_knowledge_semantic_adversarial.SemanticAdversarialTests.test_index_delay_does_not_attach_old_vector_to_new_revision) ... ok
+test_missing_provider_empty_visible_corpus_explicitly_degrades (test_knowledge_semantic_adversarial.SemanticAdversarialTests.test_missing_provider_empty_visible_corpus_explicitly_degrades)
+MVP2 search: absence of provider must report lexical/degraded. ... 
+  test_missing_provider_empty_visible_corpus_explicitly_degrades (test_knowledge_semantic_adversarial.SemanticAdversarialTests.test_missing_provider_empty_visible_corpus_explicitly_degrades) (mode='semantic')
+MVP2 search: absence of provider must report lexical/degraded. ... FAIL
+  test_missing_provider_empty_visible_corpus_explicitly_degrades (test_knowledge_semantic_adversarial.SemanticAdversarialTests.test_missing_provider_empty_visible_corpus_explicitly_degrades) (mode='hybrid')
+MVP2 search: absence of provider must report lexical/degraded. ... FAIL
+test_query_delay_cannot_revive_retracted_entry (test_knowledge_semantic_adversarial.SemanticAdversarialTests.test_query_delay_cannot_revive_retracted_entry) ... ok
+test_subnormal_nonzero_vectors_are_normalized_before_storage (test_knowledge_semantic_adversarial.SemanticAdversarialTests.test_subnormal_nonzero_vectors_are_normalized_before_storage)
+MVP2 index: finite nonzero vectors are persisted normalized. ... FAIL
+
+======================================================================
+FAIL: test_bundle_unhashed_runtime_config_cannot_reuse_identity (test_knowledge_semantic_adversarial.SemanticAdversarialTests.test_bundle_unhashed_runtime_config_cannot_reuse_identity)
+MVP2 bundle identity: runtime config changes must invalidate identity.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mshekhunov/engineering-harness/tests/test_knowledge_semantic_adversarial.py", line 134, in test_bundle_unhashed_runtime_config_cannot_reuse_identity
+    self.assertNotEqual(first.model_id, second.model_id,
+AssertionError: 'fastembed:sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2:d883716f43edea923d168ca27f499407112fb9734b8aa46b7c846f936c471861' == 'fastembed:sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2:d883716f43edea923d168ca27f499407112fb9734b8aa46b7c846f936c471861' : Unhashed runtime config is accepted with unchanged index identity
+
+======================================================================
+FAIL: test_cli_malformed_bundle_root_has_no_traceback (test_knowledge_semantic_adversarial.SemanticAdversarialTests.test_cli_malformed_bundle_root_has_no_traceback)
+MVP2 CLI: unavailable local provider must have a handled fallback.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mshekhunov/engineering-harness/tests/test_knowledge_semantic_adversarial.py", line 95, in test_cli_malformed_bundle_root_has_no_traceback
+    code = cli.main(['--db', str(self.store.path), '--semantic-model', str(bundle),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp2/adversarial-run/candidate/harness/cli.py", line 138, in main
+    provider = LocalEmbedder(args.semantic_model)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp2/adversarial-run/candidate/harness/embeddings.py", line 51, in __init__
+    if (manifest.get("version") != 1 or manifest.get("model") != MODEL or
+        ^^^^^^^^^^^^
+AttributeError: 'list' object has no attribute 'get'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/mshekhunov/engineering-harness/tests/test_knowledge_semantic_adversarial.py", line 98, in test_cli_malformed_bundle_root_has_no_traceback
+    self.fail('CLI leaks unhandled bundle error: ' + str(exc))
+AssertionError: CLI leaks unhandled bundle error: 'list' object has no attribute 'get'
+
+======================================================================
+FAIL: test_missing_provider_empty_visible_corpus_explicitly_degrades (test_knowledge_semantic_adversarial.SemanticAdversarialTests.test_missing_provider_empty_visible_corpus_explicitly_degrades) (mode='semantic')
+MVP2 search: absence of provider must report lexical/degraded.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mshekhunov/engineering-harness/tests/test_knowledge_semantic_adversarial.py", line 73, in test_missing_provider_empty_visible_corpus_explicitly_degrades
+    self.assertEqual((result['mode'], result['status']), ('lexical', 'degraded'))
+AssertionError: Tuples differ: ('semantic', 'empty') != ('lexical', 'degraded')
+
+First differing element 0:
+'semantic'
+'lexical'
+
+- ('semantic', 'empty')
++ ('lexical', 'degraded')
+
+======================================================================
+FAIL: test_missing_provider_empty_visible_corpus_explicitly_degrades (test_knowledge_semantic_adversarial.SemanticAdversarialTests.test_missing_provider_empty_visible_corpus_explicitly_degrades) (mode='hybrid')
+MVP2 search: absence of provider must report lexical/degraded.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mshekhunov/engineering-harness/tests/test_knowledge_semantic_adversarial.py", line 73, in test_missing_provider_empty_visible_corpus_explicitly_degrades
+    self.assertEqual((result['mode'], result['status']), ('lexical', 'degraded'))
+AssertionError: Tuples differ: ('hybrid', 'empty') != ('lexical', 'degraded')
+
+First differing element 0:
+'hybrid'
+'lexical'
+
+- ('hybrid', 'empty')
++ ('lexical', 'degraded')
+
+======================================================================
+FAIL: test_subnormal_nonzero_vectors_are_normalized_before_storage (test_knowledge_semantic_adversarial.SemanticAdversarialTests.test_subnormal_nonzero_vectors_are_normalized_before_storage)
+MVP2 index: finite nonzero vectors are persisted normalized.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mshekhunov/engineering-harness/tests/test_knowledge_semantic_adversarial.py", line 83, in test_subnormal_nonzero_vectors_are_normalized_before_storage
+    self.assertAlmostEqual(math.hypot(*vector), 1., places=12)
+AssertionError: 1.4142135623730951 != 1.0 within 12 places (0.41421356237309515 difference)
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.032s
+
+FAILED (failures=5)

@@ -1,0 +1,21 @@
+<!-- visual:intuition -->
+<div class="ab-diagram" aria-label="Две ветки эксперимента">
+ <div class="common-box"><b>Один исходный snapshot</b><p>Task contract · код и данные · общий knowledge corpus · модель · разрешения · лимиты</p></div>
+ <div class="arm-grid"><article><h3>A · Baseline</h3><p>Рабочая конфигурация</p><p>Новая сессия и своё writable state</p><span>Output A → hash</span></article><article><h3>B · Candidate</h3><p>Объявленное изменение skill</p><p>Новая сессия и своё writable state</p><span>Output B → hash</span></article></div>
+ <div class="common-box"><b>Одинаковый независимый evaluator</b><p>Verdicts + human review + attributable costs → парный отчёт</p></div>
+ <p class="visual-note">Публикация в общую память — после закрытия эксперимента. Результаты A не подсказывают решение B.</p>
+</div>
+<!-- /visual -->
+<!-- visual:verification -->
+<div class="ab-demo">
+ <p class="demo-label">ДЕМОНСТРАЦИЯ · ВЫМЫШЛЕННЫЕ ДАННЫЕ</p>
+ <h3>Как меняется вывод при тех же четырёх метриках</h3>
+ <p>3 задачи × 2 повтора × 2 варианта. Это иллюстрация протокола, а не выполненный benchmark.</p>
+ <label for="ab-scenario">Сценарий</label>
+ <select id="ab-scenario"><option value="promising">Улучшение на dev-наборе</option><option value="regression">Дешевле, но ошибка</option><option value="missing">Review ещё не выполнено</option><option value="leak">Утечка знаний из A в B</option></select>
+ <div id="ab-metrics" class="metrics-grid"></div>
+ <div id="ab-verdict" class="verdict" role="status" aria-live="polite"></div>
+ <details><summary>Как считаются демонстрационные показатели</summary><p>Correctness — пройденные first-pass runs из 6 на вариант. Время — сумма активных review минут; расходы — условные денежные единицы без overhead самого эксперимента; fixes — уникальные issues внутри runs. В реальном отчёте нужны per-task пары, severity, repair time, usage provenance, missingness и выбранный review protocol.</p></details>
+</div>
+<div class="ab-sources"><p>Основания экспериментального дизайна: <a href="https://www.itl.nist.gov/div898/handbook/eda/section3/eda353.htm">NIST: парные сравнения</a> и <a href="https://www.itl.nist.gov/div898/handbook/pri/section3/pri332.htm">NIST: randomized block designs</a>. Эти принципы не доказывают достаточность маленького пилота.</p></div>
+<!-- /visual -->

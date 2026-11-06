@@ -1,0 +1,4 @@
+interface:
+  display_name: "Knowledge Cycle"
+  short_description: "Контекст до задачи, знания после завершения"
+  default_prompt: "Используй $knowledge-cycle для контекста и обновления знаний текущей задачи."

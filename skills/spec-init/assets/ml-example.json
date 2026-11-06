@@ -1,0 +1,498 @@
+{
+  "version": 1,
+  "spec_id": "retrieval-pilot",
+  "revision": 1,
+  "project_id": "example-only",
+  "title": "Черновик: улучшить поиск по базе поддержки",
+  "request": "Хочу улучшить поиск по базе поддержки. Сравним текущий BM25 с embeddings на русском, на одной GPU. Нужен воспроизводимый offline benchmark; прод пока не трогаем.",
+  "summary": "Проверить, помогает ли semantic retrieval русскоязычному поиску по сравнению с BM25, и получить воспроизводимый отчёт. Улучшение качества — гипотеза, допустим отрицательный результат. Это иллюстративный пример; никакие эксперименты ещё не выполнены.",
+  "scouting": {
+    "status": "unavailable",
+    "task_id": "",
+    "packet_id": "",
+    "notes": "Учебный пример без подключения к БД проекта; имеющиеся данные и инфраструктура не проверялись."
+  },
+  "sources": [
+    {
+      "id": "U1",
+      "kind": "user",
+      "locator": "example:request",
+      "note": "Иллюстративный запрос, не реальное поручение запускать GPU."
+    }
+  ],
+  "sections": [
+    {
+      "id": "intent",
+      "items": [
+        {
+          "text": "Нужен offline benchmark BM25 и embedding retrieval для русскоязычной поддержки. Результат — отчёт, а не обещание улучшения.",
+          "status": "user_statement",
+          "source_ids": [
+            "U1"
+          ],
+          "gap_ids": []
+        }
+      ]
+    },
+    {
+      "id": "context",
+      "items": [
+        {
+          "text": "BM25 существует по описанию; пути к индексу, endpoint и корпусу пока неизвестны.",
+          "status": "unknown",
+          "source_ids": [],
+          "gap_ids": [
+            "G1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scope",
+      "items": [
+        {
+          "text": "В scope: подготовка offline evaluation и сравнение. Production rollout и изменение текущего сервиса исключены.",
+          "status": "user_statement",
+          "source_ids": [
+            "U1"
+          ],
+          "gap_ids": []
+        }
+      ]
+    },
+    {
+      "id": "requirements",
+      "items": [
+        {
+          "text": "R1–R3 задают обязательный результат; AC1–AC3 объясняют способ его проверить.",
+          "status": "proposal",
+          "source_ids": [],
+          "gap_ids": []
+        }
+      ]
+    },
+    {
+      "id": "data",
+      "items": [
+        {
+          "text": "Нужны versioned corpus и relevance labels; предлагается разделение по времени и группам обращений, чтобы близкие копии не попали в train/dev/test. Схема и cutoff требуют проверки.",
+          "status": "unknown",
+          "source_ids": [],
+          "gap_ids": [
+            "G1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "approach",
+      "items": [
+        {
+          "text": "Сначала воспроизвести BM25, затем сравнить одну multilingual embedding модель; зафиксировать одинаковый corpus и eval queries. Выбор модели после проверки размеров и лицензии.",
+          "status": "proposal",
+          "source_ids": [],
+          "gap_ids": []
+        }
+      ]
+    },
+    {
+      "id": "evaluation",
+      "items": [
+        {
+          "text": "Предлагаются nDCG@10, Recall@10, latency p95 и память. Раздельные slices по типам запросов; paired bootstrap по запросам для интервала разности качества, повторные прогоны latency с warmup. Holdout не используется для подбора. Порог выбора победителя не задан.",
+          "status": "unknown",
+          "source_ids": [],
+          "gap_ids": [
+            "G3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reproducibility",
+      "items": [
+        {
+          "text": "Сохранить hashes corpus/queries/qrels, code revision, model/version, lockfile, seed/config, hardware, commands, run manifest и per-query results. Отличать estimate от измеренного результата.",
+          "status": "proposal",
+          "source_ids": [],
+          "gap_ids": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "items": [
+        {
+          "text": "Известна только одна GPU; модель GPU, VRAM и доступное время неизвестны. До уточнения — CPU smoke подготовки на малом subset; GPU benchmark не запускается.",
+          "status": "unknown",
+          "source_ids": [],
+          "gap_ids": [
+            "G2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "items": [
+        {
+          "text": "Production deployment и rollback неприменимы к этому offline scope; текущий сервис не меняется.",
+          "status": "not_applicable",
+          "source_ids": [
+            "U1"
+          ],
+          "gap_ids": []
+        }
+      ]
+    },
+    {
+      "id": "delivery",
+      "items": [
+        {
+          "text": "Этапы: audit данных → baseline reproducibility → фиксированный benchmark → отчёт с evidence. Не продолжать дорогой прогон без уточнения ресурсов и доступа.",
+          "status": "proposal",
+          "source_ids": [],
+          "gap_ids": []
+        }
+      ]
+    },
+    {
+      "id": "risks",
+      "items": [
+        {
+          "text": "Главные риски: leakage и недостаточные labels (G1), неизвестный budget (G2), неверно выбранный порог качества (G3).",
+          "status": "proposal",
+          "source_ids": [],
+          "gap_ids": []
+        }
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "R1",
+      "text": "Сравнить BM25 и embeddings на одном offline протоколе.",
+      "status": "user_statement",
+      "source_ids": [
+        "U1"
+      ],
+      "gap_ids": []
+    },
+    {
+      "id": "R2",
+      "text": "Обеспечить воспроизводимость результата.",
+      "status": "user_statement",
+      "source_ids": [
+        "U1"
+      ],
+      "gap_ids": []
+    },
+    {
+      "id": "R3",
+      "text": "Не менять production в рамках задачи.",
+      "status": "user_statement",
+      "source_ids": [
+        "U1"
+      ],
+      "gap_ids": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "AC1",
+      "requirement_ids": [
+        "R1"
+      ],
+      "measure": "Разность nDCG@10 + Recall@10; latency p95",
+      "method": "Один versioned eval set, slices и paired bootstrap; warmup для latency.",
+      "threshold": "Не задано: правило выбора победителя зависит от G3.",
+      "artifact": "per-query scores, summary и confidence intervals",
+      "status": "unknown",
+      "source_ids": [],
+      "gap_ids": [
+        "G3"
+      ]
+    },
+    {
+      "id": "AC2",
+      "requirement_ids": [
+        "R2"
+      ],
+      "measure": "Повторяемость расчёта метрик и происхождение артефактов",
+      "method": "Повторный запуск по manifest и зафиксированным inputs; допуск численных расхождений документируется.",
+      "threshold": "Все inputs идентифицируемы; повторный расчёт описан и проверен.",
+      "artifact": "manifest, environment lock, reproduction log",
+      "status": "proposal",
+      "source_ids": [],
+      "gap_ids": []
+    },
+    {
+      "id": "AC3",
+      "requirement_ids": [
+        "R3"
+      ],
+      "measure": "Граница scope",
+      "method": "Review изменённых файлов и журнала действий.",
+      "threshold": "Нет изменений production конфигураций и deployments.",
+      "artifact": "change manifest",
+      "status": "proposal",
+      "source_ids": [],
+      "gap_ids": []
+    }
+  ],
+  "gaps": [
+    {
+      "id": "G1",
+      "missing": "Нет подтверждённых corpus/labels и их схемы",
+      "resolution": "Предлагаю сначала read-only audit; split пока проектный, не готовый датасет.",
+      "basis": "Без labels и идентификаторов невозможно определить честный offline protocol.",
+      "impact": "Может понадобиться разметка; сравнение без неё не ответит на задачу.",
+      "question": "Какие corpus, queries/qrels и версии доступны?",
+      "blocking": true,
+      "status": "proposed"
+    },
+    {
+      "id": "G2",
+      "missing": "Не задан GPU/time/cost budget",
+      "resolution": "До ответа планирую только дешёвую подготовку; GPU launch отложен.",
+      "basis": "Одна GPU не задаёт её память или допустимое время.",
+      "impact": "Модель может не поместиться, а прогон превысить бюджет.",
+      "question": "Какая GPU, лимит времени и допустимый бюджет?",
+      "blocking": true,
+      "status": "proposed"
+    },
+    {
+      "id": "G3",
+      "missing": "Не задано правило принятия улучшения",
+      "resolution": "Предлагаю отчёт о разности и неопределённости без автоматического выбора победителя.",
+      "basis": "Порог не следует из исходного запроса.",
+      "impact": "Нельзя считать любое положительное изменение practically significant.",
+      "question": "Какой выигрыш качества оправдывает рост latency/стоимости?",
+      "blocking": false,
+      "status": "proposed"
+    }
+  ],
+  "diagrams": [
+    {
+      "title": "Offline сравнение внутри существующего поиска",
+      "description": "Новый benchmark использует одинаковые входы двух методов. Production не участвует в экспериментальном выполнении.",
+      "nodes": [
+        {
+          "id": "N1",
+          "label": "Инженер",
+          "detail": "Задаёт цель и утверждает protocol",
+          "state": "external"
+        },
+        {
+          "id": "N2",
+          "label": "Корпус и eval queries",
+          "detail": "Источники и версии предстоит подтвердить",
+          "state": "external"
+        },
+        {
+          "id": "N3",
+          "label": "Offline benchmark",
+          "detail": "Один protocol для BM25 и embeddings",
+          "state": "proposed"
+        },
+        {
+          "id": "N4",
+          "label": "BM25 baseline",
+          "detail": "Существующий метод из описания",
+          "state": "existing"
+        },
+        {
+          "id": "N5",
+          "label": "Embedding candidate",
+          "detail": "Модель выбирается после audit",
+          "state": "proposed"
+        },
+        {
+          "id": "N6",
+          "label": "Отчёт и manifest",
+          "detail": "Метрики, uncertainty и reproduce commands",
+          "state": "proposed"
+        }
+      ],
+      "edges": [
+        {
+          "from": "N1",
+          "to": "N3",
+          "label": "Задаёт согласованные ограничения"
+        },
+        {
+          "from": "N2",
+          "to": "N3",
+          "label": "Предоставляет зафиксированные inputs"
+        },
+        {
+          "from": "N3",
+          "to": "N4",
+          "label": "Измеряет baseline"
+        },
+        {
+          "from": "N3",
+          "to": "N5",
+          "label": "Измеряет candidate"
+        },
+        {
+          "from": "N4",
+          "to": "N6",
+          "label": "Передаёт результаты baseline"
+        },
+        {
+          "from": "N5",
+          "to": "N6",
+          "label": "Передаёт результаты candidate"
+        },
+        {
+          "from": "N6",
+          "to": "N1",
+          "label": "Возвращает evidence для решения"
+        }
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "id": "1",
+      "concept": "Понимание постановки 1",
+      "question": "Что считается допустимым итогом этого черновика?",
+      "options": [
+        {
+          "id": "0",
+          "text": "Только рост качества embedding модели.",
+          "explanation": "Это гипотеза, не гарантированный результат."
+        },
+        {
+          "id": "1",
+          "text": "Воспроизводимый отчёт, включая отрицательный результат.",
+          "explanation": "Да: цель — проверить гипотезу корректным протоколом."
+        },
+        {
+          "id": "2",
+          "text": "Развёртывание модели с наименьшей latency.",
+          "explanation": "Production исключён из scope."
+        },
+        {
+          "id": "3",
+          "text": "Подбор модели по всему holdout.",
+          "explanation": "Подбор по holdout искажает итоговую оценку."
+        }
+      ],
+      "correct_option_id": "1"
+    },
+    {
+      "id": "2",
+      "concept": "Понимание постановки 2",
+      "question": "Почему здесь предлагается разделять данные по времени и группам?",
+      "options": [
+        {
+          "id": "0",
+          "text": "Чтобы быстрее строить vector index.",
+          "explanation": "Это не основная цель split."
+        },
+        {
+          "id": "1",
+          "text": "Чтобы уменьшить размер embedding модели.",
+          "explanation": "Размер модели split не задаёт."
+        },
+        {
+          "id": "2",
+          "text": "Чтобы избежать leakage между splits.",
+          "explanation": "Да: это защита от leakage близких примеров."
+        },
+        {
+          "id": "3",
+          "text": "Чтобы уменьшить объём хранимых relevance labels.",
+          "explanation": "Labels всё ещё нужны."
+        }
+      ],
+      "correct_option_id": "2"
+    },
+    {
+      "id": "3",
+      "concept": "Понимание постановки 3",
+      "question": "Что делать с GPU до уточнения G2?",
+      "options": [
+        {
+          "id": "0",
+          "text": "Подготовку продолжить; GPU отложить.",
+          "explanation": "Да: это временное решение, указанное в gap."
+        },
+        {
+          "id": "1",
+          "text": "Выбрать GPU с максимальной памятью.",
+          "explanation": "Разрешения на такой выбор нет."
+        },
+        {
+          "id": "2",
+          "text": "Запустить полный benchmark на любой доступной GPU.",
+          "explanation": "Budget неизвестен."
+        },
+        {
+          "id": "3",
+          "text": "Заменить все метрики оценкой стоимости.",
+          "explanation": "Стоимость не заменяет качество."
+        }
+      ],
+      "correct_option_id": "0"
+    },
+    {
+      "id": "4",
+      "concept": "Понимание постановки 4",
+      "question": "Сравнение дало небольшой плюс nDCG. Что следует из спеки?",
+      "options": [
+        {
+          "id": "0",
+          "text": "Немедленно заменить production модель.",
+          "explanation": "Deployment исключён."
+        },
+        {
+          "id": "1",
+          "text": "Выбрать candidate сразу по знаку изменения метрики.",
+          "explanation": "Правило принятия ещё неизвестно."
+        },
+        {
+          "id": "2",
+          "text": "Повторять эксперимент до большого плюса.",
+          "explanation": "Это создаёт смещение оценки."
+        },
+        {
+          "id": "3",
+          "text": "Описать разность; решение зависит от G3.",
+          "explanation": "Да: нужны смысловой порог и uncertainty."
+        }
+      ],
+      "correct_option_id": "3"
+    },
+    {
+      "id": "5",
+      "concept": "Понимание постановки 5",
+      "question": "Что связывает метрику с конкретным экспериментом?",
+      "options": [
+        {
+          "id": "0",
+          "text": "Название GPU без версии кода.",
+          "explanation": "Одного hardware недостаточно."
+        },
+        {
+          "id": "1",
+          "text": "Manifest с inputs и параметрами запуска.",
+          "explanation": "Да: manifest связывает происхождение результата."
+        },
+        {
+          "id": "2",
+          "text": "Текстовый итог агента со статусом завершения задачи.",
+          "explanation": "Текстовая уверенность не даёт воспроизводимости."
+        },
+        {
+          "id": "3",
+          "text": "Один aggregate score без per-query результатов.",
+          "explanation": "Недостаточно для полноценного анализа."
+        }
+      ],
+      "correct_option_id": "1"
+    }
+  ]
+}

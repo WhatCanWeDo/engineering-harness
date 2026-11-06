@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "artifact": "/Users/mshekhunov/.local/share/engineering-harness/explainers/2026-11-03-195626-4f690944/explanation.html",
+  "artifact_sha256": "a3ea10cc3b15c7548478cc59928d9d8ecf4008efee8098c59f388274f0e54662",
+  "source": "docs/explainers/004-knowledge-context",
+  "status": "design_only",
+  "system_evaluation_run": false,
+  "browser": "Chrome headless",
+  "final_widths_inspected": [
+    320,
+    390,
+    1280
+  ],
+  "horizontal_overflow": false,
+  "questions": 5,
+  "answer_buttons": 20,
+  "interaction_observations": {
+    "states": [
+      {
+        "role": "developer",
+        "summary": "4 источника · ≈990 из 1200 токенов. Только разрешённые active-записи.",
+        "sources": [
+          "K-01@2 · spec@2 · публичный контракт",
+          "K-03@1 · candidate-C · после cutoff initial tests",
+          "K-02@1 · public-run-17 · до cutoff",
+          "K-04@3 · general-procedure@3 · разрешённая проекция"
+        ]
+      },
+      {
+        "role": "public",
+        "summary": "3 источника · ≈660 из 900 токенов. Только разрешённые active-записи.",
+        "sources": [
+          "K-01@2 · spec@2 · публичный контракт",
+          "K-02@1 · public-run-17 · до cutoff",
+          "K-04@3 · general-procedure@3 · разрешённая проекция"
+        ]
+      },
+      {
+        "role": "adversarial",
+        "summary": "4 источника · ≈990 из 1200 токенов. Только разрешённые active-записи.",
+        "sources": [
+          "K-01@2 · spec@2 · публичный контракт",
+          "K-03@1 · candidate-C · после cutoff initial tests",
+          "K-04@3 · general-procedure@3 · разрешённая проекция",
+          "K-02@1 · public-run-17 · до cutoff"
+        ]
+      }
+    ],
+    "reduced": "1 источника · ≈180 из 300 токенов. Только разрешённые active-записи.",
+    "lifecycle": [
+      {
+        "mode": "observation",
+        "state": "Active observation",
+        "receipt": "persisted: evidence + revision · review: not_required_by_this_policy"
+      },
+      {
+        "mode": "hypothesis",
+        "state": "Candidate",
+        "receipt": "persisted: observation + candidate · review: pending"
+      },
+      {
+        "mode": "conflict",
+        "state": "Disputed",
+        "receipt": "persisted: proposal + conflict · review: pending"
+      },
+      {
+        "mode": "nochange",
+        "state": "No change",
+        "receipt": "persisted: task receipt · new_entries: 0"
+      }
+    ],
+    "quiz": {
+      "initiallyHidden": true,
+      "feedbackVisible": true,
+      "selection": 1
+    }
+  },
+  "interaction_note": "Observed before final wording/option-label/mobile-order changes; logic unchanged. Final rendered layout inspected afterward. Demo data are synthetic, not a production retrieval/evaluation result.",
+  "verified_http": true,
+  "preview_url": "http://127.0.0.1:59001/Brj_aaecoyKST-wzAQCuHJiE/explanation.html",
+  "preview_session": 40779,
+  "expires_at": "2026-11-03T18:56:58.781051+00:00"
+}

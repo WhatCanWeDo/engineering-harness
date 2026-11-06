@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "skills": ["understand-changes", "test-on-request", "knowledge-cycle", "harness-ab", "spec-init", "visualization", "fork-tab"],
+  "claude_workers": ["harness-knowledge-worker", "harness-test-generator"]
+}

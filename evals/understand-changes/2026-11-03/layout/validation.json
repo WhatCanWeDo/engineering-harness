@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "source": "docs/explainers/003-test-on-request-implementation.json",
+  "output": "/Users/mshekhunov/.local/share/engineering-harness/explainers/2026-11-03-194010-656d2a69/explanation.html",
+  "sha256": "85c5e829c2cca77ef51e21175c17f02d694c95b381e81711c918ec0a574630bb",
+  "quiz_order_preserved": true,
+  "browser": "Google Chrome headless; isolated temporary profile",
+  "viewport_widths": [
+    320,
+    390,
+    1280
+  ],
+  "enlarged_root_font_percent": 200,
+  "observed_horizontal_overflow": false,
+  "questions": 5,
+  "buttons": 20,
+  "feedback_click_checked": true,
+  "renderer_regression_tests": {
+    "passed": 16,
+    "command": "python3 -m unittest discover -s tests -p 'test_understand_changes.py' -q"
+  },
+  "preview_url": "http://127.0.0.1:58466/gkIOdLM-LVP5aRU3u1oUyrhp/explanation.html",
+  "preview_session_id": 25592,
+  "expires_at": "2026-11-03T18:41:36.028155+00:00",
+  "verified_http": true
+}

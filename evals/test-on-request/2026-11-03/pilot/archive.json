@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "source_root": "/tmp/harness-test-on-request-pilot-20261103",
+  "stored_copy": "evals/test-on-request/2026-11-03/pilot",
+  "historical_absolute_paths_preserved": true,
+  "reproduce_from_repo": [
+    "python3",
+    "-I",
+    "evals/test-on-request/2026-11-03/pilot/attack-output/test_stable_unique.py",
+    "--case",
+    "ordering-minimal"
+  ],
+  "expected_exit_code": 1,
+  "expected_finding": "R2: first occurrence order is not preserved",
+  "worker_instruction_followup": "Status enums were added directly to worker.md after the pilot exposed inconsistent metadata. Metadata correction was verified during pilot; a fresh behavioral run of the revised wording has not been performed."
+}

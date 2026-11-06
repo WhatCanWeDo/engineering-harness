@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "task_id": "stable-unique-pilot",
+  "spec_version": "66d01c19d1c69a58fe12f6a1e9167e34619bfd5f065350fa77cabc121bf9277e",
+  "spec_sha256": "66d01c19d1c69a58fe12f6a1e9167e34619bfd5f065350fa77cabc121bf9277e",
+  "phase": "after",
+  "selected_suites": [
+    "adversarial"
+  ],
+  "private_available": false,
+  "private_suite_ref": null,
+  "candidate_ref": null,
+  "feedback": "release_minimal_reproducer",
+  "budgets": {
+    "execution_seconds": 30,
+    "generated_cases": 100,
+    "confirmed_findings": 3,
+    "private_queries_per_task": 3,
+    "enforcement": "advisory"
+  }
+}

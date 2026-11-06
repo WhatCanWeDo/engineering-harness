@@ -1,0 +1,135 @@
+<!-- visual:background -->
+<figure class="knowledge-visual" aria-labelledby="loop-title">
+  <h3 id="loop-title">Два коротких контура вокруг нативных агентов</h3>
+  <p class="visual-caption">Рабочая сессия остаётся в Codex или Claude. Память подключается на границах задачи.</p>
+  <div class="lane-label">До задачи · чтение</div>
+  <ol class="pipeline">
+    <li><span class="node-kind">ВХОД</span><strong>Task brief</strong><span>Цель, проект, роль, стадия и бюджет</span></li>
+    <li><span class="node-kind">ОТДЕЛЬНЫЙ АГЕНТ</span><strong>Context Scout</strong><span>Поиск и отбор через Knowledge API</span></li>
+    <li><span class="node-kind">ДОСТАВКА</span><strong>Два role packets</strong><span>Разработчику и автору тестов — только нужное</span></li>
+  </ol>
+  <div class="store-band"><strong>Knowledge Core</strong><span>Записи + revisions + evidence + scope</span><small>Источник истины. Индексы FTS и vectors можно перестроить.</small></div>
+  <div class="lane-label">После задачи · запись</div>
+  <ol class="pipeline">
+    <li><span class="node-kind">ВХОД</span><strong>TaskOutcome</strong><span>Фактический результат и ссылки на artifacts</span></li>
+    <li><span class="node-kind">ОТДЕЛЬНЫЙ АГЕНТ</span><strong>Knowledge Curator</strong><span>Новые наблюдения, дубликаты, конфликты</span></li>
+    <li><span class="node-kind">КОД + ПОЛИТИКА</span><strong>Commit gate</strong><span>Записать revision или оставить candidate</span></li>
+  </ol>
+  <figcaption>↺ Следующая задача получает новую версию знаний. Генераторы тестов и разработчик не превращаются в хранителей всей истории.</figcaption>
+</figure>
+<!-- /visual -->
+
+<!-- visual:intuition -->
+<figure class="knowledge-visual" aria-labelledby="search-title">
+  <h3 id="search-title">Поиск по смыслу — дополнительный путь</h3>
+  <div class="search-top"><strong>Разрешённый corpus</strong><span>Проект · права · стадия · актуальность</span></div>
+  <div class="search-branches">
+    <div><span class="node-kind">MVP</span><strong>Точные IDs + FTS5</strong><p>Символы, пути, слова и BM25</p></div>
+    <div class="optional-stage"><span class="node-kind">ПОСЛЕ ОЦЕНКИ BASELINE</span><strong>Semantic retrieval</strong><p>Перефразировки и близкий смысл</p></div>
+  </div>
+  <div class="search-bottom"><strong>↓ Объединение → проверка применимости → короткий пакет</strong><span>При hybrid: RRF объединяет ранги. Высокая позиция не доказывает истинность.</span></div>
+  <figcaption>Ранжировщик и Scout видят уже разрешённые данные. При отставшем vector index доступен lexical fallback с явной пометкой.</figcaption>
+</figure>
+
+<div class="knowledge-visual" id="context-demo" aria-labelledby="context-title">
+  <h3 id="context-title">Собери пакет для конкретной роли</h3>
+  <p class="visual-caption">Учебный пример TTL-кэша. Меняй получателя и бюджет: состав пакета и причины исключения обновятся. Это синтетические записи, не настоящая выдача RAG.</p>
+  <div class="demo-controls">
+    <label for="audience">Получатель и стадия
+      <select id="audience">
+        <option value="developer">Разработчик · разработка</option>
+        <option value="public">Public tests · до решения</option>
+        <option value="adversarial">Adversarial · после решения</option>
+      </select>
+    </label>
+    <label for="context-budget">Бюджет памяти: <output id="budget-value" for="context-budget">1200</output> токенов
+      <input id="context-budget" type="range" min="300" max="1200" step="100" value="1200">
+    </label>
+  </div>
+  <p class="demo-note">Размеры здесь условные оценки для демонстрации. В системе нужен tokenizer потребителя; обязательный task contract загружается отдельно.</p>
+  <div id="packet-summary" class="packet-summary" role="status" aria-live="polite"></div>
+  <div class="budget-track" aria-hidden="true"><div id="budget-fill"></div></div>
+  <div class="context-columns">
+    <div><h4>Решения об отборе</h4><ul id="source-list" class="source-list"></ul></div>
+    <div class="packet-preview"><h4>Что увидит агент</h4><p id="packet-purpose"></p><ol id="packet-content"></ol><p class="demo-note">Источники сохраняют revision и область применимости. Рабочий transcript Scout сюда не входит.</p></div>
+  </div>
+  <p class="demo-note">В учебной схеме показаны классы исключений. Настоящий API не должен раскрывать названия или количество найденных private-материалов. Для private-тестировщика нужен отдельный защищённый контур.</p>
+  <noscript>Без JavaScript пример не переключается. По дизайну public-test-author не получает новые сведения о текущем решении; protected и stale записи исключаются из обычного фактического пакета.</noscript>
+</div>
+<!-- /visual -->
+
+<!-- visual:changes -->
+<div class="knowledge-visual" id="update-demo" aria-labelledby="update-title">
+  <h3 id="update-title">Как результат превращается в знание</h3>
+  <label for="outcome-kind">Что принесла завершённая задача?
+    <select id="outcome-kind">
+      <option value="observation">Наблюдение + evidence</option>
+      <option value="hypothesis">Обобщение</option>
+      <option value="conflict">Конфликт</option>
+      <option value="nochange">Нет нового знания</option>
+    </select>
+  </label>
+  <ol class="pipeline update-pipeline">
+    <li><span class="node-kind">01 · НАДЁЖНО ЗАПИСАТЬ</span><strong>Outcome + outbox</strong><span>Задача и событие в одной транзакции</span></li>
+    <li><span class="node-kind">02 · ПРЕДЛОЖИТЬ</span><strong>Curator + gate</strong><span>Источники, дубликаты, scope и base revision</span></li>
+    <li id="update-state"><span class="node-kind">03 · ОПУБЛИКОВАТЬ ИТОГ</span><strong id="state-name"></strong><span id="state-description"></span></li>
+  </ol>
+  <div class="update-result" role="status" aria-live="polite"><p id="update-explanation"></p><p id="update-receipt" class="receipt"></p></div>
+  <p class="demo-note">Active означает пригодность записи в её заявленных условиях, а не доказательство универсального правила. Curator не меняет skills и policies автоматически.</p>
+</div>
+<figure class="knowledge-visual" aria-labelledby="recovery-title">
+  <h3 id="recovery-title">Если агент прервался, событие не должно потеряться</h3>
+  <ol class="recovery-line">
+    <li><strong>Outcome записан</strong><span>Есть durable receipt: queued</span></li>
+    <li><strong>Curator прервался</strong><span>Знания ещё не обновлены: pending</span></li>
+    <li><strong>Следующий старт</strong><span>Reconcile повторяет обработку с тем же ключом</span></li>
+    <li><strong>Один итог</strong><span>Commit без дубликатов или честный no_change</span></li>
+  </ol>
+  <figcaption>Если запись outcome не удалась, статус update_failed. Успех кода и состояние знаний показываются отдельно.</figcaption>
+</figure>
+<!-- /visual -->
+
+<!-- visual:verification -->
+<details class="design-details">
+  <summary>Технические контракты и важные ограничения</summary>
+  <dl>
+    <dt>KnowledgeEntry</dt><dd>ID/revision, kind/state, claim, scope/ACL, applies_to, evidence, origin task/role, observed_at, recorded_at, last_checked_at, supersedes.</dd>
+    <dt>ContextPacket</dt><dd>Task/spec и knowledge snapshot, audience/stage, claims и citations, caveats/conflicts, бюджет и метод подсчёта, что не поместилось.</dd>
+    <dt>KnowledgeProposal → CommitReceipt</dt><dd>Изменения и expected_base_revision, ключ повторяемости, записанные revisions, pending approvals, состояние индексов.</dd>
+  </dl>
+  <p>Canonical записи и FTS публикуются в одной транзакции. Vector index догоняет через outbox; перед выдачей права, состояние и revisions проверяются по canonical store.</p>
+  <p>Ключ кэша включает права, проект, роль, стадию, task/spec, knowledge snapshot, бюджет и версии моделей/индексов. Отзыв прав инвалидирует выдачу; уже прочитанный LLM контекст задним числом не отзывается.</p>
+  <p>SQLite WAL рассчитан на один host и одного writer в момент времени. Живую БД не синхронизируем как файл через облачный диск. Backup/export — отдельная операция; многомашинный endpoint появится при необходимости.</p>
+  <p>Общие filesystem-права позволяют обойти логический API. До отдельной OS/service границы нельзя заявлять защиту private-данных. Текст в памяти остаётся данными: он не выдаёт разрешений и не переопределяет инструкции.</p>
+  <p>Запись со спорным scope не переносится между проектами автоматически. Для general-записи нужен разрешённый источник или публичная проекция evidence; приватный source path тоже может раскрыть детали.</p>
+</details>
+<details class="design-details">
+  <summary>Предлагаемый API и порядок реализации</summary>
+  <p>Команды — часть дизайна; сейчас в проекте их нет.</p>
+  <pre><code>harness task begin --contract task.json
+harness context prepare --task T --audience developer --budget 1200
+harness context expand --packet P --entry K@revision
+harness knowledge search --query "TTL expiry" --task T
+harness task finish --task T --outcome outcome.json
+harness knowledge review --proposal ID
+harness knowledge reconcile</code></pre>
+  <p>Audience выбирает форму в пределах доверенного task binding, а не расширяет доступ. CLI и MCP используют одно ядро. Native adapters запускают отдельные Scout/Curator и доставляют артефакты.</p>
+  <p>Вместо обязательного daemon MVP может обрабатывать очередь на finish, следующем begin и через reconcile. Для свободных разговоров native-сессии полнота lifecycle зависит от интеграции и честно показывается как ограничение.</p>
+</details>
+<details class="design-details">
+  <summary>Что проверять до использования на реальных проектах</summary>
+  <ul>
+    <li>Разделение проектов, прав, private данных и стадий initial tests.</li>
+    <li>Конфликт записей, изменение spec/environment, stale и revoked источники.</li>
+    <li>Сбой после queued, повтор обработки, параллельные revisions и потеря доступа.</li>
+    <li>Отставший vector index, невозможность вместить обязательный контекст, отсутствие Scout.</li>
+    <li>Точность citations и полезность пакета по сравнению с no-memory baseline.</li>
+  </ul>
+  <p>Это план будущих испытаний подсистемы. Проверка интерактивного документа подтверждает только его работу, а не готовность Knowledge Core.</p>
+</details>
+<div class="source-notes">
+  <h3>На что опирается выбор</h3>
+  <p>Полнотекстовый поиск, BM25 и ограничения tokenizer: <a href="https://www.sqlite.org/fts5.html">SQLite FTS5</a>. Конкурентный доступ и граница одного host: <a href="https://www.sqlite.org/wal.html">SQLite WAL</a>. Объединение lexical/semantic выдач по рангам: <a href="https://qdrant.tech/documentation/search-tuning/hybrid-search/">Hybrid search / RRF</a>.</p>
+  <p>Источники проверены 3 ноября 2026. Qdrant не является обязательной зависимостью; выбор backend и численные budgets здесь — предложения для пилота.</p>
+</div>
+<!-- /visual -->

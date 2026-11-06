@@ -1,0 +1,47 @@
+test_approved_hypothesis_still_requires_explicit_candidate_search (test_knowledge_adversarial.KnowledgeAdversarialTests.test_approved_hypothesis_still_requires_explicit_candidate_search) ... ok
+test_budget_matrix_and_fts_metacharacters (test_knowledge_adversarial.KnowledgeAdversarialTests.test_budget_matrix_and_fts_metacharacters) ... ok
+test_cli_lifecycle_reopen_retry_and_existing_directory (test_knowledge_adversarial.KnowledgeAdversarialTests.test_cli_lifecycle_reopen_retry_and_existing_directory) ... ok
+test_context_source_cap_cannot_silently_drop_required_refs (test_knowledge_adversarial.KnowledgeAdversarialTests.test_context_source_cap_cannot_silently_drop_required_refs) ... ok
+test_evidence_snapshot_immutable_and_batches_task_bound (test_knowledge_adversarial.KnowledgeAdversarialTests.test_evidence_snapshot_immutable_and_batches_task_bound) ... ok
+test_future_observation_excluded_even_when_recorded_before_snapshot (test_knowledge_adversarial.KnowledgeAdversarialTests.test_future_observation_excluded_even_when_recorded_before_snapshot) ... ok
+test_packet_rechecks_revision_revocation_and_role (test_knowledge_adversarial.KnowledgeAdversarialTests.test_packet_rechecks_revision_revocation_and_role) ... ok
+test_promoted_general_projection_does_not_export_project_evidence (test_knowledge_adversarial.KnowledgeAdversarialTests.test_promoted_general_projection_does_not_export_project_evidence) ... ok
+test_queued_update_conflict_rolls_back_entire_batch_after_reopen (test_knowledge_adversarial.KnowledgeAdversarialTests.test_queued_update_conflict_rolls_back_entire_batch_after_reopen) ... ok
+test_quote_and_kind_matrix_cannot_auto_publish_generalizations (test_knowledge_adversarial.KnowledgeAdversarialTests.test_quote_and_kind_matrix_cannot_auto_publish_generalizations) ... ok
+test_snapshot_applicability_scopes_and_explicit_refs (test_knowledge_adversarial.KnowledgeAdversarialTests.test_snapshot_applicability_scopes_and_explicit_refs) ... ok
+test_task_batch_tuple_has_no_delimiter_collision_different_payload (test_knowledge_adversarial.KnowledgeAdversarialTests.test_task_batch_tuple_has_no_delimiter_collision_different_payload) ... ERROR
+test_task_batch_tuple_has_no_delimiter_collision_same_payload (test_knowledge_adversarial.KnowledgeAdversarialTests.test_task_batch_tuple_has_no_delimiter_collision_same_payload)
+propose: idempotency is scoped to the full (task_id, batch_id) pair. ... FAIL
+
+======================================================================
+ERROR: test_task_batch_tuple_has_no_delimiter_collision_different_payload (test_knowledge_adversarial.KnowledgeAdversarialTests.test_task_batch_tuple_has_no_delimiter_collision_different_payload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mshekhunov/engineering-harness/tests/test_knowledge_adversarial.py", line 76, in test_task_batch_tuple_has_no_delimiter_collision_different_payload
+    result = self.store.propose("a", [{"kind": "decision", "claim": "needle"}], "b:c")
+  File "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp1/adversarial-work/tree/harness/knowledge.py", line 312, in propose
+    return self._enqueue(task_id, "proposal", dedup, proposals)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp1/adversarial-work/tree/harness/knowledge.py", line 231, in _enqueue
+    fail("conflict", "Idempotency key reused for a different payload")
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp1/adversarial-work/tree/harness/knowledge.py", line 25, in fail
+    raise KnowledgeError(code, message)
+harness.knowledge.KnowledgeError: Idempotency key reused for a different payload
+
+======================================================================
+FAIL: test_task_batch_tuple_has_no_delimiter_collision_same_payload (test_knowledge_adversarial.KnowledgeAdversarialTests.test_task_batch_tuple_has_no_delimiter_collision_same_payload)
+propose: idempotency is scoped to the full (task_id, batch_id) pair.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mshekhunov/engineering-harness/tests/test_knowledge_adversarial.py", line 62, in test_task_batch_tuple_has_no_delimiter_collision_same_payload
+    self.assertNotEqual(first["job_id"], second["job_id"],
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        "Distinct task/batch tuples must enqueue separate jobs")
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'J-755df897c85e4adea4f7a1a867c52a63' == 'J-755df897c85e4adea4f7a1a867c52a63' : Distinct task/batch tuples must enqueue separate jobs
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.361s
+
+FAILED (failures=1, errors=1)

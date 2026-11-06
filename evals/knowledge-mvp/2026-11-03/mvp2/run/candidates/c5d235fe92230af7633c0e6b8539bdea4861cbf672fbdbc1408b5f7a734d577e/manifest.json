@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "spec_sha256": "d35a1532f0561672e4b2446819c17e52d6069630e830b2c3ce4a770a12c18c10",
+  "files": [
+    {
+      "path": "docs/contracts/knowledge-mvp.md",
+      "sha256": "27066526430fba739429ee0c1696542ad8ca9433809655a19ceb903cad1e3186",
+      "executable": false
+    },
+    {
+      "path": "docs/contracts/knowledge-mvp2.md",
+      "sha256": "d35a1532f0561672e4b2446819c17e52d6069630e830b2c3ce4a770a12c18c10",
+      "executable": false
+    },
+    {
+      "path": "harness/__init__.py",
+      "sha256": "16990c27355dd70ead7df53f85e3eb473f44630265b8ef8488eef6f9b09a5a2b",
+      "executable": false
+    },
+    {
+      "path": "harness/__main__.py",
+      "sha256": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "executable": false
+    },
+    {
+      "path": "harness/cli.py",
+      "sha256": "7eabaec62640832ba62e73adbea6c9ce3bfbc6fb65bea8ebeebc136e44d30210",
+      "executable": false
+    },
+    {
+      "path": "harness/embeddings.py",
+      "sha256": "fcfef39538ba97253f08e46b1d5b8b074c582ca9a956823f191345bfc3b79355",
+      "executable": false
+    },
+    {
+      "path": "harness/knowledge.py",
+      "sha256": "b4924da31d307c9cee6f2661f1ce124d136bb4f64f1dd190ec2fd8ba46bb02e3",
+      "executable": false
+    },
+    {
+      "path": "harness/semantic.py",
+      "sha256": "6a890928a138426a974dc982e88d3862597da280d2bbd7bb7dd0fe55bfdd5279",
+      "executable": false
+    },
+    {
+      "path": "harness/workflow.py",
+      "sha256": "8b58d31b4bfeced7500b78513e7f45c00de9ee73e9d3b727abb13ceaac0f2261",
+      "executable": false
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "9fb3763bef70ee76363246fdf7b8cc02cc9535c2eb5eb50643d1d78c5096d844",
+      "executable": false
+    },
+    {
+      "path": "skills/knowledge-cycle/SKILL.md",
+      "sha256": "a6419e6c168dc772681adb8181606e4f9b53feb27929599445702c36ed0772cb",
+      "executable": false
+    },
+    {
+      "path": "skills/knowledge-cycle/scripts/knowledge.py",
+      "sha256": "3cc9cc3dcc548f221ec5d2fff8b1f8fcfd7cf262bed8220e9ab578c5d4609949",
+      "executable": false
+    }
+  ],
+  "environment": {
+    "python": "3.12.14 (main, Aug 14 2026, 15:24:41) [Clang 22.1.3 ]",
+    "sqlite": "3.53.1",
+    "platform": "macOS-15.7.3-arm64-arm-64bit",
+    "fastembed": "0.9.1",
+    "onnxruntime": "1.31.1",
+    "model_manifest": {
+      "version": 1,
+      "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "dimensions": 384,
+      "repository": "Qdrant/paraphrase-multilingual-MiniLM-L12-v2-onnx-Q",
+      "revision": "faf4aa4225822f3bc6376869cb1164e8e3feedd0",
+      "files": {
+        "config.json": "c8ec081fdad2df991bf5abbf18418fec7a5cdaa421f60ffb060a30040b8c376f",
+        "model_optimized.onnx": "634d0f66c29dc934c8fa72b8a4fe91dd4d420a22f1d82a241058d4316e659a99",
+        "ort_config.json": "99881c45e073696289224931dd48694398bc6bcd1fe7cb7018bca1e0cc00e1fc",
+        "special_tokens_map.json": "8c785abebea9ae3257b61681b4e6fd8365ceafde980c21970d001e834cf10835",
+        "tokenizer.json": "fa685fc160bbdbab64058d4fc91b60e62d207e8dc60b9af5c002c5ab946ded00",
+        "tokenizer_config.json": "0666eebf692422757e1dddf3c9fb1ded73ba3dc726c5828671fc89e45bf3609f",
+        "unigram.json": "da145b5e7700ae40f16691ec32a0b1fdc1ee3298db22a31ea55f57a966c4a65d"
+      },
+      "policy": "token-chunks96-mean-v1",
+      "fastembed_version": "0.9.1",
+      "onnxruntime_version": "1.31.1",
+      "license": "apache-2.0"
+    }
+  },
+  "candidate_ref": "c5d235fe92230af7633c0e6b8539bdea4861cbf672fbdbc1408b5f7a734d577e"
+}

@@ -1,0 +1,36 @@
+test_task_batch_tuple_has_no_delimiter_collision_different_payload (test_knowledge_adversarial.KnowledgeAdversarialTests.test_task_batch_tuple_has_no_delimiter_collision_different_payload) ... ERROR
+test_task_batch_tuple_has_no_delimiter_collision_same_payload (test_knowledge_adversarial.KnowledgeAdversarialTests.test_task_batch_tuple_has_no_delimiter_collision_same_payload)
+propose: idempotency is scoped to the full (task_id, batch_id) pair. ... FAIL
+
+======================================================================
+ERROR: test_task_batch_tuple_has_no_delimiter_collision_different_payload (test_knowledge_adversarial.KnowledgeAdversarialTests.test_task_batch_tuple_has_no_delimiter_collision_different_payload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mshekhunov/engineering-harness/tests/test_knowledge_adversarial.py", line 76, in test_task_batch_tuple_has_no_delimiter_collision_different_payload
+    result = self.store.propose("a", [{"kind": "decision", "claim": "needle"}], "b:c")
+  File "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp1/adversarial-work/tree/harness/knowledge.py", line 312, in propose
+    return self._enqueue(task_id, "proposal", dedup, proposals)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp1/adversarial-work/tree/harness/knowledge.py", line 231, in _enqueue
+    fail("conflict", "Idempotency key reused for a different payload")
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mshekhunov/engineering-harness/evals/knowledge-mvp/2026-11-03/mvp1/adversarial-work/tree/harness/knowledge.py", line 25, in fail
+    raise KnowledgeError(code, message)
+harness.knowledge.KnowledgeError: Idempotency key reused for a different payload
+
+======================================================================
+FAIL: test_task_batch_tuple_has_no_delimiter_collision_same_payload (test_knowledge_adversarial.KnowledgeAdversarialTests.test_task_batch_tuple_has_no_delimiter_collision_same_payload)
+propose: idempotency is scoped to the full (task_id, batch_id) pair.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/mshekhunov/engineering-harness/tests/test_knowledge_adversarial.py", line 62, in test_task_batch_tuple_has_no_delimiter_collision_same_payload
+    self.assertNotEqual(first["job_id"], second["job_id"],
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        "Distinct task/batch tuples must enqueue separate jobs")
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'J-8d26fa4d94f54e3891573dc4f60f8784' == 'J-8d26fa4d94f54e3891573dc4f60f8784' : Distinct task/batch tuples must enqueue separate jobs
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.009s
+
+FAILED (failures=1, errors=1)

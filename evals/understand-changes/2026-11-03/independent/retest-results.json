@@ -1,0 +1,53 @@
+[
+  {
+    "test": "history failure yields usable success",
+    "passed": true,
+    "result": {
+      "output": "/private/tmp/harness-skill-eval-20261103/independent/retest-history-failure.html",
+      "warnings": [
+        "HTML created, but optional history was not recorded: [Errno 17] File exists: '/tmp/harness-skill-eval-20261103/independent/history-parent-file'. Cross-quiz diagnostics may be incomplete."
+      ],
+      "history_recorded": false
+    },
+    "stderr": ""
+  },
+  {
+    "test": "overwrite still rejected",
+    "passed": true,
+    "stderr": "Render error: [Errno 17] File exists: '/tmp/harness-skill-eval-20261103/independent/tmp_0swckg3' -> '/tmp/harness-skill-eval-20261103/independent/retest-history-failure.html'"
+  },
+  {
+    "test": "existing history preserved and deduplicated",
+    "passed": true
+  },
+  {
+    "test": "corrupt history fails before output",
+    "passed": true,
+    "stderr": "Render error: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+  },
+  {
+    "test": "corrected document rendered",
+    "passed": true,
+    "result": {
+      "output": "/private/tmp/harness-skill-eval-20261103/independent/corrected.html",
+      "warnings": [],
+      "history_recorded": true
+    }
+  },
+  {
+    "test": "new q5 runtime semantics",
+    "passed": true,
+    "entries": [
+      "B"
+    ]
+  },
+  {
+    "test": "corrected interactive quiz 20 paths",
+    "passed": true,
+    "details": "[\n  {\n    \"document\": \"corrected\",\n    \"initial_hidden\": true,\n    \"initial_unselected\": true,\n    \"questions\": 5,\n    \"click_paths_tested\": 20,\n    \"reselection\": true,\n    \"verdicts_and_feedback\": true\n  }\n]\n"
+  },
+  {
+    "test": "no staged temporary files remain",
+    "passed": true
+  }
+]

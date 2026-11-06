@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "budgets": {
+    "execution_seconds": 600,
+    "generated_cases": 1000,
+    "confirmed_findings": 5,
+    "private_queries_per_task": 3,
+    "enforcement": "advisory"
+  },
+  "feedback": "release_minimal_reproducer"
+}

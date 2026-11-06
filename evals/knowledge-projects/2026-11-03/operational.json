@@ -1,0 +1,303 @@
+{
+  "scope": "Author operational walkthrough, not independent test suite",
+  "temporary_root": "/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w",
+  "steps": [
+    {
+      "label": "empty init alpha",
+      "exit_code": 0,
+      "result": {
+        "status": "ready",
+        "project_id": "alpha",
+        "root": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/alpha",
+        "db": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/alpha/.harness/knowledge/knowledge.sqlite3",
+        "mode": "lexical",
+        "counts": {
+          "tasks": 0,
+          "entries": 0,
+          "evidence": 0,
+          "jobs": 0,
+          "packets": 0
+        },
+        "empty": true,
+        "shared_retrieval": "disabled; no implicit cross-database queries",
+        "profile": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/alpha/.harness/knowledge/project.json",
+        "initialized": true,
+        "agent_activation": "Invoke knowledge-cycle or enable it in project instructions; native files not overwritten"
+      }
+    },
+    {
+      "label": "empty init beta",
+      "exit_code": 0,
+      "result": {
+        "status": "ready",
+        "project_id": "beta",
+        "root": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/beta",
+        "db": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/beta/.harness/knowledge/knowledge.sqlite3",
+        "mode": "lexical",
+        "counts": {
+          "tasks": 0,
+          "entries": 0,
+          "evidence": 0,
+          "jobs": 0,
+          "packets": 0
+        },
+        "empty": true,
+        "shared_retrieval": "disabled; no implicit cross-database queries",
+        "profile": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/beta/.harness/knowledge/project.json",
+        "initialized": true,
+        "agent_activation": "Invoke knowledge-cycle or enable it in project instructions; native files not overwritten"
+      }
+    },
+    {
+      "label": "code map",
+      "exit_code": 0,
+      "result": {
+        "output": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/alpha/.harness/code-map.json",
+        "files": 1,
+        "symbols": 2,
+        "knowledge_entries_written": 0
+      }
+    },
+    {
+      "label": "cwd workflow alpha",
+      "exit_code": 0,
+      "result": {
+        "task_id": "same-task-id",
+        "output": "/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/alpha/run",
+        "brief_paths": {
+          "developer": "/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/alpha/run/scout-developer.json"
+        },
+        "reconciliation": {
+          "processed": 0,
+          "receipts": [],
+          "pending": 0
+        },
+        "index": {
+          "status": "ready",
+          "remaining": 0,
+          "model_id": "fastembed:sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2:01b88613b011820582c3bf5616a04b4188ab33778dd5d09d1d6d212d24ba5150",
+          "watermark": 0,
+          "indexed": 0
+        }
+      }
+    },
+    {
+      "label": "repeat init preserves alpha",
+      "exit_code": 0,
+      "result": {
+        "status": "ready",
+        "project_id": "alpha",
+        "root": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/alpha",
+        "db": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/alpha/.harness/knowledge/knowledge.sqlite3",
+        "mode": "lexical",
+        "counts": {
+          "tasks": 1,
+          "entries": 0,
+          "evidence": 0,
+          "jobs": 0,
+          "packets": 0
+        },
+        "empty": false,
+        "shared_retrieval": "disabled; no implicit cross-database queries",
+        "profile": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/alpha/.harness/knowledge/project.json",
+        "initialized": false
+      }
+    },
+    {
+      "label": "cwd workflow beta",
+      "exit_code": 0,
+      "result": {
+        "task_id": "same-task-id",
+        "output": "/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/beta/run",
+        "brief_paths": {
+          "developer": "/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/beta/run/scout-developer.json"
+        },
+        "reconciliation": {
+          "processed": 0,
+          "receipts": [],
+          "pending": 0
+        },
+        "index": {
+          "status": "ready",
+          "remaining": 0,
+          "model_id": "fastembed:sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2:01b88613b011820582c3bf5616a04b4188ab33778dd5d09d1d6d212d24ba5150",
+          "watermark": 0,
+          "indexed": 0
+        }
+      }
+    },
+    {
+      "label": "repeat init preserves beta",
+      "exit_code": 0,
+      "result": {
+        "status": "ready",
+        "project_id": "beta",
+        "root": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/beta",
+        "db": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/beta/.harness/knowledge/knowledge.sqlite3",
+        "mode": "lexical",
+        "counts": {
+          "tasks": 1,
+          "entries": 0,
+          "evidence": 0,
+          "jobs": 0,
+          "packets": 0
+        },
+        "empty": false,
+        "shared_retrieval": "disabled; no implicit cross-database queries",
+        "profile": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/beta/.harness/knowledge/project.json",
+        "initialized": false
+      }
+    },
+    {
+      "label": "current map",
+      "exit_code": 0,
+      "result": {
+        "status": "current",
+        "changes": [],
+        "scope": "selected_files_only",
+        "checked_files": 1,
+        "checked_at": "2026-11-03T19:14:51.151651+00:00"
+      }
+    },
+    {
+      "label": "changed map",
+      "exit_code": 0,
+      "result": {
+        "status": "stale",
+        "changes": [
+          {
+            "path": "src/service.py",
+            "state": "changed"
+          }
+        ],
+        "scope": "selected_files_only",
+        "checked_files": 1,
+        "checked_at": "2026-11-03T19:14:51.198553+00:00"
+      }
+    },
+    {
+      "label": "refresh map",
+      "exit_code": 0,
+      "result": {
+        "output": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/alpha/.harness/code-map.json",
+        "files": 1,
+        "symbols": 2,
+        "knowledge_entries_written": 0
+      }
+    },
+    {
+      "label": "wrong project rejected",
+      "exit_code": 2,
+      "result": {
+        "status": "error",
+        "code": "forbidden",
+        "message": "Database belongs to a different project"
+      }
+    },
+    {
+      "label": "conflicting init rejected",
+      "exit_code": 2,
+      "result": {
+        "status": "error",
+        "code": "conflict",
+        "message": "Project already initialized with different settings; no reset performed"
+      }
+    },
+    {
+      "label": "explicit project root from outside",
+      "exit_code": 0,
+      "result": {
+        "task_id": "second",
+        "output": "/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/alpha/run2",
+        "brief_paths": {
+          "developer": "/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/alpha/run2/scout-developer.json"
+        },
+        "reconciliation": {
+          "processed": 0,
+          "receipts": [],
+          "pending": 0
+        },
+        "index": {
+          "status": "ready",
+          "remaining": 0,
+          "model_id": "fastembed:sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2:01b88613b011820582c3bf5616a04b4188ab33778dd5d09d1d6d212d24ba5150",
+          "watermark": 0,
+          "indexed": 0
+        }
+      }
+    },
+    {
+      "label": "clone explicit init creates empty DB",
+      "exit_code": 0,
+      "result": {
+        "status": "ready",
+        "project_id": "alpha",
+        "root": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/clone",
+        "db": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/clone/.harness/knowledge/knowledge.sqlite3",
+        "mode": "lexical",
+        "counts": {
+          "tasks": 0,
+          "entries": 0,
+          "evidence": 0,
+          "jobs": 0,
+          "packets": 0
+        },
+        "empty": true,
+        "shared_retrieval": "disabled; no implicit cross-database queries",
+        "profile": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-project-knowledge-jls5y29w/clone/.harness/knowledge/project.json",
+        "initialized": true,
+        "recreated_empty": true
+      }
+    },
+    {
+      "label": "legacy current store unchanged",
+      "exit_code": 0,
+      "result": {
+        "applicability": {},
+        "goal": "Support separate initially empty project knowledge databases and project facts, code map and operational runbooks; inspect existing support, implement project init and deterministic source map with freshness, no automatic tests or arbitrary migration",
+        "project_id": "engineering-harness",
+        "roles": [
+          "developer"
+        ],
+        "task_id": "knowledge-projects-20261103",
+        "snapshot_seq": 27,
+        "created_at": "2026-11-03T19:12:08.502137+00:00",
+        "status": "open",
+        "curation_status": "not_started",
+        "policy_revision": 1,
+        "outcome": null
+      }
+    },
+    {
+      "label": "Final profile-only init and ignore rule",
+      "exit_code": 0,
+      "result": {
+        "status": "ready",
+        "project_id": "fresh-clone",
+        "root": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-profile-clone-final-vi678a5z",
+        "db": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-profile-clone-final-vi678a5z/.harness/knowledge/knowledge.sqlite3",
+        "mode": "lexical",
+        "counts": {
+          "tasks": 0,
+          "entries": 0,
+          "evidence": 0,
+          "jobs": 0,
+          "packets": 0
+        },
+        "empty": true,
+        "shared_retrieval": "disabled; no implicit cross-database queries",
+        "profile": "/private/var/folders/5w/_tzr87fd2dd98vnw50336m4w0000gn/T/harness-profile-clone-final-vi678a5z/.harness/knowledge/project.json",
+        "initialized": true,
+        "recreated_empty": true,
+        "ignore_exists": true
+      }
+    }
+  ],
+  "source_sha256": {
+    "harness/projects.py": "d7858c4b71fde1233bef330f846202a41e79530e4d327fa2ceeb173cfb38dda3",
+    "harness/cli.py": "d7aa24c20bd825b1a88bbf918258066885f1cf52ec6c72abc7c7b7125185e339",
+    "harness/knowledge.py": "271c60ab957847c5b971b37da059c9479fbdbfe5f1085f5a92c0a435612b83dc",
+    "harness/workflow.py": "b49c46fbba1c004b45a17b423666c3c1eb205a7fc99d5addc2039c6d0e8daf13",
+    "skills/knowledge-cycle/scripts/knowledge.py": "5c0cdc4eb62188b796f1121394d651a0a34d31fe2cd3b8179d729696a29876ad"
+  }
+}

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Scope Guard"
+  short_description: "Проверка границ изменений и исключений пользователя"
+  default_prompt: "Используй $scope-guard: проверь актуальные разрешения и исключения перед выполнением изменений."
+policy:
+  allow_implicit_invocation: true

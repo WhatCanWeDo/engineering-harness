@@ -14,7 +14,7 @@ sh scripts/setup.sh
 .venv/bin/python scripts/doctor.py
 ```
 
-Приватный репозиторий требует авторизации GitHub. Общий setup устанавливает **7 skills** для
+Приватный репозиторий требует авторизации GitHub. Общий setup устанавливает **8 skills** для
 Codex/Claude, managed Python, Knowledge Core и локальную embedding-модель. Новое устройство
 начинает с **пустой базы**; накопленные знания, credentials и локальные настройки не переносятся.
 [Полная инструкция и ограничения](docs/install-macos.md).
@@ -138,3 +138,14 @@ python3 skills/spec-init/scripts/spec.py build draft.json --packet context-packe
 ```
 
 Scaffold требует наполнения агентом; packet готовится через существующий knowledge-cycle. При недоступности scouting возможен явно обозначенный degraded draft. Для примера с unavailable scouting `--packet` опускается.
+
+## Контроль границ изменений
+
+[scope-guard](skills/scope-guard/SKILL.md) помогает учитывать новые ограничения пользователя,
+защищённые объекты и побочные эффекты перед изменениями внешних систем и общих ресурсов.
+При неопределённости приостанавливается затронутое изменение; независимая разрешённая работа
+может продолжаться. Вызов: Codex `$scope-guard`, Claude `/scope-guard`; skill включён в общий installer.
+
+Это инструкции агенту, а не техническая блокировка операций или гарантия безошибочного
+понимания. [Требования к независимому исполнителю](skills/scope-guard/references/enforcement.md)
+описаны отдельно; такой исполнитель этим skill не устанавливается.

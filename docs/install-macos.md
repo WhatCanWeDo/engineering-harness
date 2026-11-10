@@ -18,7 +18,7 @@ sh scripts/setup.sh
 Не вставляй access token прямо в URL. GitHub, Codex и Claude требуют отдельных входов.
 
 Setup устанавливает managed Python 3.12, зависимости из `uv.lock`, локальную embedding-модель,
-семь skills и два Claude worker. Он создаёт пустую глобальную БД, если её ещё нет; существующая
+восемь skills и два Claude worker. Он создаёт пустую глобальную БД, если её ещё нет; существующая
 локальная БД не стирается. Никакого скачивания старой базы или seed-импорта нет.
 
 ## Что будет доступно
@@ -32,6 +32,7 @@ Setup устанавливает managed Python 3.12, зависимости и�
 | Спецификация | `$spec-init` | `/spec-init` | ML Task Spec, scouting, HTML review и quiz |
 | Визуализация | `$visualization` | `/visualization` | Instruction-based router и recipes; HTML создаёт агент, универсального renderer нет |
 | Ветка чата | `$fork-tab` | `/fork-tab` | macOS/Ghostty, новый tab в том же окне, точный session UUID |
+| Границы изменений | `$scope-guard` | `/scope-guard` | Актуальные разрешения, исключения и побочные эффекты; advisory, без технической блокировки |
 
 По умолчанию подключаются оба агента. Для одного: `sh scripts/setup.sh --agents codex`
 или `--agents claude`. Агент может потребовать обновления списка skills/перезапуска.

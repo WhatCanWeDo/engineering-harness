@@ -99,7 +99,7 @@ def file_groups(project, files):
 def topic_groups(store, project):
     support=defaultdict(set)
     for record in store._records():
-        if record['scope']!='project' or record['project_id']!=project or record['state']!='active':continue
+        if record['scope']!='project' or record['project_id']!=project or record['state']!='active' or not store._fresh(record):continue
         for tag in record.get('tags',[]):
             key=' '.join(tag.casefold().split())
             if not 3<=len(key)<=60 or key in GENERIC_TAGS or '/' in key or '\\' in key:continue

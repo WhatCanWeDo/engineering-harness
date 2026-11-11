@@ -73,3 +73,10 @@ harness project status --root /absolute/path/to/project
 ```
 
 Init не импортирует знания, не очищает существующую базу и не включает agent hooks. Модель embeddings может быть общей для разных SQLite. Подробнее: [project-knowledge.md](../../skills/knowledge-cycle/references/project-knowledge.md).
+
+## Пересмотр раз в 14 суток
+
+Перед основной задачей выполняй [maintenance preflight](../../skills/knowledge-cycle/references/freshness.md).
+Не удаляй просроченные записи и не обновляй дату массовым approve. `knowledge maintenance`
+показывает due/remaining и текущие dependency changes; `knowledge maintain` сохраняет
+содержательное решение с evidence. После обновлений нужен новый task snapshot.

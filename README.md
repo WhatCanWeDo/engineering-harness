@@ -24,6 +24,7 @@ Codex/Claude, managed Python, Knowledge Core и локальную embedding-м�
 - [RFC 001 — Native-First, Agent-Agnostic Engineering Harness](docs/rfcs/001-native-first-agent-agnostic-engineering-harness.md) — полный исходный документ.
 - [RFC 002 — Тестирование по запросу](docs/rfcs/002-test-on-request.md) — public/private/adversarial, защита holdout и раскрытие контрпримеров.
 - [RFC 003 — Knowledge & Context Layer](docs/rfcs/003-knowledge-context.md) — общий store, поиск, отдельные Scout/Curator, role packets и обновление после задач. Архитектурный дизайн; реализованный scope описан в контрактах MVP1/MVP2.
+- [RFC 006 — Актуальность знаний](docs/rfcs/006-knowledge-freshness.md) — срок 14 суток, зависимости и содержательный пересмотр отдельным агентом.
 - [RFC 005 — Visualization](docs/rfcs/005-visualization.md) — дизайн skill-роутера для честных интерактивных демо; учебные прототипы image/mask и parser trace в `docs/explainers/011-visualization`. Устанавливаемый instruction-based skill находится в `skills/visualization`; универсальный renderer/live backend пока не реализованы.
 - [План проектирования](docs/design-plan.md) — предложенный порядок следующих обсуждений и критерии готовности первого прототипа.
 - [Общие инструкции проекта](docs/project-instructions.md) — канонические инструкции для работы над репозиторием.
@@ -82,6 +83,8 @@ RFC 002 посвящён тестированию по запросу, RFC 003 �
 ## Knowledge MVP1 и MVP2
 
 [knowledge-cycle](skills/knowledge-cycle/SKILL.md) подключён к этому проекту. SQLite хранит evidence, immutable revisions, tasks и durable queue; FTS5 и optional локальные embeddings готовят компактные role packets. Отдельные native Scout/Curator получают готовые briefs. Private backend отсутствует; общий installer адаптеров — `scripts/install_skills.py`.
+
+Знания имеют срок актуальности **14 суток**. Просроченные записи сохраняются в истории, но исключаются из контекста. При обращении к проекту отдельный Maintenance Curator проверяет source/spec/lockfiles и связанные записи; подтверждение продлевает срок, неопределённость оставляет запись вне выдачи. [Поведение и команды](skills/knowledge-cycle/references/freshness.md). Фонового таймера нет.
 
 [Рабочие команды и восстановление](docs/knowledge/operations.md), [MVP1 API](docs/contracts/knowledge-mvp.md), [MVP2 API](docs/contracts/knowledge-mvp2.md), [проверки и результаты](docs/evaluations/knowledge-mvp-2026-11-03.md).
 

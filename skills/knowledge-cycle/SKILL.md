@@ -15,6 +15,15 @@ description: Готовить короткий контекст перед ин�
 
 Обновляй также полезные facts о расположении кода/сервисах и evidence-backed procedures. Различай карту исходников, интерпретацию архитектуры и реально выполненный workflow; не превращай план работы в готовый результат. Не перечитывай весь репозиторий после каждой задачи.
 
+## Срок актуальности и периодический пересмотр
+
+Знания действуют 14 суток; истёкшие/изменившиеся зависимости исключаются из контекста,
+история не удаляется. При обращении к проекту проверяй maintenance **перед основной
+задачей**. Читай [freshness.md](references/freshness.md): отдельный свежий Maintenance
+Curator проверяет источники, spec/config/lockfiles и связанные знания. Core сам LLM
+не запускает. Пока агента нет или проверка не завершена, сохраняй pending и работай
+без этих сведений; не объявляй знания актуальными. Фонового таймера нет.
+
 ## До задачи
 
 1. Прочитай обязательные project instructions и task contract напрямую. Они не зависят от RAG. Для initialized проекта проверь `project status --root PATH`; CLI выбирает его DB по cwd. Выбери стабильный project ID и новый task ID. В task.json задай task_id/project_id/goal, roles и при необходимости applicability и paths (относительные пути работы). По умолчанию для обычной задачи нужны только roles:["developer"]. Public/adversarial добавляй, когда соответствующее тестирование действительно запрошено; сам цикл памяти его не включает.
@@ -33,6 +42,8 @@ description: Готовить короткий контекст перед ин�
 3. Передай curator.json другому свежему агенту. Его результат — JSON array proposals или []. Он не меняет продукт, skills или permissions. Короткие source excerpts проверяются детерминированно; обобщения становятся candidate, а не verified.
 4. Запусти `workflow ingest --task T --batch B --input proposals.json`. Проверь reconciliation receipts: committed/no_change либо error. Повтор того же batch идемпотентен. Pending/error показывай отдельно от успешности продукта. После сбоя `knowledge pending --project P` и `knowledge reconcile` позволяют продолжить; для pending curation снова нужен native Curator.
 
+Периодический `knowledge maintain` разрешён для evidence-backed пересмотра прежних
+project claims по freshness.md; он не публикует general и не принимает новые обобщения.
 Не вызывай knowledge review/promote автоматически: спорное обобщение или межпроектная публикация требуют соответствующего решения пользователя. Эти операции создают revision/release и не стирают историю. Ещё один LLM не заменяет evidence.
 
 ## Runtime и ограничения

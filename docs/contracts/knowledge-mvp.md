@@ -91,3 +91,28 @@ Workflow start подставляет project_id из bound DB, когда по�
 ## Автоматическая организация подпроектов (2026-11-03)
 
 Добавлены optional tables subproject_catalog и task_organization (additive schema extension); существующие entries/tasks не переименовываются и не переносятся в другие DB. Workflow start принимает paths, сохраняет catalog snapshot и routing; workflow context принимает optional subproject_ids от Scout и фиксирует их до первого packet. Entry proposals имеют optional subproject_ids; классификация не меняет state, permissions или applicability. Lexical/semantic retrieval сохраняет eligible corpus и применяет небольшой ranking preference. Существующие get_task/projection ответы могут дополнительно содержать subprojects/subproject_ids. Низкоуровневый begin_task сам discovery не запускает. [Полный контракт](../../skills/knowledge-cycle/references/subprojects.md).
+
+## Актуальность и maintenance (2026-11-11)
+
+Поверх snapshot/scope действует срок 14 суток и проверка declared dependencies.
+Expired/source-drift/dependency-stale исключаются из search/get/context/expand, включая
+semantic/hybrid fallback. История не переписывается; export показывает effective stale,
+persisted_state, freshness и expires_at. Packets дополнительно содержат expires_at.
+Review approve начинает новый интервал; остальные state edits сохраняют прежний anchor.
+General publication наследует оставшийся срок. Legacy human_review/release использует
+recorded_at, остальные — min(observed_at,recorded_at); новые записи без observed_at —
+время outcome, чтобы задержанный reconcile не продлевал срок.
+
+Proposal.dependencies: {files:[relative_path],entries:[K@revision]}; Core сохраняет hashes.
+`knowledge maintenance --task T [--limit 8]` — bounded fresh-agent brief с причинами
+и dependency changes. `knowledge source --task T --path PATH` — hash выбранного файла.
+`knowledge maintain --task T --input decisions.json` — атомарный batch renew/stale/retract
+с expected_revision/rationale и проверенными source hashes. Renew не меняет claim/kind,
+не повышает candidates и сохраняет обязательные зависимости. Source snapshots пишутся
+в evidence, audit отмечает native agent review, не independent verification. Повтор старой
+revision — conflict без продления. Stale maintenance повторяется через 14 дней;
+human-stale не восстанавливается автоматически. General не входит в automatic maintenance.
+
+`workflow start` возвращает maintenance_path/maintenance_due; preflight до основной
+задачи описан в [skill](../../skills/knowledge-cycle/references/freshness.md).
+[Дизайн и ограничения](../rfcs/006-knowledge-freshness.md). Фонового scheduler нет.

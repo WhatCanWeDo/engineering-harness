@@ -42,6 +42,9 @@ def parser(settings=None):
     p = evidence.add_parser("add"); p.add_argument("--task", required=True); p.add_argument("--path", required=True); p.add_argument("--label", default="")
     p = evidence.add_parser("read"); p.add_argument("--task", required=True); p.add_argument("--id", required=True); p.add_argument("--offset", type=int, default=0); p.add_argument("--limit", type=int, default=4000)
     knowledge = commands.add_parser("knowledge").add_subparsers(dest="action", required=True, parser_class=Parser)
+    p = knowledge.add_parser("maintenance"); p.add_argument("--task", required=True); p.add_argument("--limit", type=int, default=8)
+    p = knowledge.add_parser("maintain"); p.add_argument("--task", required=True); p.add_argument("--input", required=True)
+    p = knowledge.add_parser("source"); p.add_argument("--task", required=True); p.add_argument("--path", required=True)
     p = knowledge.add_parser("propose"); p.add_argument("--task", required=True); p.add_argument("--batch", required=True); p.add_argument("--input", required=True)
     p = knowledge.add_parser("reconcile"); p.add_argument("--limit", type=int, default=100)
     p = knowledge.add_parser("review"); p.add_argument("--task", required=True); p.add_argument("--entry", required=True); p.add_argument("--expected-revision", type=int, required=True); p.add_argument("--decision", required=True); p.add_argument("--claim"); p.add_argument("--kind")
@@ -97,6 +100,13 @@ def dispatch(store, args):
             return store.read_evidence(args.task, args.id, args.offset, args.limit)
         return store.add_evidence(args.task, args.path, args.label)
     if args.command == "knowledge":
+        if args.action in {"maintenance", "maintain", "source"}:
+            from . import freshness
+            if args.action == "maintenance": return freshness.brief(store, args.task, args.limit)
+            if args.action == "maintain": return freshness.apply(store, args.task, load(args.input))
+            task = store.get_task(args.task); store._role(task, "developer")
+            if getattr(store, "project_id", None) not in (None, task["project_id"]): fail("not_found", "Project root unavailable")
+            return freshness.source(store, args.path)[0]
         if args.action == "subprojects":
             from .subprojects import catalog
             return catalog(store, args.project)

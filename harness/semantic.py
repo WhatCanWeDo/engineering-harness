@@ -52,7 +52,7 @@ def embed(provider, texts, kind):
 
 
 def targets(store):
-    return [r for r in store._records() if r["state"] == "active" and r["kind"] != "hypothesis"]
+    return [r for r in store._records() if r["state"] == "active" and r["kind"] != "hypothesis" and store._fresh(r)]
 
 
 def existing(store, key):
@@ -87,7 +87,7 @@ def sync(store, limit=100):
     with store._write():
         for record, vector in zip(selected, vectors):
             current = store._current(record["entry_id"])
-            if current["revision"] != record["revision"] or current["state"] != "active":
+            if current["revision"] != record["revision"] or current["state"] != "active" or not store._fresh(current):
                 continue  # A concurrent revision will be picked up on the next sync.
             store.db.execute("INSERT OR REPLACE INTO embedding_vectors VALUES(?,?,?,?,?)",
                              (key, record["entry_id"], record["revision"], sha(document(record)), encode(vector)))

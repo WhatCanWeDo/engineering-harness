@@ -59,6 +59,12 @@ def start(store, binding, output, mode="lexical"):
     organization = subprojects.attach(store, task["task_id"], cat, task_paths, relative_cwd)
     task["subprojects"] = subprojects.summarize(organization)
     write_json(directory / "task.json", task)
+    from .freshness import brief as maintenance_brief
+    maintenance = maintenance_brief(store, task["task_id"]) if "developer" in task["roles"] else None
+    maintenance_path = None
+    if maintenance and maintenance["due"]:
+        maintenance_path = str((directory / "maintenance.json").absolute())
+        write_json(directory / "maintenance.json", maintenance)
     paths = {}
     for role in task["roles"]:
         path = directory / f"scout-{role}.json"
@@ -69,7 +75,7 @@ def start(store, binding, output, mode="lexical"):
         write_json(path, brief)
         paths[role] = str(path.absolute())
     return {"task_id": task["task_id"], "output": str(directory.absolute()),
-            "brief_paths": paths, "reconciliation": reconciliation, "index": index, "subprojects": subprojects.summarize(organization)}
+            "brief_paths": paths, "maintenance_path": maintenance_path, "maintenance_due": maintenance["due"] if maintenance else None, "reconciliation": reconciliation, "index": index, "subprojects": subprojects.summarize(organization)}
 
 
 def context(store, task, role, selection, output, budget):

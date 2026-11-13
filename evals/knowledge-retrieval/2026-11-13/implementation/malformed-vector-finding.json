@@ -1,0 +1,24 @@
+{
+  "requirement": "R1 malformed allowed vectors yield degraded lexical fallback",
+  "fixture": "One fresh active in-snapshot project entry, 2-dimensional deterministic provider, valid index then direct SQL vector replacement",
+  "inputs": [
+    "\"10\"",
+    "{\"1\":\"not-a-number\",\"0\":null}"
+  ],
+  "expected": {
+    "status": "degraded",
+    "mode": "lexical",
+    "warnings": "nonempty"
+  },
+  "actual": {
+    "status": "ok",
+    "mode": "semantic",
+    "warnings": []
+  },
+  "cause": "normalized iterates strings as characters and objects as keys; values ignored for object",
+  "origin": "Present also in baseline source; explicit accepted R1 fallback contract remains unmet",
+  "reproduced": true,
+  "minimized": true,
+  "snapshot_before": "snapshot-before.json",
+  "snapshot_after": "snapshot-after.json"
+}

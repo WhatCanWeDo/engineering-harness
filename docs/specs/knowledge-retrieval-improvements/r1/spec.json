@@ -1,0 +1,911 @@
+{
+  "acceptance": [
+    {
+      "artifact": "public/*/results.json",
+      "gap_ids": [],
+      "id": "AC1",
+      "measure": "Recall/nDCG/MRR@5, evidence coverage, candidate recall и paired deltas",
+      "method": "Фиксированные answerable/no-answer slices; одинаковый pool до/после rerank",
+      "requirement_ids": [
+        "R1"
+      ],
+      "source_ids": [
+        "E1"
+      ],
+      "status": "proposal",
+      "threshold": "Таблица всех выбранных вариантов и регрессий; выигрыш не обязателен"
+    },
+    {
+      "artifact": "public/scaling*; profiles; worker-result.json",
+      "gap_ids": [],
+      "id": "AC2",
+      "measure": "median/p95, cold/warm, RSS, profiler/SQL",
+      "method": "Изолированные временные БД, последовательные 100/1000 records runs",
+      "requirement_ids": [
+        "R2"
+      ],
+      "source_ids": [
+        "E1"
+      ],
+      "status": "proposal",
+      "threshold": "Измеренные bottlenecks и обоснованный порядок оптимизаций"
+    },
+    {
+      "artifact": "public/existing-suite.log; preview-escalated.log; freshness.log",
+      "gap_ids": [],
+      "id": "AC3",
+      "measure": "Correctness status по каждому suite",
+      "method": "Existing suite + post_hoc TTL/drift/snapshot; будущая differential evaluation",
+      "requirement_ids": [
+        "R3",
+        "R5"
+      ],
+      "source_ids": [
+        "E1"
+      ],
+      "status": "proposal",
+      "threshold": "Все затронутые проверки проходят; infrastructure/private unavailable не считаются pass"
+    },
+    {
+      "artifact": "git status/diff и scope report",
+      "gap_ids": [],
+      "id": "AC4",
+      "measure": "Отсутствие изменений production paths",
+      "method": "git diff для harness/skills/scripts/pyproject.toml/uv.lock; read-only metadata и temporary DB",
+      "requirement_ids": [
+        "R4"
+      ],
+      "source_ids": [
+        "U2"
+      ],
+      "status": "user_statement",
+      "threshold": "0 изменений production; permitted artifacts отдельно"
+    },
+    {
+      "artifact": "Будущий acceptance report",
+      "gap_ids": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "id": "AC5",
+      "measure": "Качество и end-to-end latency на реальных задачах",
+      "method": "Новый заранее фиксированный dataset; отдельный production reranker/runtime",
+      "requirement_ids": [
+        "R6"
+      ],
+      "source_ids": [],
+      "status": "unknown",
+      "threshold": "Не задано: пороги качества, p95 и стоимости согласовать перед rollout"
+    },
+    {
+      "artifact": "worker-result.json + manifest/digests",
+      "gap_ids": [],
+      "id": "AC6",
+      "measure": "Связь результатов с версиями и provenance",
+      "method": "Проверить hashes corpus/queries/transforms, command/environment и baseline revision",
+      "requirement_ids": [
+        "R7"
+      ],
+      "source_ids": [
+        "E1"
+      ],
+      "status": "proposal",
+      "threshold": "Для каждого замера сохранены входы, фактическая команда и ограничения"
+    }
+  ],
+  "diagrams": [
+    {
+      "description": "Предлагаемые узлы обозначают изменения текущего поиска. Core остаётся детерминированным; LLM вызывается нативным агентом. Направления показывают данные, а не новые полномочия.",
+      "edges": [
+        {
+          "from": "A",
+          "label": "Текст и допустимые ограничения",
+          "to": "B"
+        },
+        {
+          "from": "B",
+          "label": "Проверенный plan или fallback original",
+          "to": "C"
+        },
+        {
+          "from": "D",
+          "label": "Только доступные записи и векторы",
+          "to": "C"
+        },
+        {
+          "from": "C",
+          "label": "Ограниченный набор кандидатов",
+          "to": "E"
+        },
+        {
+          "from": "E",
+          "label": "Отранжированные ссылки, без гипотетических фактов",
+          "to": "F"
+        },
+        {
+          "from": "D",
+          "label": "Проверка свежести перед выдачей",
+          "to": "F"
+        },
+        {
+          "from": "F",
+          "label": "Контекст для работы и проверяемый результат",
+          "to": "G"
+        },
+        {
+          "from": "G",
+          "label": "Evidence-backed revisions через Core",
+          "to": "D"
+        }
+      ],
+      "nodes": [
+        {
+          "detail": "Смысл задачи, точные идентификаторы и ограничения.",
+          "id": "A",
+          "label": "Запрос задачи",
+          "state": "external"
+        },
+        {
+          "detail": "Original + условные rewrite/decomposition/HyDE; бюджет и trace.",
+          "id": "B",
+          "label": "План поиска",
+          "state": "proposed"
+        },
+        {
+          "detail": "FTS5 / dense / hybrid, scope и snapshot; dedup/fusion.",
+          "id": "C",
+          "label": "Кандидаты",
+          "state": "proposed"
+        },
+        {
+          "detail": "Revisions/evidence, TTL 14 дней и dependencies.",
+          "id": "D",
+          "label": "SQLite и производный vector index",
+          "state": "existing"
+        },
+        {
+          "detail": "Оценка релевантности кандидатов; не источник новых фактов.",
+          "id": "E",
+          "label": "Reranking top-N",
+          "state": "proposed"
+        },
+        {
+          "detail": "Текущая актуальность, Scout selection и ограничение бюджета.",
+          "id": "F",
+          "label": "Повторная проверка и context packet",
+          "state": "existing"
+        },
+        {
+          "detail": "Outcome/evidence → proposals/reconciliation.",
+          "id": "G",
+          "label": "Результат задачи и Curator",
+          "state": "existing"
+        }
+      ],
+      "title": "Существующее ядро и предлагаемый путь retrieval"
+    }
+  ],
+  "gaps": [
+    {
+      "basis": "Текущий scope U2 и отсутствие размеченных real tasks.",
+      "blocking": false,
+      "id": "G1",
+      "impact": "При другом распределении запросов выбранная техника может проиграть.",
+      "missing": "Репрезентативные реальные запросы и qrels",
+      "question": "Какие реальные инженерные задачи должны составить последующую оценку?",
+      "resolution": "Для исследования используем публичный synthetic corpus и существующий smoke set; не заявляем production gain.",
+      "status": "proposed"
+    },
+    {
+      "basis": "U1 допускает Rust, но не задаёт latency/throughput бюджет.",
+      "blocking": false,
+      "id": "G2",
+      "impact": "Можно преждевременно усложнить систему или не подготовиться к росту.",
+      "missing": "Целевой размер базы и SLA latency/cost",
+      "question": "Каковы ожидаемый масштаб и приемлемая задержка при следующей реализации?",
+      "resolution": "Показываем измеренные 100/1000 scaling и текущие 34 записи; численный SLA не придумываем.",
+      "status": "open"
+    },
+    {
+      "basis": "U3 просит оценить двухстадийный поиск; конкретный backend не задан.",
+      "blocking": false,
+      "id": "G3",
+      "impact": "Качество offline может не воспроизводиться выбранной локальной моделью.",
+      "missing": "Production reranker и бюджет native planner",
+      "question": "Для внедрения предпочесть локальную модель или native LLM с большей задержкой?",
+      "resolution": "Сейчас измеряем offline качество свежим native агентом, отделяя его от cross-encoder runtime и provider cost.",
+      "status": "proposed"
+    }
+  ],
+  "project_id": "engineering-harness",
+  "quiz": [
+    {
+      "concept": "Recall и reranking",
+      "correct_option_id": "a",
+      "id": "Q1",
+      "options": [
+        {
+          "explanation": "Reranker не может извлечь невидимую запись; сначала нужен достаточный candidate recall.",
+          "id": "a",
+          "text": "Изменит порядок доступных кандидатов."
+        },
+        {
+          "explanation": "Это потребовало бы нового retrieval, которого у такого reranker нет.",
+          "id": "b",
+          "text": "Восстановит пропущенную запись из индекса."
+        },
+        {
+          "explanation": "Гипотетический текст не является записью корпуса.",
+          "id": "c",
+          "text": "Добавит запись из гипотетического ответа."
+        },
+        {
+          "explanation": "Изменение порядка не меняет состав candidate pool.",
+          "id": "d",
+          "text": "Повысит ceiling recall набора кандидатов."
+        }
+      ],
+      "question": "Нужная запись не попала в top-20 первой стадии. Что даст reranker, который видит только эти 20 записей?"
+    },
+    {
+      "concept": "Свежесть при кэшировании",
+      "correct_option_id": "a",
+      "id": "Q2",
+      "options": [
+        {
+          "explanation": "Перед выдачей требуется текущая проверка eligibility, включая отзыв.",
+          "id": "a",
+          "text": "Повторно проверить состояние и исключить запись."
+        },
+        {
+          "explanation": "Snapshot не отменяет текущий отзыв и expiry.",
+          "id": "b",
+          "text": "Вернуть запись согласно snapshot задачи."
+        },
+        {
+          "explanation": "Оценка релевантности не даёт право использовать отозванную запись.",
+          "id": "c",
+          "text": "Вернуть запись с прежним confidence score."
+        },
+        {
+          "explanation": "Поиск и чтение не продлевают срок актуальности.",
+          "id": "d",
+          "text": "Продлить срок записи до следующего запроса."
+        }
+      ],
+      "question": "Запись отозвана, пока медленный reranker обрабатывал её. Как должен поступить будущий pipeline?"
+    },
+    {
+      "concept": "HyDE и evidence",
+      "correct_option_id": "a",
+      "id": "Q3",
+      "options": [
+        {
+          "explanation": "Гипотеза помогает retrieval, но не становится знанием или доказательством.",
+          "id": "a",
+          "text": "Как поисковый сигнал для реальных документов."
+        },
+        {
+          "explanation": "Успешный поиск не подтверждает весь синтетический документ.",
+          "id": "b",
+          "text": "Как новая observation после успешного поиска."
+        },
+        {
+          "explanation": "Отсутствие evidence нельзя компенсировать гипотетическим текстом.",
+          "id": "c",
+          "text": "Как ответ при отсутствии похожих документов."
+        },
+        {
+          "explanation": "Замена знания требует evidence и обычной процедуры пересмотра.",
+          "id": "d",
+          "text": "Как источник, заменяющий устаревшие записи."
+        }
+      ],
+      "question": "HyDE сгенерировал правдоподобное описание устройства сервиса. Как оно используется в этом плане?"
+    },
+    {
+      "concept": "Выбор реализации",
+      "correct_option_id": "a",
+      "id": "Q4",
+      "options": [
+        {
+          "explanation": "Сначала сравниваются алгоритмические улучшения; язык выбирается по остаточным bottlenecks.",
+          "id": "a",
+          "text": "Устранить повторы и измерить остаточную стоимость."
+        },
+        {
+          "explanation": "Это добавляет архитектуру прежде оценки более простых изменений.",
+          "id": "b",
+          "text": "Перенести текущие циклы целиком в новый сервис."
+        },
+        {
+          "explanation": "Профиль не установил, что именно SQLite является причиной повторной работы.",
+          "id": "c",
+          "text": "Заменить SQLite, сохранив прежние вычисления."
+        },
+        {
+          "explanation": "Это расширяет scope и не следует из измеренного hotspot.",
+          "id": "d",
+          "text": "Переписать все skills вместе с retrieval."
+        }
+      ],
+      "question": "После профилирования основное время уходит на повторный разбор JSON и одинаковые вычисления. Какой следующий шаг предложен?"
+    },
+    {
+      "concept": "Эксперимент и переносимость",
+      "correct_option_id": "a",
+      "id": "Q5",
+      "options": [
+        {
+          "explanation": "Для переноса результата нужны реальные задачи и новая фиксированная оценка.",
+          "id": "a",
+          "text": "Выигрыш в данном development эксперименте."
+        },
+        {
+          "explanation": "Маленький synthetic corpus не доказывает универсальность.",
+          "id": "b",
+          "text": "Гарантированный выигрыш на будущих задачах."
+        },
+        {
+          "explanation": "Тот же набор использовался для сравнения и выбора; protected evaluator отсутствует.",
+          "id": "c",
+          "text": "Независимый результат на private holdout."
+        },
+        {
+          "explanation": "Offline quality не измеряет будущий end-to-end latency/cost.",
+          "id": "d",
+          "text": "Достаточность выбранной production задержки."
+        }
+      ],
+      "question": "Вариант выиграл на 32 synthetic запросах, и по ним же выбран лучший режим. Что подтверждено?"
+    }
+  ],
+  "request": "подумай какие из этих техник добавить, чтобы улучшить поиск. Так же предлагаю оптимизировать базу знаний,можно переписать на rust, но только проведи все необходимые тесты",
+  "requirements": [
+    {
+      "gap_ids": [],
+      "id": "R1",
+      "source_ids": [
+        "U1",
+        "U3"
+      ],
+      "status": "user_statement",
+      "text": "Сравнить техники transformation и двухстадийный поиск на фиксированных запросах с явной релевантностью."
+    },
+    {
+      "gap_ids": [],
+      "id": "R2",
+      "source_ids": [
+        "U1"
+      ],
+      "status": "user_statement",
+      "text": "Оценить скорость и bottlenecks, обосновать Python/SQLite против возможного Rust."
+    },
+    {
+      "gap_ids": [],
+      "id": "R3",
+      "source_ids": [
+        "U1"
+      ],
+      "status": "user_statement",
+      "text": "Выполнить необходимые correctness проверки и честно показать ошибки/ограничения."
+    },
+    {
+      "gap_ids": [],
+      "id": "R4",
+      "source_ids": [
+        "U2"
+      ],
+      "status": "user_statement",
+      "text": "Не менять рабочее ядро и живые данные в проходе анализа."
+    },
+    {
+      "gap_ids": [],
+      "id": "R5",
+      "source_ids": [
+        "C1",
+        "C2",
+        "C3"
+      ],
+      "status": "proposal",
+      "text": "Будущие оптимизации сохраняют scope, role, snapshot, revision, expiry/dependency checks, evidence и fallback."
+    },
+    {
+      "gap_ids": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "id": "R6",
+      "source_ids": [],
+      "status": "unknown",
+      "text": "Выбор production techniques должен пройти оценку на реальных задачах и согласованном latency/cost budget."
+    },
+    {
+      "gap_ids": [],
+      "id": "R7",
+      "source_ids": [
+        "E1"
+      ],
+      "status": "proposal",
+      "text": "Все экспериментальные результаты воспроизводимы и привязаны к code/data/model/config."
+    }
+  ],
+  "revision": 1,
+  "scouting": {
+    "notes": "Свежий отдельный Scout; maintenance due=0. Legacy store выбран по известному project_id engineering-harness: отдельного project.json у checkout нет. Пакет содержит четыре записи; история не заменяет новые замеры. Корпус целиком в основной контекст не загружался.",
+    "packet_id": "P-c49938978e804a09a42d544e89a659e4",
+    "status": "ready",
+    "task_id": "retrieval-study-2026-11-13-spec"
+  },
+  "sections": [
+    {
+      "id": "intent",
+      "items": [
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "U1",
+            "U2",
+            "U3"
+          ],
+          "status": "user_statement",
+          "text": "Получить обоснованный порядок улучшений: качество поиска измеряется отдельно от скорости, а успех исследования не требует победы каждой новой техники. Пользователь получает результаты, воспроизводимые команды и следующий минимальный этап."
+        }
+      ]
+    },
+    {
+      "id": "context",
+      "items": [
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "C1",
+            "C2"
+          ],
+          "status": "evidence",
+          "text": "Сейчас task.goal напрямую поступает в lexical/semantic/hybrid. Scout получает до 12 найденных кандидатов и выбирает до 8; это уже содержательный отбор после поиска, но он не генерирует план retrieval и не реализует формально измеренный reranker."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "E2",
+            "C4"
+          ],
+          "status": "evidence",
+          "text": "Текущий runtime установки использует semantic. Локальная база содержит всего 34 записи. Масштабные synthetic measurements нужны как оценка роста, а не как описание текущей нагрузки."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "K1"
+          ],
+          "status": "evidence",
+          "text": "В историческом пакете указано разделение project DB; у текущего checkout отсутствует project profile, поэтому использован существующий legacy store с известным project ID. Инициализация новой БД и перенос данных не выполнялись."
+        }
+      ]
+    },
+    {
+      "id": "scope",
+      "items": [
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "U2"
+          ],
+          "status": "user_statement",
+          "text": "В этом проходе: read-only анализ исходников/метаданных, публичные тесты на временных базах, blind transformations и rerank на фиксированных данных, результаты и план. Реализация оптимизаций, миграция живой БД и переход на Rust отложены согласно выбранному scope."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [],
+          "status": "proposal",
+          "text": "Не нужны новая vector DB, собственный agent loop, внешний inference service и загрузка private knowledge в сеть. Будущий интерфейс сохраняет native Scout/Curator и существующие правила scope/snapshot/freshness."
+        }
+      ]
+    },
+    {
+      "id": "requirements",
+      "items": [
+        {
+          "gap_ids": [],
+          "source_ids": [],
+          "status": "proposal",
+          "text": "R1–R7 ниже связывают исследование с артефактами. Требования к будущей реализации явно помечены proposal; численные production SLA пока неизвестны."
+        }
+      ]
+    },
+    {
+      "id": "data",
+      "items": [
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "E1"
+          ],
+          "status": "evidence",
+          "text": "Существующий development corpus проверяется повторно. Новый публичный synthetic engineering corpus: 100 документов, 32 запроса, relevance labels зафиксированы отдельным автором до измерений. 28 answerable и 4 no-answer; есть exact, paraphrase, multilingual и multi-fact slices. Это development evidence, не реальный пользовательский holdout."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "E1"
+          ],
+          "status": "evidence",
+          "text": "Трансформации создаются свежим агентом только из query text, без corpus/qrels/результатов. Reranker видит запрос и перемешанные candidate documents, без qrels/исходных scores. Отдельные контексты уменьшают leakage, но не являются защищённым private evaluator."
+        },
+        {
+          "gap_ids": [
+            "G1"
+          ],
+          "source_ids": [],
+          "status": "unknown",
+          "text": "Нужен будущий набор реальных инженерных задач с оценкой источников человеком, разделённый по задачам/темам и времени. Его размер, состав и допустимые материалы ещё не заданы."
+        }
+      ]
+    },
+    {
+      "id": "approach",
+      "items": [
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "E1"
+          ],
+          "status": "proposal",
+          "text": "Приоритет по результатам: (1) пилот второй стадии с контролем no-answer; (2) один rewrite условно, с original branch; (3) decomposition только как проверяемая гипотеза для сложных multi-fact задач; (4) HyDE opt-in, потому что на этом наборе не превзошёл более короткий rewrite. Дешёвый локальный cross-encoder — отдельный будущий эксперимент, native LLM пока служит проверкой качества подхода."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "E1"
+          ],
+          "status": "evidence",
+          "text": "Kernel microbenchmark 1000×384: JSON parse+validation+normalization+Python dot median 128.96 мс; повторно используемая нормализованная NumPy float64 матрица — 0.069 мс. Однократная подготовка матрицы 123.81 мс, размер 3.07 МБ; top-20 совпал, max score delta=4.2e-17. Это показывает потенциал устранения повторов и векторизации, но не ускорение всей системы: SQL, freshness, invalidation, sorting и restart сюда не входят."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "C1",
+            "C2"
+          ],
+          "status": "proposal",
+          "text": "Сначала оптимизировать измеренные повторные вычисления: повторный lexical retrieval в hybrid, чтение/декодирование всех current records, JSON vectors, повторную нормализацию и Python dot-products. Сравнить векторизованный exact search, бинарное представление производного индекса и ограниченную SQL-выборку; формат источника истины SQLite сохранять до доказанной необходимости."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [],
+          "status": "proposal",
+          "text": "Query planner — отдельный native шаг перед retrieval. Предлагаемый QueryPlan v1: original, literal identifiers, optional rewrite, bounded subqueries, optional hypothetical_document, reason и бюджет. LLM создаёт данные; Core проверяет размер/форму, фиксирует task/snapshot, запускает разрешённые ветви и сохраняет trace. При недоступности planner выполняется исходный поиск."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "W1",
+            "W2"
+          ],
+          "status": "proposal",
+          "text": "Rewriting: один вариант для неясных/разговорных/межъязыковых запросов с сохранением исходного поиска. Decomposition: 2–4 самостоятельных подзапроса только для задач с несколькими фактами. Exact ID/path/symbol branch защищается от вытеснения. Количество вариантов не должно автоматически увеличивать вес одного источника при fusion."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "U3",
+            "W2"
+          ],
+          "status": "proposal",
+          "text": "Двухстадийный поиск: retrieve top-N → union/dedup → rerank → final top-k → повторная проверка eligibility → Scout/packet. Оценивать baseline и reranked на одном candidate pool. Reranker не способен восстановить документ, который не попал в кандидаты; поэтому отдельно измерять candidate recall и качество порядка."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "W3"
+          ],
+          "status": "proposal",
+          "text": "HyDE оставить экспериментальной опцией для абстрактных описаний и низкого recall. Гипотетический документ кодируется document encoder и служит только поисковым сигналом, не попадает в БД как знание и не подменяет evidence. Для точных API/версий/состояния сначала обычный поиск."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "C2",
+            "C4",
+            "E2"
+          ],
+          "status": "proposal",
+          "text": "Полный Rust rewrite пока не выбирать. SQLite и ONNX уже выполняют тяжёлую работу вне Python; сначала нужен профиль остаточной стоимости после алгоритмических улучшений. Если CPU всё ещё доминирует, сравнить узкий Rust-компонент со векторизованным Python на том же контракте и workload."
+        }
+      ]
+    },
+    {
+      "id": "evaluation",
+      "items": [
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "E1"
+          ],
+          "status": "evidence",
+          "text": "Основное сравнение (28 answerable, 4 no-answer отдельно): semantic Recall@5/nDCG@5=96.43/93.38%; original+rewrite=100/96.32%; original+decomposition=92.86/90.31%; original+HyDE=100/96.32%; semantic+rerank=100/100%; original+rewrite+decomposition+rerank=100/100%. Варианты сохраняют original, используют RRF и exact-identifier protection."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "E1"
+          ],
+          "status": "evidence",
+          "text": "Rerank улучшил порядок по nDCG у 5 из 28 запросов, не ухудшил ни одного; Recall улучшился только у одного. Exploratory 95% paired-bootstrap интервал прироста Recall: [0;10.71] п.п.; nDCG: [0.57;15.72] п.п. Все три candidate pools имеют Recall@20=100%. Комбинация всех техник не дала дополнительного выигрыша относительно rerank без transforms; эффект ограничен потолком набора."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "E1"
+          ],
+          "status": "evidence",
+          "text": "Это native LLM reranking + relevance filtering + abstention, один blind проход, 73 уникальных pool/query пакета, 96 сравнений. Корпус/qrels и исходные scores не передавались reranker. Production latency, токены и стоимость reranker не измерены; отдельный cross-encoder не тестировался."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "E1"
+          ],
+          "status": "evidence",
+          "text": "HyDE run использовал hypothetical-text query path; на всех 32 зафиксированных текстах проверена побитовая эквивалентность query/document embeddings текущего bundle (max abs delta=0). Вывод относится только к этой модели и этим текстам; Hypothetical documents не сохранялись как факты."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "E1"
+          ],
+          "status": "evidence",
+          "text": "В harness эксперимента сначала использовалась метка exact_symbol для закрепления первого результата. После аудита правило заменено проверкой реального совпадения query с ID/ref/symbol. Сохранён исходный v1, пересчитаны результаты: все rankings/metrics и rerank input/mapping совпали. Метки больше не используются для маршрутизации."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "E1"
+          ],
+          "status": "evidence",
+          "text": "Исходный correctness suite: 124 теста прошли совокупно; три preview tests повторно запущены с разрешением loopback после sandbox PermissionError. Дополнительно прошли 5 новых post_hoc freshness tests. Изменений продукта не было."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [],
+          "status": "proposal",
+          "text": "Качество: Recall@5 — доля релевантных документов в первых пяти; nDCG@5 — качество их порядка; MRR@5 — позиция первого релевантного; complete evidence coverage — все факты multi-fact запроса. Для no-answer считать abstention отдельно: top-k выдача сама по себе не доказывает наличие ответа."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [],
+          "status": "proposal",
+          "text": "Ablation: raw lexical/semantic/hybrid, original+rewrite, original+decomposition, комбинация, original+HyDE; затем одинаковые pools до/после rerank и комбинация с transformations. Показать per-query wins/ties/losses, интервалы paired bootstrap при доступности; выбор лучшего на этом наборе является adaptive development, не независимым подтверждением."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [],
+          "status": "proposal",
+          "text": "Скорость: warm query-cache hit, warm model/cache miss, fresh-process CLI отдельно; последовательный interleaved порядок, median/p95 и число повторов. Масштаб: 100/1000, при бюджете 5000 synthetic записей. Профиль Python, SQL count и RSS связываются с dataset/code/model hash."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "E1",
+            "C3"
+          ],
+          "status": "evidence",
+          "text": "Correctness: существующие suites плюс отдельные post_hoc проверки TTL/dependencies/revocation. Для будущих оптимизаций нужны differential parity и failure-injection: model failure, stale index, concurrent revoke/source drift, ordering, transaction rollback, restart/idempotency. Protected private evaluator отсутствует; это не означает, что private suite пройден."
+        }
+      ]
+    },
+    {
+      "id": "reproducibility",
+      "items": [
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "E1"
+          ],
+          "status": "evidence",
+          "text": "Baseline — чистый commit 5856756. Managed Python /Users/mshekhunov/engineering-harness/.venv/bin/python; lock uv.lock, SQLite/OS/model identity и SHA корпуса фиксируются в результатах. Запросы/labels не меняются после просмотра качества. Все benchmark DB временные."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [],
+          "status": "proposal",
+          "text": "Артефакты: public corpus, query-only transforms/provenance, blind rerank input/output, raw per-query metrics, profiles, commands и worker-result. Время native-agent генерации не выдаётся за production inference p95 или стоимость токенов."
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "items": [
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "E1"
+          ],
+          "status": "evidence",
+          "text": "Matched warm workload (8 фиксированных запросов × 3, n=24 на режим): semantic median/p95 16.07/16.61 мс при 100 документах, 161.13/177.68 мс при 1000. Fresh-process semantic без query-cache: median 1223 мс (n=3); с cached query около 200 мс. Это разные условия, их нельзя объединять в один latency показатель."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "E1"
+          ],
+          "status": "evidence",
+          "text": "Локальный CPU, существующая MiniLM; новые веса не загружаются. Замеры выполняются последовательно, дополнительная память ограничена примерно 2GiB, один benchmark — 300 секунд. Для увеличения размера нужно отдельное основание, а не автоматический перебор."
+        },
+        {
+          "gap_ids": [
+            "G2"
+          ],
+          "source_ids": [],
+          "status": "unknown",
+          "text": "Целевая допустимая задержка и размер будущей базы не заданы. Пороги выигрыша для Rust и reranker предстоит согласовать на реальном workload; исследовательские цифры не превращаются в SLA."
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "items": [
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "U2",
+            "C3"
+          ],
+          "status": "proposal",
+          "text": "Deployment и миграция в текущем исследовании неприменимы. Для будущей реализации: feature flags, legacy single-query fallback, rebuildable derived index, schema versioning, backup/rollback до изменения persisted format. История knowledge revisions/evidence и 14-дневная актуальность сохраняются."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [],
+          "status": "proposal",
+          "text": "Не кэшировать разрешение на выдачу между запросами без revalidation. Даже при reuse вычислений внутри операции, перед возвратом должны повторно проверяться текущая revision/state и актуальность источников; особенно после медленного embedder/reranker."
+        }
+      ]
+    },
+    {
+      "id": "delivery",
+      "items": [
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "E1"
+          ],
+          "status": "proposal",
+          "text": "Этап 1 завершён: исходные и freshness tests, blind transformations/rerank, scaling/cold-warm profiling, microbenchmark и этот draft. Следующее минимальное изменение — reuse валидированных векторов + векторизованный exact search с differential tests и финальной eligibility проверкой. Затем отдельный пилот второй стадии, оценка на реальных запросах, только потом conditional rewrite/decomposition/HyDE и решение об узком Rust spike."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [
+            "U2"
+          ],
+          "status": "user_statement",
+          "text": "Перед будущей разработкой зафиксировать точную ревизию спеки, выбранные техники и unresolved gaps. В текущем проходе исходники ядра не изменяются."
+        }
+      ]
+    },
+    {
+      "id": "risks",
+      "items": [
+        {
+          "gap_ids": [],
+          "source_ids": [],
+          "status": "proposal",
+          "text": "Маленький synthetic корпус может давать потолок recall и завышать эффект rerank. Query rewriting способен стереть отрицания/версии; decomposition — потерять связь между фактами; HyDE — направить поиск к вымышленному устройству системы. Обязательны исходная ветвь и отдельные регрессионные slices."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [],
+          "status": "proposal",
+          "text": "Оптимизации prefilter/caching могут ускорить поиск ценой утечки foreign/stale данных. Rust добавляет стоимость FFI, сборки/доставки и риск расхождения семантики. Эти риски проверяются до использования живой БД."
+        },
+        {
+          "gap_ids": [
+            "G3"
+          ],
+          "source_ids": [],
+          "status": "unknown",
+          "text": "Offline native-agent rerank не равен внедрённому cross-encoder. Выбор production reranker и его latency/cost ещё не измерены."
+        },
+        {
+          "gap_ids": [],
+          "source_ids": [],
+          "status": "proposal",
+          "text": "Корпус scaling не моделирует большие графы file/knowledge dependencies, высокую конкуренцию и поток записей. Production стоимость source hashing и cache invalidation требует отдельной нагрузки."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "U1",
+      "kind": "user",
+      "locator": ".harness/tasks/retrieval-study-2026-11-13/request.txt",
+      "note": "Исходный запрос: выбрать техники поиска, оценить оптимизацию и Rust, провести тесты."
+    },
+    {
+      "id": "U2",
+      "kind": "user",
+      "locator": "Ответ пользователя в этом чате 2026-11-13",
+      "note": "Выбран scope: «Анализ, замеры и план улучшений»."
+    },
+    {
+      "id": "U3",
+      "kind": "user",
+      "locator": ".harness/tasks/retrieval-study-2026-11-13/rerank-addendum.md",
+      "note": "Добавлено измерение двухстадийного поиска и совместного эффекта с transformations."
+    },
+    {
+      "id": "C1",
+      "kind": "code",
+      "locator": "harness/knowledge.py @5856756: search/scout_brief",
+      "note": "Прямой goal, FTS5 OR, полный обход current revisions, Scout после retrieval."
+    },
+    {
+      "id": "C2",
+      "kind": "code",
+      "locator": "harness/semantic.py @5856756: search/query_vector/normalized",
+      "note": "JSON vectors, cosine в Python, RRF, проверка актуальности и lexical fallback."
+    },
+    {
+      "id": "C3",
+      "kind": "code",
+      "locator": "harness/freshness.py @5856756: health/source",
+      "note": "14 суток, зависимые записи и file hashes; это обязательные инварианты оптимизаций."
+    },
+    {
+      "id": "C4",
+      "kind": "code",
+      "locator": "harness/embeddings.py @5856756: LocalEmbedder",
+      "note": "Локальная multilingual MiniLM через FastEmbed/ONNX; query и document входы, проверка bundle."
+    },
+    {
+      "id": "E1",
+      "kind": "artifact",
+      "locator": ".harness/testing/retrieval-study-2026-11-13/public/worker-result.json",
+      "note": "Независимый public evaluation worker: тесты, corpus hashes, замеры и ограничения."
+    },
+    {
+      "id": "E2",
+      "kind": "artifact",
+      "locator": ".harness/tasks/retrieval-study-2026-11-13/db-metadata.json",
+      "note": "Read-only метаданные legacy store: 34 записи, 34 revisions, 13 vectors, 806912 bytes; содержимое не экспортировалось."
+    },
+    {
+      "id": "W1",
+      "kind": "web",
+      "locator": "https://arxiv.org/abs/2305.14283",
+      "note": "Первичная работа о rewriting; её выигрыш не переносится автоматически на наш корпус."
+    },
+    {
+      "id": "W2",
+      "kind": "web",
+      "locator": "https://aclanthology.org/2025.acl-srw.32/",
+      "note": "Декомпозиция + retrieval подзапросов + reranking для multi-hop; мотивация ablation."
+    },
+    {
+      "id": "W3",
+      "kind": "web",
+      "locator": "https://aclanthology.org/2023.acl-long.99/",
+      "note": "HyDE: гипотетический документ для векторного retrieval; синтетический текст может содержать вымысел."
+    },
+    {
+      "id": "W4",
+      "kind": "web",
+      "locator": "https://www.sqlite.org/fts5.html#sorting_by_auxiliary_function_results",
+      "note": "FTS5 rank может ускорить сортировку относительно прямого bm25; применять только с прежними весами и проверкой порядка."
+    },
+    {
+      "id": "K1",
+      "kind": "knowledge",
+      "locator": "K-adcda7d944824ff1a79526f6bbd23946@1",
+      "note": "Контекст разделения project/legacy store; миграция не является частью исследования."
+    }
+  ],
+  "spec_id": "knowledge-retrieval-improvements",
+  "summary": "Результат исследования: первым пилотом предлагается semantic top-20 → LLM reranking/фильтрация → top-5, затем условный query rewriting. На 100 synthetic документах и 28 answerable запросах reranking поднял Recall@5 с 96.43% до 100%, nDCG@5 с 93.38% до 100%; 4/4 no-answer случая отклонены. Rewriting и HyDE дали одинаковый Recall@5=100%, decomposition при общем включении снизила его до 92.86%. Это небольшой development эксперимент, не доказательство production выигрыша. Оптимизацию начать с представления векторов и повторных вычислений; полный Rust rewrite пока не обоснован. Рабочее ядро не изменялось.",
+  "title": "Улучшение поиска Knowledge Core: качество, скорость и выбор реализации",
+  "version": 1
+}

@@ -2,9 +2,9 @@
 
 Общее ядро — пакет `harness`, Python 3.11+, SQLite с FTS5. Без semantic extra стандартной библиотеки достаточно. Из корня репозитория работает `python3 -m harness`; после установки пакета — команда `harness`. Нативный переносимый skill: [knowledge-cycle](../../skills/knowledge-cycle/SKILL.md).
 
-## Автоматизация
+## Автоматизация и legacy-совместимость
 
-Скрипты делают ввод/вывод, проверку policy, budgets, citations, очередь, retries, индекс и receipt. Отдельным агентам остаются два решения: Scout выбирает полезные refs; Curator предлагает новые короткие записи. Ни обход каталога, ни сборка prompt, ни пересчёт индексов не требуют LLM. Каждый получает ограниченный brief, а разработчик — готовый packet. Тестирование этим циклом не включается.
+Скрипты делают ввод/вывод, проверку policy, budgets, citations, очередь, retries, индекс и receipt. Отдельным агентам остаётся содержательный отбор и curation; новый staged путь добавляет условный Query Planner и Reranker/Scout. Ни обход каталога, ни сборка prompt, ни пересчёт индексов не требуют LLM. Каждый получает ограниченный brief, а разработчик — готовый packet. Тестирование этим циклом не включается. Ниже сохранены команды legacy workflow; для skill по умолчанию используется staged путь в конце документа.
 
 ```sh
 python3 -m harness workflow start --input task.json --output .harness/tasks/T/start
@@ -80,3 +80,14 @@ Init не импортирует знания, не очищает сущест�
 Не удаляй просроченные записи и не обновляй дату массовым approve. `knowledge maintenance`
 показывает due/remaining и текущие dependency changes; `knowledge maintain` сохраняет
 содержательное решение с evidence. После обновлений нужен новый task snapshot.
+## Staged retrieval
+
+Для новых задач через skill используй `workflow start --retrieval staged`.
+Результат содержит `planner_paths`; ясный literal query допускает planner bypass.
+`workflow retrieve --task T --input plan.json --mode semantic --output DIR`
+сохраняет pool и отдельный `reranker_path`. Передай только этот brief свежему
+native агенту, затем `workflow rerank --task T --input ranking.json --output DIR`.
+Если агента нет: `workflow rerank --task T --fallback --retrieval-id R-ID --output DIR`.
+В packet записывается различие native/fallback и trace. `--input` у retrieve
+можно опустить для original-only bypass. Decomposition/HyDE только с `--experimental`.
+Подробные JSON-форматы и limits — [retrieval](../../skills/knowledge-cycle/references/retrieval.md).

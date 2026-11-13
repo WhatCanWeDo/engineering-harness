@@ -68,19 +68,46 @@ def parser(settings=None):
     for name in ("start", "context", "finish", "ingest"):
         p = workflow.add_parser(name); p.add_argument("--input", required=True)
         if name != "start": p.add_argument("--task", required=True)
-        if name == "start": p.add_argument("--mode", choices=["lexical", "semantic", "hybrid"], default=os.environ.get("HARNESS_RETRIEVAL_MODE", settings.get("mode", "lexical")))
+        if name == "start":
+            p.add_argument("--mode", choices=["lexical", "semantic", "hybrid"], default=os.environ.get("HARNESS_RETRIEVAL_MODE", settings.get("mode", "lexical")))
+            p.add_argument("--retrieval", choices=["legacy", "staged"], default="legacy")
         if name != "ingest": p.add_argument("--output", required=True)
         if name == "ingest": p.add_argument("--batch", required=True)
         if name == "context":
             p.add_argument("--role", default="developer"); p.add_argument("--budget", type=int, default=1200)
+    p = workflow.add_parser("retrieve")
+    p.add_argument("--task", required=True); p.add_argument("--role", default="developer")
+    p.add_argument("--input"); p.add_argument("--output", required=True)
+    p.add_argument("--mode", choices=["lexical", "semantic", "hybrid"], default=os.environ.get("HARNESS_RETRIEVAL_MODE", settings.get("mode", "lexical")))
+    p.add_argument("--candidate-limit", type=int, default=20); p.add_argument("--experimental", action="store_true")
+    p = workflow.add_parser("rerank")
+    p.add_argument("--task", required=True); p.add_argument("--role", default="developer")
+    p.add_argument("--input"); p.add_argument("--output", required=True)
+    p.add_argument("--fallback", action="store_true"); p.add_argument("--retrieval-id")
+    p.add_argument("--budget", type=int, default=1200); p.add_argument("--top-k", type=int, default=5)
     return root
 
 
 def dispatch(store, args):
     if args.command == "workflow":
         from . import workflow
+        if args.action == "retrieve":
+            return workflow.retrieve(store, args.task, args.role, load(args.input) if args.input else None,
+                                     args.output, args.mode, args.candidate_limit, args.experimental)
+        if args.action == "rerank":
+            if args.fallback:
+                if args.input or not args.retrieval_id:
+                    fail("arguments", "Fallback requires --retrieval-id and no --input")
+                selection = {"retrieval_id": args.retrieval_id}
+            else:
+                if not args.input or args.retrieval_id:
+                    fail("arguments", "Rerank requires --input, or explicit --fallback --retrieval-id")
+                selection = load(args.input)
+                if not isinstance(selection, dict) or "ranked_refs" not in selection or "abstain" not in selection:
+                    fail("validation", "Reranker input must include ranked_refs and abstain; use --fallback if unavailable")
+            return workflow.rerank(store, args.task, args.role, selection, args.output, args.budget, args.top_k)
         data = load(args.input)
-        if args.action == "start": return workflow.start(store, data, args.output, args.mode)
+        if args.action == "start": return workflow.start(store, data, args.output, args.mode, args.retrieval)
         if args.action == "context": return workflow.context(store, args.task, args.role, data, args.output, args.budget)
         if args.action == "finish": return workflow.finish(store, args.task, data, args.output)
         return workflow.ingest(store, args.task, data, args.batch)

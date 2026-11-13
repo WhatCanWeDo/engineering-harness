@@ -121,7 +121,7 @@ def install(home, agents='both', dry_run=False):
                 invocation = shlex.join([str(python), str(canonical / 'scripts/fork_tab.py'), '--agent', 'claude'])
                 wrapper += f"\nCurrent session ID (native skill substitution): `${{CLAUDE_SESSION_ID}}`.\nRun from the current project:\n```sh\n{invocation} --session '${{CLAUDE_SESSION_ID}}'\n```\n"
             if name in ('knowledge-cycle', 'spec-init'):
-                wrapper += '\nUse a fresh non-fork harness-knowledge-worker for each Scout/Curator brief.\n'
+                wrapper += '\nUse a fresh non-fork harness-knowledge-worker for each Query Planner, Reranker/Scout or Curator brief.\n'
             if name == 'test-on-request':
                 wrapper += '\nUse a separate non-fork harness-test-generator for generation.\n'
             add_file(folder / 'SKILL.md', wrapper)

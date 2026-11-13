@@ -27,7 +27,9 @@ def sync_index(store):
         return {"status": "error", "warning": "Index update failed; search will use explicit fallback"}
 
 
-def start(store, binding, output, mode="lexical"):
+def start(store, binding, output, mode="lexical", retrieval="legacy"):
+    if retrieval not in {"legacy", "staged"}:
+        fail("validation", "Unknown retrieval workflow")
     binding = dict(binding)
     task_paths = binding.pop("paths", None)
     from . import subprojects
@@ -65,8 +67,13 @@ def start(store, binding, output, mode="lexical"):
     if maintenance and maintenance["due"]:
         maintenance_path = str((directory / "maintenance.json").absolute())
         write_json(directory / "maintenance.json", maintenance)
-    paths = {}
+    paths, planner_paths = {}, {}
     for role in task["roles"]:
+        if retrieval == "staged":
+            path = directory / f"planner-{role}.json"
+            write_json(path, store.retrieval_plan_brief(task["task_id"], role))
+            planner_paths[role] = str(path.absolute())
+            continue
         path = directory / f"scout-{role}.json"
         brief = store.scout_brief(task["task_id"], role, mode=mode)
         if getattr(store, "project_root", None) and getattr(store, "project_id", None) in (None, task["project_id"]):
@@ -75,7 +82,39 @@ def start(store, binding, output, mode="lexical"):
         write_json(path, brief)
         paths[role] = str(path.absolute())
     return {"task_id": task["task_id"], "output": str(directory.absolute()),
-            "brief_paths": paths, "maintenance_path": maintenance_path, "maintenance_due": maintenance["due"] if maintenance else None, "reconciliation": reconciliation, "index": index, "subprojects": subprojects.summarize(organization)}
+            "brief_paths": paths, "planner_paths": planner_paths, "retrieval": retrieval,
+            "maintenance_path": maintenance_path, "maintenance_due": maintenance["due"] if maintenance else None, "reconciliation": reconciliation, "index": index, "subprojects": subprojects.summarize(organization)}
+
+
+def retrieve(store, task, role, plan, output, mode="semantic", candidate_limit=20, experimental=False):
+    directory = new_directory(output)
+    result = store.retrieve(task, plan, role, mode, candidate_limit, experimental)
+    path = directory / "retrieval.json"
+    write_json(path, result)
+    # Native reranker sees neither hypothetical answers nor fusion scores/plans.
+    brief = {k: result[k] for k in ("retrieval_id", "task_id", "role", "goal", "candidates", "prompt", "warnings")}
+    reranker_path = directory / "reranker.json"
+    write_json(reranker_path, brief)
+    return {"retrieval_id": result["retrieval_id"], "status": result["status"],
+            "retrieval_path": str(path.absolute()), "reranker_path": str(reranker_path.absolute()),
+            "plan_digest": result["plan_digest"], "candidates": len(result["candidates"]),
+            "warnings": result["warnings"]}
+
+
+def rerank(store, task, role, selection, output, budget=1200, top_k=5):
+    result = store.apply_rerank(task, selection, role, top_k)
+    packet = store.prepare_context(task, role=role, budget=budget,
+                                   selected_refs=result["selected_refs"], selection_trace=result)
+    directory = Path(output)
+    directory.mkdir(parents=True, exist_ok=True)
+    packet_path = directory / f"{packet['packet_id']}.json"
+    text_path = directory / f"{packet['packet_id']}.txt"
+    write_json(packet_path, packet)
+    with text_path.open("x", encoding="utf-8") as stream:
+        stream.write(packet["text"])
+    return {"packet_id": packet["packet_id"], "packet_path": str(packet_path.absolute()),
+            "text_path": str(text_path.absolute()), "retrieval_id": result["retrieval_id"],
+            "status": result["status"], "mode": result["mode"], "warnings": packet["warnings"]}
 
 
 def context(store, task, role, selection, output, budget):

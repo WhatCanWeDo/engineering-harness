@@ -1,0 +1,62 @@
+{
+  "status": "pass",
+  "task_id": "native-staged-smoke-q23",
+  "query_id": "q23",
+  "retrieval_id": "R-0b94f5f6843b4b348a5dae5355701c6c",
+  "packet_id": "P-7780c8d66a29462494a5ebed2d48b769",
+  "plan_digest": "265839ef97c15b7f71db64004ca9058870c7edd8f3f04edaa215bb48f51971e4",
+  "native_plan": {
+    "version": 1,
+    "task_id": "native-staged-smoke-q23",
+    "role": "developer",
+    "original": "How should a consumer acknowledge a processed message, and what happens after repeated processing failures?",
+    "rewrite": null,
+    "reason": "The question clearly asks how to acknowledge a processed message and what happens after repeated processing failures; rewriting is unnecessary."
+  },
+  "native_response": {
+    "retrieval_id": "R-0b94f5f6843b4b348a5dae5355701c6c",
+    "ranked_refs": [
+      "K-2d27f31b7bc7401cb12a18c262211dc3@1",
+      "K-c1eec3362ec24da9b6ed7c51fcd293fa@1"
+    ],
+    "abstain": false,
+    "reason": "Две записи непосредственно покрывают подтверждение обработки сообщения и последствия повторных ошибок."
+  },
+  "candidate_count": 20,
+  "selected_refs": [
+    "K-2d27f31b7bc7401cb12a18c262211dc3@1",
+    "K-c1eec3362ec24da9b6ed7c51fcd293fa@1"
+  ],
+  "selected_document_ids": [
+    "offset",
+    "dlq"
+  ],
+  "frozen_relevant_document_ids": [
+    "offset",
+    "dlq"
+  ],
+  "frozen_relevant_coverage": 1.0,
+  "unexpected_selected_document_ids": [],
+  "checks": [
+    "DB-owned retrieval and packet persistence",
+    "task/role/snapshot/policy bindings",
+    "native plan digest and literal goal",
+    "sanitized reranker input without qrels/plan",
+    "native response candidate membership/order",
+    "current sources still expandable",
+    "packet text and budget",
+    "original frozen document provenance"
+  ],
+  "hashes": {
+    "start/planner-developer.json": "bd5dbed48225241c8c0a6122788b78f21c986c54dc95ef25732b6e20e7274478",
+    "native-plan.json": "b655ac3c3fa8a049e2530dba8bf009262c426d328823f169465fcbad59f8059c",
+    "retrieval/retrieval.json": "1c68e6f35be1203f6b45cd361a0149f767d3789c8fbfd166cb1bb84b45b44df2",
+    "retrieval/reranker.json": "c925d8387179a9445ef137d44a3b0e0d011426033e14f4175a4c4d2be85cb6bd",
+    "native-response.json": "86f151f0f5f647bcd1e53dece8eabec9ff215d142c1ab8719388973f73fb95f8",
+    "packet/P-7780c8d66a29462494a5ebed2d48b769.json": "d128e8e2780a78c7178d626993fddf992b721ee4d78bdb6372773d5d10c605fa"
+  },
+  "limitations": [
+    "One actual native integration smoke, not a new benchmark or general quality estimate.",
+    "Frozen relevance labels read by evaluator after native selection, never supplied in native briefs."
+  ]
+}

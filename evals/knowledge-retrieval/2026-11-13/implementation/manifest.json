@@ -1,0 +1,24 @@
+{
+  "baseline": "58567560b98b750de70258213dd91a8c1ff656d5",
+  "candidate_ref": "4a638484daa05e1fc785b0048caef661e2e1d5bf8a555151a052ed759ff8c264",
+  "source_sha256": {
+    "harness/semantic.py": "fb1d079d9c6f0d15ddb0802a67ac5e4ec0dd79d9d61ec9721a7be252e32ad7f0",
+    "harness/retrieval.py": "9ea2a15f4d4ea5dbe96ef121c9dea8aaf9ae1e7249c76cc3f9f271d1d25ef62f",
+    "harness/knowledge.py": "d0f3ff2345f05038043dd0e96012de2d3d0493ec4d80c4fedac796efcde7e964",
+    "harness/workflow.py": "72dfbadf2de2d43ba0e6d0e9744deca46873f2be65948ab4cdd0886b1f313062",
+    "harness/cli.py": "c0ba0d79e6f46e7e6950098000c1a85d1a9f19a011912a942004a9a65eee9bb0",
+    "skills/knowledge-cycle/SKILL.md": "96976bf7c5fa20f177d75380746d849f84856c34c341093595becdb4e1139d49",
+    "skills/knowledge-cycle/references/retrieval.md": "582207dfa37811013ec43b132cc362f2c89cb58d9b31fe137225e1d94da79807",
+    "scripts/install_skills.py": "9e10059651b70d7fb271651945f79acabf4e230b4b39a3da31d8e7fcd2f413fe",
+    ".claude/agents/harness-knowledge-worker.md": "970381e0c8c48da51d88f0fba49f3ede4bcfd8e55a54fd12ec2d496501ad58d8",
+    ".claude/skills/knowledge-cycle/SKILL.md": "112944ee8d3cbbfac8c8bc7c9f2f306f443c61246615c44dfe51123229b8dfc2"
+  },
+  "artifact_sha256": {
+    "summary.json": "cc63525c9d7f4854db5e01d9718a7a3648ed20145cee65f8f11648348e781205",
+    "regression-receipt.json": "fda7bb463f00739abcb68b53a61677b44a362895a28bd26300236ef44cd90229",
+    "malformed-vector-finding.json": "498b072418dee607d18677bb08eb9b3e4ca25c4f16ff3a0e7a1f0404f7f4c1fe",
+    "native-smoke.json": "7fa947e5e0759ecb5ef771d75991737bcf5cc334205f14f7152a6253dd629d8f",
+    "adversarial-confirmation.json": "cef1c8a0dc3d26920db8e3f6f0e9a53218e59163b2f043c6240b0abd34f7a0b5"
+  },
+  "note": "Core snapshot identity, not protected access isolation. Native/benchmark raw local artifacts remain under .harness/testing/retrieval-impl-2026-11-13; snapshots and old failing results retained."
+}

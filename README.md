@@ -82,6 +82,13 @@ RFC 002 посвящён тестированию по запросу, RFC 003 �
 
 ## Knowledge MVP1 и MVP2
 
+Skill теперь использует двухстадийный путь: условный native Query Planner →
+retrieval top-20 → свежий Reranker/Scout → проверенный top-5 packet. Original-only
+и reranker fallback явно отмечаются; legacy CLI сохраняется. Semantic scoring
+повторно использует нормализованные vectors/NumPy matrix без кэширования прав
+и актуальности. [Протокол](skills/knowledge-cycle/references/retrieval.md),
+[архитектура и ограничения](docs/rfcs/007-staged-retrieval.md).
+
 [knowledge-cycle](skills/knowledge-cycle/SKILL.md) подключён к этому проекту. SQLite хранит evidence, immutable revisions, tasks и durable queue; FTS5 и optional локальные embeddings готовят компактные role packets. Отдельные native Scout/Curator получают готовые briefs. Private backend отсутствует; общий installer адаптеров — `scripts/install_skills.py`.
 
 Знания имеют срок актуальности **14 суток**. Просроченные записи сохраняются в истории, но исключаются из контекста. При обращении к проекту отдельный Maintenance Curator проверяет source/spec/lockfiles и связанные записи; подтверждение продлевает срок, неопределённость оставляет запись вне выдачи. [Поведение и команды](skills/knowledge-cycle/references/freshness.md). Фонового таймера нет.

@@ -1,6 +1,8 @@
 """Derived local vector index, incremental recovery and deterministic rank fusion."""
 import json
 import math
+import sys
+from collections.abc import Mapping, Set
 
 from .knowledge import KnowledgeError, encode, fail, positive, sha, text
 
@@ -25,6 +27,9 @@ def document(record):
 
 def normalized(vector, dimensions):
     try:
+        # A JSON string/object is iterable but is not an ordered numeric vector.
+        if isinstance(vector, (str, bytes, bytearray, Mapping, Set)):
+            raise ValueError("Expected an ordered numeric vector")
         values = [float(v) for v in vector]
         if len(values) != dimensions or any(not math.isfinite(v) for v in values):
             raise ValueError("Wrong dimension or non-finite vector")
@@ -99,13 +104,16 @@ def sync(store, limit=100):
     return {**status(store), "indexed": indexed}
 
 
-def query_vector(store, task, query):
+def query_vector(store, task, query, kind="query"):
     key, _, dimensions = identity(store.embedder)
-    params = (key, task["project_id"], sha(query))
+    # Keep legacy query keys; a disjoint namespace prevents a hypothetical document
+    # from reusing a query-encoder vector on asymmetric embedding providers.
+    query_hash = sha(query) if kind == "query" else "document:" + sha(query)
+    params = (key, task["project_id"], query_hash)
     cached = store.db.execute("SELECT vector FROM query_vectors WHERE model_key=? AND project_id=? AND query_hash=?", params).fetchone()
     if cached:
         return normalized(json.loads(cached[0]), dimensions)
-    vector = embed(store.embedder, [query], "query")[0]
+    vector = embed(store.embedder, [query], kind)[0]
     with store._write():
         store.db.execute("INSERT OR REPLACE INTO query_vectors VALUES(?,?,?,?)", (*params, encode(vector)))
         # Bounded per-project/model cache; raw queries are never stored here.
@@ -113,23 +121,68 @@ def query_vector(store, task, query):
     return vector
 
 
-def search(store, task_id, query, role, limit, include_candidates, mode):
-    baseline = store.search(task_id, query, role, limit, include_candidates, mode="lexical")
+def score_vectors(store, key, dimensions, rows, allowed, vector):
+    """Reuse numeric data, never policy decisions; observe raw index edits too."""
+    ids = sorted(allowed)
+    signature = tuple((entry, rows[entry]["revision"], rows[entry]["content_hash"],
+                       rows[entry]["vector"]) for entry in ids)
+    cached = getattr(store, "_semantic_cache", None)
+    hit = cached is not None and cached[0] == key and cached[1] == signature
+    if hit:
+        matrix, numeric = cached[2:]
+    else:
+        numeric = [normalized(json.loads(rows[entry]["vector"]), dimensions) for entry in ids]
+        matrix = None
+    if matrix is None:
+        # A one-query CLI with a persisted query vector should not pay NumPy's
+        # startup cost. Promote on reuse, or use it if embedding already loaded it.
+        np = sys.modules.get("numpy")
+        if np is None and hit:
+            try:
+                import numpy as np
+            except ImportError:
+                pass
+        if np is not None:
+            matrix = np.asarray(numeric, dtype=np.float64)
+            numeric = None
+    # One bounded cache per connection. Source revisions and eligibility are
+    # still read on every search; no cache survives a process or model change.
+    estimated = len(ids) * dimensions * (8 if matrix is not None else 32)
+    estimated += sum(len(row[3]) * 2 for row in signature)
+    store._semantic_cache = ((key, signature, matrix, numeric)
+                             if estimated <= 32 * 1024 * 1024 else None)
+    if matrix is None:
+        return {entry: math.fsum(a * b for a, b in zip(vector, candidate))
+                for entry, candidate in zip(ids, numeric)}
+    scores = dict(zip(ids, (float(v) for v in matrix @ vector)))
+    # BLAS accumulation can move extremely close scores across a tie. Recompute
+    # those groups with the reference fsum, keeping the old deterministic order.
+    ordered = sorted(scores, key=lambda entry: (-scores[entry], entry))
+    near = set()
+    for a, b in zip(ordered, ordered[1:]):
+        if abs(scores[a] - scores[b]) <= 1e-12:
+            near.update((a, b))
+    positions = {entry: i for i, entry in enumerate(ids)}
+    for entry in near:
+        scores[entry] = math.fsum(a * b for a, b in zip(vector, matrix[positions[entry]].tolist()))
+    return scores
+
+
+def search(store, task_id, query, role, limit, include_candidates, mode, query_kind="query"):
     task = store.get_task(task_id)
+    store._role(task, role)
     query = query.strip()[:4000]
     allowed = {r["entry_id"]: r for r in store._records() if store._eligible(task, r, include_candidates)}
     try:
         key, model, dimensions = identity(store.embedder)
         if not query or not allowed:
+            baseline = store.search(task_id, query, role, limit, include_candidates, mode="lexical")
             return {**baseline, "mode": mode}
         rows = existing(store, key)
         if any(not matches(rows.get(k), r) for k, r in allowed.items()):
             fail("index_lagging", "Applicable corpus has missing or stale vectors")
-        vector = query_vector(store, task, query)
-        scores = {}
-        for entry_id in allowed:
-            candidate = normalized(json.loads(rows[entry_id]["vector"]), dimensions)
-            scores[entry_id] = math.fsum(a * b for a, b in zip(vector, candidate))
+        vector = query_vector(store, task, query, query_kind)
+        scores = score_vectors(store, key, dimensions, rows, allowed, vector)
         semantic = sorted(scores, key=lambda k: (-scores[k], k))
         if mode == "hybrid":
             lexical = store.search(task_id, query, role, 30, include_candidates, mode="lexical")

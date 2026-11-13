@@ -1,0 +1,18 @@
+{
+  "spec_id": "knowledge-retrieval-improvements",
+  "revision": 1,
+  "sha256": "79554f94002ab8327a14fdc4616b8c34642984834aeb6f4310fced3907f15262",
+  "status": "draft",
+  "validation": {
+    "status": "draft",
+    "gaps": 3,
+    "blocking_gaps": 0,
+    "scope": "structural validation only; not user approval"
+  },
+  "warnings": [],
+  "files": {
+    "spec.json": "79554f94002ab8327a14fdc4616b8c34642984834aeb6f4310fced3907f15262",
+    "SPEC.md": "2aca837a9e606d08bb9863bdb74a052ee3d6d9bb5b28604da88eb3a9cd81d375",
+    "review.html": "74e91ff5843b9c48ed7688b2a0b95889a0e9c7cf6bce99b6ad1961766af3e67d"
+  }
+}

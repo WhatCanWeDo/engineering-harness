@@ -11,6 +11,7 @@ import random
 import re
 import tempfile
 from delivery import default_output, describe
+import concise
 
 ROOT = Path(__file__).resolve().parents[1]
 SECTION_IDS = ['background', 'intuition', 'changes', 'verification']
@@ -22,34 +23,40 @@ def string(value, label):
 
 
 def validate(doc):
-    if not isinstance(doc, dict) or type(doc.get('version')) is not int or doc['version'] != 1:
-        raise ValueError('Document version must be 1')
+    if not isinstance(doc, dict) or type(doc.get('version')) is not int or doc['version'] not in (1, 2):
+        raise ValueError('Document version must be 1 or 2')
     for key in ('title', 'scope'):
         string(doc.get(key), key)
     sections = doc.get('sections')
-    if not isinstance(sections, list) or len(sections) != 4 or any(not isinstance(s, dict) for s in sections):
-        raise ValueError('Expected four sections')
-    if [s.get('id') for s in sections] != SECTION_IDS:
+    if not isinstance(sections, list) or not 1 <= len(sections) <= 8 or any(not isinstance(s, dict) for s in sections):
+        raise ValueError('Expected 1..8 sections')
+    if doc['version'] == 1 and [s.get('id') for s in sections] != SECTION_IDS:
         raise ValueError('Sections must be background, intuition, changes, verification in order')
-    for section in sections:
-        string(section.get('title'), 'section title')
-        if not isinstance(section.get('blocks'), list) or not section['blocks']:
+    section_ids = [s.get('id') for s in sections]
+    if any(not concise.ident(i) or i in {'quiz','questions'} for i in section_ids) or len(set(section_ids)) != len(section_ids):
+        raise ValueError('Unsafe or duplicate section ID')
+    def validate_blocks(blocks, nested=False):
+        if not isinstance(blocks, list) or not blocks:
             raise ValueError('Section blocks must be a nonempty list')
-        for block in section['blocks']:
-            if not isinstance(block, dict):
-                raise ValueError('Block must be an object')
+        for block in blocks:
+            if not isinstance(block, dict): raise ValueError('Block must be an object')
             kind = block.get('type')
             if kind in ('paragraph', 'code'):
                 string(block.get('text'), 'block text')
-                if kind == 'code':
-                    string(block.get('label'), 'code label')
+                if kind == 'code': string(block.get('label'), 'code label')
             elif kind in ('list', 'flow'):
                 if not isinstance(block.get('items'), list) or not block['items']:
                     raise ValueError('Block items must be a nonempty list')
-                for item in block['items']:
-                    string(item, 'block item')
+                for item in block['items']: string(item, 'block item')
+            elif kind == 'details' and doc['version'] == 2 and not nested:
+                string(block.get('summary'), 'details summary')
+                if block.get('covers'): raise ValueError('Put coverage on detail content, not its summary')
+                validate_blocks(block.get('blocks'), True)
             else:
-                raise ValueError(f'Unknown block type: {kind!r}')
+                raise ValueError(f'Unknown or nested block type: {kind!r}')
+    for section in sections:
+        string(section.get('title'), 'section title')
+        validate_blocks(section.get('blocks'))
     quiz = doc.get('quiz')
     if not isinstance(quiz, list) or len(quiz) != 5:
         raise ValueError('Quiz must contain exactly five questions')
@@ -81,6 +88,7 @@ def validate(doc):
         if q['correct_option_id'] not in ids:
             raise ValueError('Correct option does not exist')
 
+    if doc["version"] == 2: concise.validate_route(doc)
 
 def prepare(doc):
     quiz = copy.deepcopy(doc['quiz'])
@@ -142,18 +150,21 @@ def audit(record, history):
 def render(doc, quiz):
     esc = html.escape
     sections = []
-    for section in doc['sections']:
-        blocks = []
-        for block in section['blocks']:
+    def blocks_html(blocks):
+        result = []
+        for block in blocks:
             kind = block['type']
-            if kind == 'paragraph':
-                blocks.append('<p>' + esc(block['text']) + '</p>')
-            elif kind == 'code':
-                blocks.append('<figure><figcaption>' + esc(block['label']) + '</figcaption><pre><code>' + esc(block['text']) + '</code></pre></figure>')
+            attrs = ' data-search-block data-covers="' + esc(' '.join(block.get('covers', [])), quote=True) + '"'
+            # Empty coverage attributes are harmless and never count as a fact.
+            if kind == 'paragraph': result.append('<p'+attrs+'>' + esc(block['text']) + '</p>')
+            elif kind == 'code': result.append('<figure data-kind="code"'+attrs+'><figcaption>' + esc(block['label']) + '</figcaption><pre><code>' + esc(block['text']) + '</code></pre></figure>')
+            elif kind == 'details': result.append('<details data-detail><summary>'+esc(block['summary'])+'</summary>'+blocks_html(block['blocks'])+'</details>')
             else:
                 cls = ' class="flow"' if kind == 'flow' else ''
-                blocks.append('<ol' + cls + '>' + ''.join('<li>' + esc(i) + '</li>' for i in block['items']) + '</ol>')
-        sections.append('<section id="' + section['id'] + '"><h2>' + esc(section['title']) + '</h2>' + ''.join(blocks) + '</section>')
+                result.append('<ol'+attrs+cls+'>' + ''.join('<li>' + esc(i) + '</li>' for i in block['items']) + '</ol>')
+        return ''.join(result)
+    for section in doc['sections']:
+        sections.append('<section id="' + section['id'] + '"><h2>' + esc(section['title']) + '</h2>' + blocks_html(section['blocks']) + '</section>')
     toc = ''.join('<li><a href="#' + s['id'] + '">' + esc(s['title']) + '</a></li>' for s in doc['sections'])
     payload = json.dumps(quiz, ensure_ascii=False).replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026').replace('\u2028', '\\u2028').replace('\u2029', '\\u2029')
     values = {'TITLE': esc(doc['title']), 'SCOPE': esc(doc['scope']), 'CONTENTS': ''.join(sections), 'TOC': toc, 'QUIZ': payload}
@@ -183,6 +194,11 @@ def main():
         quiz, record = prepare(doc)
         warnings = audit(record, history)
         content = render(doc, quiz)
+        expected = [f['id'] for f in doc['facts']] if doc['version'] == 2 else None
+        critical = [f['id'] for f in doc.get('facts', []) if f['critical']]
+        reading = concise.analyze(content, quiz, expected, critical)
+        warnings.extend(reading['warnings'])
+        content = concise.attach(content, reading)
         args.output.parent.mkdir(parents=True, exist_ok=True)
         staged = None
         try:
@@ -203,7 +219,7 @@ def main():
                 recorded = True
             except OSError as exc:
                 warnings.append(f'HTML created, but optional history was not recorded: {exc}. Cross-quiz diagnostics may be incomplete.')
-        print(json.dumps({'output': str(args.output.resolve()), 'warnings': warnings, 'history_recorded': recorded, 'delivery': describe(args.output)}, ensure_ascii=False))
+        print(json.dumps({'output': str(args.output.resolve()), 'warnings': warnings, 'history_recorded': recorded, 'reading': reading, 'delivery': describe(args.output)}, ensure_ascii=False))
     except (OSError, ValueError) as exc:
         parser.exit(2, f'Render error: {exc}\n')
 

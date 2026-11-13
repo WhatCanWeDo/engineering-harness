@@ -494,5 +494,32 @@
       ],
       "correct_option_id": "1"
     }
-  ]
+  ],
+  "reading": {
+    "main_sections": [
+      "scope",
+      "approach",
+      "data",
+      "risks"
+    ],
+    "critical_refs": [],
+    "quiz_requires": {
+      "1": [
+        "summary"
+      ],
+      "2": [
+        "item-data-1"
+      ],
+      "3": [
+        "G2"
+      ],
+      "4": [
+        "G3",
+        "AC1"
+      ],
+      "5": [
+        "AC2"
+      ]
+    }
+  }
 }

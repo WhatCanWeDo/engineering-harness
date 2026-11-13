@@ -27,7 +27,12 @@ def fields(obj, expected, name):
     require(isinstance(obj,dict) and set(obj)==set(expected.split()),f'{name}: fields must be {expected}')
 
 def validate(s):
-    fields(s,'version spec_id revision project_id title request summary scouting sources sections requirements acceptance gaps diagrams quiz','spec')
+    fields({k:v for k,v in s.items() if k!='reading'},'version spec_id revision project_id title request summary scouting sources sections requirements acceptance gaps diagrams quiz','spec')
+    if 'reading' in s:
+        reading=s['reading']; fields(reading,'main_sections critical_refs quiz_requires','reading')
+        require(isinstance(reading['main_sections'],list) and all(isinstance(x,str) and x in {a[0] for a in SECTIONS} for x in reading['main_sections']),'invalid main_sections')
+        require(isinstance(reading['critical_refs'],list) and all(isinstance(x,str) for x in reading['critical_refs']),'invalid critical_refs')
+        require(isinstance(reading['quiz_requires'],dict),'quiz_requires must map question IDs to fact IDs')
     require(type(s['version']) is int and s['version']==1,'version must be 1')
     require(type(s['revision']) is int and s['revision']>0,'revision must be positive integer')
     for k in ['spec_id','project_id','title','request','summary']:text(s[k],k)

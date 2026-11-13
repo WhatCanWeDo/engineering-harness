@@ -17,6 +17,7 @@ HERE=Path(__file__).resolve().parents[1]
 SHARED=HERE.parent/'understand-changes/scripts'
 sys.path.insert(0,str(SHARED))
 import render_explainer as shared
+import concise
 from delivery import describe
 E=html.escape
 
@@ -33,11 +34,13 @@ def payload(value):
     return json.dumps(value,ensure_ascii=False).replace('<','\\u003c').replace('>','\\u003e').replace('&','\\u0026')
 
 def document(s):
-    return {'version':1,'title':s['title'],'scope':f"{s['spec_id']} · revision {s['revision']} · ML Task Spec v1 · Черновик для обсуждения",
+    doc = {'version':1,'title':s['title'],'scope':f"{s['spec_id']} · revision {s['revision']} · ML Task Spec v1 · Черновик для обсуждения",
       'sections':[{'id':k,'title':t,'blocks':[{'type':'paragraph','text':v}]} for k,t,v in [
-       ('background','Как я понял задачу',s['summary']),('intuition','Пробелы и мои временные решения','Пробел не закрывается автоматически при выборе предположения. Проверь, подходит ли предложенное разрешение.'),
-       ('changes','Подробная спецификация','Требования, источники и критерии связаны стабильными ID. Метка «По источнику» не означает независимую проверку.'),
-       ('verification','Что проверить перед согласованием','Прочитай критерии приёмки и последствия предположений. Quiz проверяет понимание текста черновика; ответы и локальные отметки не согласовывают постановку и не запускают реализацию.')]],'quiz':s['quiz']}
+       ('background','Как я понял задачу',s['summary']),('intuition','Пробелы и мои временные решения','Проверь открытые вопросы; предложение не означает согласование.'),
+       ('changes','Подход, требования и детали','Полные справочные разделы раскрываются на месте.'),
+       ('verification','Что проверить перед согласованием','Quiz проверяет понимание черновика. Ответы и отметки не согласовывают постановку и не запускают реализацию.')]],'quiz':s['quiz']}
+    doc['sections'][0]['blocks'][0]['covers']=['summary']
+    return doc
 
 def check(s):
     result=validate(s);shared.validate(document(s));return result
@@ -61,41 +64,80 @@ def diagram(d,index,mobile=False):
     for n in d['nodes']:
         y=positions[n['id']];h=heights[n['id']]
         nodes.append(f'<foreignObject x="{x}" y="{y}" width="{w}" height="{h}"><div xmlns="http://www.w3.org/1999/xhtml" class="node-shell"><button class="graph-node {n["state"]}" type="button" data-node="{n["id"]}" aria-pressed="false"><small>{labels[n["state"]]}</small><strong>{E(n["label"])}</strong><span>{E(n["detail"])}</span></button></div></foreignObject>')
-    return f'<svg class="spec-graph {"mobile-graph" if mobile else "wide-graph"}" viewBox="0 0 {width} {height}" role="group" aria-labelledby="{prefix}-title"><title id="{prefix}-title">{E(d["title"])}. Связи расшифрованы под схемой.</title><defs><marker id="{prefix}-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#607b71"/></marker></defs>{"".join(edges+nodes)}</svg>'
+    return f'<svg class="spec-graph {"mobile-graph" if mobile else "wide-graph"}" {"data-reading-ignore" if mobile else ""} viewBox="0 0 {width} {height}" role="group" aria-labelledby="{prefix}-title"><title id="{prefix}-title">{E(d["title"])}. Связи расшифрованы под схемой.</title><defs><marker id="{prefix}-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#607b71"/></marker></defs>{"".join(edges+nodes)}</svg>'
 
 def diagrams(s):
     out=[]
     for i,d in enumerate(s['diagrams']):
         nodes={n['id']:n['label'] for n in d['nodes']}
         legend=''.join(f'<li data-from="{e["from"]}" data-to="{e["to"]}"><strong>{E(nodes[e["from"]])} → {E(nodes[e["to"]])}</strong><br>{E(e["label"])}</li>' for e in d['edges'])
-        out.append(f'<figure class="spec-map"><h3>{E(d["title"])}</h3><p>{E(d["description"])}</p><p class="hint">Нажми на узел, чтобы выделить его связи. Номера стрелок раскрыты под схемой.</p>{diagram(d,i)}{diagram(d,i,True)}<figcaption><ol class="edge-legend">{legend}</ol></figcaption></figure>')
+        out.append(f'<figure class="spec-map" data-covers="diagram-{i+1}"><h3>{E(d["title"])}</h3><p>{E(d["description"])}</p><p class="hint">Нажми на узел, чтобы выделить его связи. Номера стрелок раскрыты под схемой.</p>{diagram(d,i)}{diagram(d,i,True)}<figcaption><ol class="edge-legend">{legend}</ol></figcaption></figure>')
     return ''.join(out)
 
 def badge(status):return f'<span class="status {status}">{LABELS.get(status,E(status))}</span>'
 def cites(ids):return ' '.join(f'<a href="#source-{E(i)}">{E(i)}</a>' for i in ids)
-def item_html(item):
+def item_html(item, ref=None):
     links=cites(item['source_ids'])+' '+ ' '.join('<a href="#'+g+'">'+g+'</a>' for g in item['gap_ids'])
-    return f'<div class="spec-item">{badge(item["status"])}<p>{E(item["text"])}</p><div class="citations">{links}</div></div>'
+    attrs=f' id="{E(ref)}" data-covers="{E(ref)}"' if ref else ''
+    return f'<div class="spec-item"{attrs}>{badge(item["status"])}<p>{E(item["text"])}</p><div class="citations">{links}</div></div>'
 
 def gap_html(s):
-    if not s['gaps']:return '<p>Явные пробелы не отмечены. Это не доказательство полноты постановки: проверь сценарии и non-goals.</p>'
-    return ''.join(f'<article class="gap-card" id="{g["id"]}"><h3>{g["id"]} · {E(g["missing"])}</h3><p class="gap-status">{E(g["status"])} · {"Блокирует реализацию" if g["blocking"] else "Не блокирует первый этап"}</p><dl>'+''.join(f'<dt>{label}</dt><dd>{E(g[key])}</dd>' for key,label in [('resolution','Как разрешено в черновике'),('basis','Почему так'),('impact','Что будет, если предположение неверно'),('question','Что нужно от тебя')])+f'</dl><label for="note-{g["id"]}">Твоя поправка</label><textarea id="note-{g["id"]}" data-review="{g["id"]}" rows="3" placeholder="Текст появится в блоке правок ниже."></textarea></article>' for g in s['gaps'])
+    if not s['gaps']: return '<p>Явные пробелы не отмечены; проверь полноту сценариев.</p>'
+    out=[]
+    for g in s['gaps']:
+        # Open decisions and their consequences are never folded to meet a time budget.
+        content=f'<article class="gap-card" id="{g["id"]}" data-covers="{g["id"]}"><h3>{g["id"]} · {E(g["missing"])}</h3><p class="gap-status">{E(g["status"])} · {"Блокирует реализацию" if g["blocking"] else "Не блокирует первый этап"}</p><dl>'+''.join(f'<dt>{label}</dt><dd>{E(g[key])}</dd>' for key,label in [('resolution','Предложение'),('impact','Последствие ошибки'),('question','Вопрос к тебе'),('basis','Основание')])+f'</dl><label for="note-{g["id"]}">Твоя поправка</label><textarea id="note-{g["id"]}" data-review="{g["id"]}" rows="2"></textarea></article>'
+        if g['status']=='confirmed' and not g['blocking'] and g['id'] not in s.get('reading',{}).get('critical_refs',[]):
+            content='<details data-detail><summary>'+E(g['id']+' · Согласованное решение: '+g['missing'])+'</summary>'+content+'</details>'
+        out.append(content)
+    return ''.join(out)
+
 
 def body_html(s):
     out=[]
+    main=set(s.get('reading',{}).get('main_sections',['intent','scope','approach','risks'])) | {'scope','risks','requirements'}
+    critical=set(s.get('reading',{}).get('critical_refs',[]))
+    for sec in s['sections']:
+        if any(f'item-{sec["id"]}-{i+1}' in critical for i in range(len(sec['items']))): main.add(sec['id'])
     for sec,(_,title,_) in zip(s['sections'],SECTIONS):
-        content=''.join(item_html(x) for x in sec['items'])
+        content=''.join(item_html(x,f'item-{sec["id"]}-{i+1}') for i,x in enumerate(sec['items']))
         if sec['id']=='requirements':
-            content+=''.join(f'<article class="requirement" id="{r["id"]}"><h4>{r["id"]}</h4>{item_html(r)}<label for="review-{r["id"]}">Проверка понимания</label><select id="review-{r["id"]}" data-review="{r["id"]}"><option value="">Не отмечено</option><option>Понято верно</option><option>Нужна поправка</option><option>Нужен контекст</option></select></article>' for r in s['requirements'])
+            content+=''.join(f'<article class="requirement" id="{r["id"]}" data-covers="{r["id"]}"><h4>{r["id"]}</h4>{item_html(r)}<label for="review-{r["id"]}">Проверка понимания</label><select id="review-{r["id"]}" data-review="{r["id"]}"><option value="">Не отмечено</option><option>Понято верно</option><option>Нужна поправка</option><option>Нужен контекст</option></select></article>' for r in s['requirements'])
             for a in s['acceptance']:
-                content+=f'<article class="acceptance" id="{a["id"]}"><h4>{a["id"]} → '+', '.join(f'<a href="#{r}">{r}</a>' for r in a['requirement_ids'])+'</h4>'+badge(a['status'])+'<dl>'+''.join(f'<dt>{label}</dt><dd>{E(a[key])}</dd>' for key,label in [('measure','Измеряем'),('method','Метод и данные'),('threshold','Порог / условие'),('artifact','Evidence-артефакт')])+'</dl>'+cites(a['source_ids'])+' '+ ' '.join('<a href="#'+g+'">'+g+'</a>' for g in a['gap_ids'])+'</article>'
-        out.append(f'<section class="spec-section" id="spec-{sec["id"]}"><h3>{E(title)}</h3>{content}</section>')
-    out.append('<section class="spec-section"><h3>Источники и ограничения разведки</h3><p>'+E(s['scouting']['status']+': '+s['scouting']['notes'])+'</p><p class="hint">Task: '+E(s['scouting']['task_id'])+' · packet: '+E(s['scouting']['packet_id'])+'</p>')
+                content+=f'<article class="acceptance" id="{a["id"]}" data-covers="{a["id"]}"><h4>{a["id"]} → '+', '.join(f'<a href="#{r}">{r}</a>' for r in a['requirement_ids'])+'</h4>'+badge(a['status'])+'<dl>'+''.join(f'<dt>{label}</dt><dd>{E(a[key])}</dd>' for key,label in [('measure','Измеряем'),('method','Метод и данные'),('threshold','Порог / условие'),('artifact','Evidence-артефакт')])+'</dl>'+cites(a['source_ids'])+' '+ ' '.join('<a href="#'+g+'">'+g+'</a>' for g in a['gap_ids'])+'</article>'
+        if sec['id'] in main:
+            out.append(f'<section class="spec-section" id="spec-{sec["id"]}"><h3>{E(title)}</h3>{content}</section>')
+        else:
+            out.append(f'<details data-detail id="spec-{sec["id"]}"><summary>{E(title)}</summary>{content}</details>')
+    out.append('<p data-search-block data-covers="scouting">Разведка: '+E(s['scouting']['status']+': '+s['scouting']['notes'])+'</p>')
+    sources=[];visible_sources=[]
     for src in s['sources']:
         loc=f'<a href="{E(src["locator"])}" rel="noreferrer">{E(src["locator"])}</a>' if src['kind']=='web' else E(src['locator'])
-        out.append(f'<article id="source-{src["id"]}" class="source"><strong>{src["id"]} · {E(src["kind"])}</strong><p>{loc}</p><p>{E(src["note"])}</p></article>')
-    out.append('</section><details><summary>Исходное описание задачи</summary><pre>'+E(s['request'])+'</pre></details>')
+        (visible_sources if 'source-'+src['id'] in critical else sources).append(f'<article id="source-{src["id"]}" class="source" data-covers="source-{src["id"]}"><strong>{src["id"]} · {E(src["kind"])}</strong><p>{loc}</p><p>{E(src["note"])}</p></article>')
+    out.extend(visible_sources)
+    out.append('<details data-detail><summary>Источники и идентификаторы разведки</summary><p>Task: '+E(s['scouting']['task_id'])+' · packet: '+E(s['scouting']['packet_id'])+'</p>'+''.join(sources)+'</details>')
+    request='<pre data-search-block data-covers="request">'+E(s['request'])+'</pre>'
+    out.append(request if 'request' in critical else '<details data-detail><summary>Исходное описание задачи</summary>'+request+'</details>')
     return ''.join(out)
+
+
+def reading_inventory(s):
+    expected=['summary','request','scouting']
+    critical=['summary','scouting']
+    for sec in s['sections']:
+        refs=[f'item-{sec["id"]}-{i+1}' for i in range(len(sec['items']))]
+        expected.extend(refs)
+        if sec['id'] in {'scope','risks'}: critical.extend(refs)
+    for name in ('requirements','acceptance','gaps'):
+        expected.extend(x['id'] for x in s[name])
+        critical.extend(x['id'] for x in s[name] if name!='gaps' or x['status']!='confirmed' or x['blocking'])
+    expected.extend('source-'+x['id'] for x in s['sources'])
+    expected.extend('diagram-'+str(i+1) for i in range(len(s['diagrams'])))
+    critical.append('diagram-1')
+    critical.extend(s.get('reading',{}).get('critical_refs',[]))
+    require(set(critical)<=set(expected),'unknown critical reading reference')
+    return expected,critical
+
 
 def markdown(s,digest):
     lines=[f'# {s["title"]}',f'ML Task Spec v1 · {s["spec_id"]} · revision {s["revision"]} · DRAFT',f'SHA-256: {digest}','',s['summary'],'','## Исходный запрос',s['request']]
@@ -139,10 +181,9 @@ def build(s,out,quiz_from=None,packet_path=None):
         require(normalize(quiz)==normalize(s['quiz']),'quiz-from does not match source quiz')
         page=shared.render(doc,quiz)
     else:
-        with tempfile.TemporaryDirectory(prefix='spec-render-') as tmp:
-            p=Path(tmp);(p/'doc.json').write_text(json.dumps(doc,ensure_ascii=False))
-            proc=subprocess.run([sys.executable,str(SHARED/'render_explainer.py'),str(p/'doc.json'),'--output',str(p/'base.html')],capture_output=True,text=True)
-            require(proc.returncode==0,proc.stderr);info=json.loads(proc.stdout);warnings=info['warnings'];page=(p/'base.html').read_text()
+        quiz,record=shared.prepare(doc)
+        warnings=shared.audit(record,[])
+        page=shared.render(doc,quiz)
     raw=json.dumps(s,ensure_ascii=False,sort_keys=True,indent=2)+'\n';digest=hashlib.sha256(raw.encode()).hexdigest()
     for section,fragment in [('background',diagrams(s)),('intuition',gap_html(s)),('changes',body_html(s))]:
         page,count=re.subn(r'(<section id="'+section+r'">.*?)(</section>)',lambda m:m[1]+fragment+m[2],page,count=1,flags=re.S)
@@ -152,10 +193,21 @@ def build(s,out,quiz_from=None,packet_path=None):
     page=page.replace('<section id="quiz">',feedback+'<section id="quiz">',1)
     metadata={'spec_id':s['spec_id'],'revision':s['revision'],'sha256':digest,'status':'draft'}
     page=page.replace('</body>','<script id="spec-review-meta" type="application/json">'+payload(metadata)+'</script><script>'+(HERE/'assets/review.js').read_text()+'</script></body>',1)
+    expected,critical=reading_inventory(s)
+    reading=concise.analyze(page,quiz if quiz_from else s['quiz'],expected,critical)
+    if 'reading' in s:
+        refs=s['reading']['quiz_requires'];require(set(refs)=={q['id'] for q in s['quiz']},'quiz_requires must cover all five questions')
+        reader=concise.Reader();reader.feed(page)
+        for q in s['quiz']:
+            required=refs[q['id']]
+            require(isinstance(required,list) and bool(required) and all(isinstance(r,str) and any(reader.coverage.get(r,[])) for r in required),'quiz needs visible source facts')
+    else: reading['warnings'].append('Legacy spec: quiz support needs editorial verification against the main route.')
+    warnings.extend(reading['warnings'])
+    page=concise.attach(page,reading)
     out.mkdir(parents=True,exist_ok=False)
     for name,content in [('spec.json',raw),('SPEC.md',markdown(s,digest)),('review.html',page)]:
         with (out/name).open('x',encoding='utf-8') as f:f.write(content)
-    manifest={**metadata,'validation':validation,'warnings':warnings,'files':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in [out/'spec.json',out/'SPEC.md',out/'review.html']}}
+    manifest={**metadata,'validation':validation,'reading':reading,'warnings':warnings,'files':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in [out/'spec.json',out/'SPEC.md',out/'review.html']}}
     (out/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
     return {**manifest,'output':str(out.resolve()),'delivery':describe(out/'review.html')}
 

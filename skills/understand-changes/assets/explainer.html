@@ -75,11 +75,27 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 48px;
   .question-card { border-radius: 0; }
   .feedback[hidden] { display: none; }
 }
+details[data-detail] { margin: 16px 0; border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; }
+summary { cursor: pointer; color: var(--accent); font-weight: 600; overflow-wrap: anywhere; }
+details[open] > summary { margin-bottom: 16px; }
+.reading-status { font-size: .9rem; margin: 16px 0; }
+.reading-status p { margin: 0; }
+.reading-controls[hidden] { display: none; }
+.reading-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-block: 18px; }
+.reading-controls button, .reading-controls input { font: inherit; font-size: .9rem; padding: 8px 12px; max-width: 100%; }
+.reading-controls input { min-width: 0; flex: 1 1 160px; }
+.search-hit { outline: 2px solid #a86008; outline-offset: 4px; }
+summary:focus-visible, input:focus-visible { outline: 3px solid #a86008; outline-offset: 4px; }
+@media print { .reading-controls { display: none; } }
 </style>
 </head>
 <body><main>
 <header><p class="eyebrow">Разбор изменений</p><h1>@@TITLE@@</h1><p class="scope">@@SCOPE@@</p></header>
 <nav aria-label="Содержание"><ol>@@TOC@@<li><a href="#quiz">Пять вопросов на понимание</a></li></ol></nav>
+<div class="reading-controls" data-reading-ignore hidden>
+<button type="button" id="expand-details">Раскрыть всё</button><button type="button" id="collapse-details">Основной маршрут</button>
+<label for="document-search">Поиск по всем деталям</label><input id="document-search" type="search"><button type="button" id="search-next">Следующее</button>
+<span id="search-status" role="status"></span></div>
 @@CONTENTS@@
 <section id="quiz"><h2>Пять вопросов на понимание</h2><p>Выбери один ответ в каждом вопросе. После выбора появится объяснение. Можно попробовать снова.</p><noscript>Для интерактивных вопросов включи JavaScript. Объяснение выше доступно без него.</noscript><div id="questions"></div></section>
 <footer>Учебный документ. Ответы обрабатываются локально и не отправляются агенту. После изучения вернись в диалог и напиши «дальше» или задай вопрос.</footer>
@@ -87,6 +103,39 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 48px;
 <script id="quiz-data" type="application/json">@@QUIZ@@</script>
 <script>
 'use strict';
+const readingControls = document.querySelector('.reading-controls');
+readingControls.hidden = false;
+function reveal(element) {
+  let parent = element;
+  while (parent) { if (parent.tagName === 'DETAILS') parent.open = true; parent = parent.parentElement; }
+}
+function revealHash() {
+  try { const target = document.getElementById(decodeURIComponent(location.hash.slice(1))); if (target) { reveal(target); target.scrollIntoView(); } } catch (_) {}
+}
+window.addEventListener('hashchange', revealHash);
+window.addEventListener('DOMContentLoaded', revealHash);
+document.getElementById('expand-details').addEventListener('click', () => document.querySelectorAll('details[data-detail]').forEach(d => d.open = true));
+document.getElementById('collapse-details').addEventListener('click', () => document.querySelectorAll('details[data-detail]').forEach(d => d.open = false));
+const searchInput = document.getElementById('document-search');
+const searchStatus = document.getElementById('search-status');
+let hits = [], hitIndex = -1;
+function selectHit() {
+  document.querySelectorAll('.search-hit').forEach(e => e.classList.remove('search-hit'));
+  if (!hits.length) { searchStatus.textContent = searchInput.value.trim() ? 'Совпадений нет' : ''; return; }
+  const hit = hits[hitIndex]; reveal(hit); hit.classList.add('search-hit'); hit.scrollIntoView({block:'center'});
+  searchStatus.textContent = `${hitIndex+1} из ${hits.length}`;
+}
+searchInput.addEventListener('input', () => {
+  const query = searchInput.value.trim().toLocaleLowerCase();
+  const candidates = query ? [...document.querySelectorAll('main p, main li, main pre, main figcaption, main dt, main dd, main h2, main h3, main h4, .answer-text, [data-search-block]')].filter(e => !e.closest('[data-reading-ignore], nav, footer') && e.textContent.toLocaleLowerCase().includes(query)) : [];
+  hits = candidates.filter(e => !candidates.some(other => other !== e && e.contains(other)));
+  hitIndex = hits.length ? 0 : -1; selectHit();
+});
+document.getElementById('search-next').addEventListener('click', () => { if (hits.length) { hitIndex=(hitIndex+1)%hits.length; selectHit(); } });
+const printState = new Map();
+window.addEventListener('beforeprint', () => document.querySelectorAll('details[data-detail]').forEach(d => { printState.set(d,d.open); d.open=true; }));
+window.addEventListener('afterprint', () => { printState.forEach((open,d) => d.open=open); printState.clear(); });
+
 const quiz = JSON.parse(document.getElementById('quiz-data').textContent);
 const root = document.getElementById('questions');
 quiz.forEach((q, index) => {

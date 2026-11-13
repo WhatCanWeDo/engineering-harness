@@ -3,6 +3,19 @@
   "frequency": "task_end",
   "depth": "medium",
   "delivery": "html",
-  "quiz": {"required": true, "questions": 5, "options": 4},
-  "continuation": "wait_for_user"
+  "quiz": {
+    "required": true,
+    "questions": 5,
+    "options": 4
+  },
+  "continuation": "wait_for_user",
+  "reading": {
+    "target_minutes": 7,
+    "main_words_hint": [
+      500,
+      700
+    ],
+    "details": "on_demand",
+    "include_quiz_in_estimate": true
+  }
 }

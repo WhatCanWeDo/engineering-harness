@@ -19,6 +19,7 @@ sys.path.insert(0,str(SHARED))
 import render_explainer as shared
 import concise
 from delivery import describe
+import revision_review
 E=html.escape
 
 def load(path):
@@ -160,8 +161,16 @@ def markdown(s,digest):
 def normalize(quiz):
     return sorted([{**q,'options':sorted(q['options'],key=lambda o:o['id'])} for q in quiz],key=lambda q:q['id'])
 
-def build(s,out,quiz_from=None,packet_path=None):
+def build(s,out,quiz_from=None,packet_path=None,previous_path=None):
     validation=check(s);require(not out.exists(),'output exists; choose a new revision directory')
+    previous=None
+    if s['revision']>1:
+        previous_path=previous_path or out.parent/f'r{s["revision"]-1}'/'spec.json'
+        require(previous_path.is_file(),'previous revision is required for changes-only review; pass --previous PREVIOUS/spec.json')
+        previous=load(previous_path);check(previous)
+        require(previous['spec_id']==s['spec_id'] and previous['project_id']==s['project_id'],'previous spec/project binding mismatch')
+        require(previous['revision']==s['revision']-1,'previous must be the immediately preceding revision')
+    else:require(previous_path is None,'first revision has no previous review')
     sc=s['scouting']
     knowledge=[x for x in s['sources'] if x['kind']=='knowledge']
     if sc['status'] in {'ready','empty'}:
@@ -204,10 +213,14 @@ def build(s,out,quiz_from=None,packet_path=None):
     else: reading['warnings'].append('Legacy spec: quiz support needs editorial verification against the main route.')
     warnings.extend(reading['warnings'])
     page=concise.attach(page,reading)
+    review={'mode':'full'}
+    if previous is not None:
+        page,reading,review=revision_review.render(s,previous,previous_path,out,feedback,metadata)
+        warnings=reading['warnings']
     out.mkdir(parents=True,exist_ok=False)
     for name,content in [('spec.json',raw),('SPEC.md',markdown(s,digest)),('review.html',page)]:
         with (out/name).open('x',encoding='utf-8') as f:f.write(content)
-    manifest={**metadata,'validation':validation,'reading':reading,'warnings':warnings,'files':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in [out/'spec.json',out/'SPEC.md',out/'review.html']}}
+    manifest={**metadata,'validation':validation,'review':review,'reading':reading,'warnings':warnings,'files':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in [out/'spec.json',out/'SPEC.md',out/'review.html']}}
     (out/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
     return {**manifest,'output':str(out.resolve()),'delivery':describe(out/'review.html')}
 
@@ -228,12 +241,12 @@ def main():
     for key in ['request','output']:p.add_argument('--'+key,type=Path,required=True)
     for key in ['id','project','title']:p.add_argument('--'+key,required=True)
     p=sub.add_parser('validate');p.add_argument('input',type=Path)
-    p=sub.add_parser('build');p.add_argument('input',type=Path);p.add_argument('--output',type=Path,required=True);p.add_argument('--quiz-from',type=Path);p.add_argument('--packet',type=Path)
+    p=sub.add_parser('build');p.add_argument('input',type=Path);p.add_argument('--output',type=Path,required=True);p.add_argument('--quiz-from',type=Path);p.add_argument('--packet',type=Path);p.add_argument('--previous',type=Path,help='Previous canonical spec.json; defaults to sibling rN-1/spec.json for revisions after the first')
     a=parser.parse_args()
     try:
         if a.command=='scaffold':result=scaffold(a)
         else:
-            s=load(a.input);result=check(s) if a.command=='validate' else build(s,a.output,a.quiz_from,a.packet)
+            s=load(a.input);result=check(s) if a.command=='validate' else build(s,a.output,a.quiz_from,a.packet,a.previous)
         print(json.dumps(result,ensure_ascii=False))
     except (ValueError,OSError,TypeError,KeyError,AttributeError) as ex:parser.exit(2,f'Spec error: {ex}\n')
 

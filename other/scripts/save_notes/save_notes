@@ -1,0 +1,155 @@
+#!/usr/bin/python3
+import ctypes
+import errno
+import fcntl
+import json
+import os
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+NOTES = Path.home() / "notes"
+OTHER = NOTES / "other"
+SUPPORT = Path.home() / "Library/Application Support/save_notes"
+STATE = SUPPORT / "state.json"
+DAY = 24 * 60 * 60
+DEFAULTS = ["/usr/bin/defaults"]
+DOMAIN = "com.apple.screencapture"
+
+
+def current_folder():
+    result = subprocess.run(DEFAULTS + ["read", DOMAIN, "location"],
+                            capture_output=True, text=True)
+    return Path(result.stdout.rstrip("\n")) if result.returncode == 0 else None
+
+
+def select_folder(folder):
+    folder.mkdir(parents=True, exist_ok=True)
+    if not os.access(folder, os.W_OK | os.X_OK):
+        raise PermissionError(f"Нет доступа для записи в {folder}")
+    subprocess.run(DEFAULTS + ["write", DOMAIN, "location", "-string", str(folder)],
+                   check=True)
+
+
+def save(state):
+    temp = STATE.with_suffix(".tmp")
+    temp.write_text(json.dumps(state, ensure_ascii=False))
+    temp.replace(STATE)
+
+
+def screenshots(folder, since):
+    if not folder.is_dir():
+        return []
+    # The macOS screenshot attribute works with any filename or UI language.
+    paths = subprocess.check_output([
+        "/usr/bin/find", str(folder), "-maxdepth", "1", "-type", "f",
+        "!", "-name", ".*", "-xattrname", "com.apple.metadata:kMDItemIsScreenCapture",
+        "-print0",
+    ])
+    result = []
+    for raw in paths.split(b"\0"):
+        if raw:
+            path = Path(os.fsdecode(raw))
+            try:
+                created = path.stat().st_birthtime
+            except FileNotFoundError:
+                continue
+            if created > since:
+                result.append((created, path))
+    return sorted(result)
+
+
+def move_to_other(path):
+    # An exclusive macOS rename preserves metadata and cannot overwrite a note.
+    rename = ctypes.CDLL(None, use_errno=True).renamex_np
+    number = 1
+    while True:
+        name = path.name if number == 1 else f"{path.stem} ({number}){path.suffix}"
+        if rename(os.fsencode(path), os.fsencode(OTHER / name), 0x00000004) == 0:
+            return
+        error = ctypes.get_errno()
+        if error == errno.ENOENT and not path.exists():
+            return
+        if error != errno.EEXIST:
+            raise OSError(error, os.strerror(error), str(path))
+        number += 1
+
+
+def check():
+    current = current_folder()
+    if not current or current.parent != NOTES:
+        return
+    now = time.time()
+    state = json.loads(STATE.read_text()) if STATE.exists() else {}
+    if not state:
+        if current == OTHER:
+            return
+        existing = screenshots(current, 0)
+        last = existing[-1][0] if existing else now
+        state = {"folder": current.name, "last": last}
+        save(state)
+    source = NOTES / state["folder"]
+    if source == OTHER or current not in (source, OTHER):
+        return
+    if "expired" not in state:
+        if current != source:
+            return
+        last = state["last"]
+        for created, _ in screenshots(source, last):
+            if created - last > DAY:
+                break
+            last = created
+        if now - last <= DAY:
+            if last != state["last"]:
+                state["last"] = last
+                save(state)
+            return
+        state.update(last=last, expired=now)
+        save(state)
+
+    if current != OTHER:
+        select_folder(OTHER)
+    # On wake or delayed execution, captures may already be in the old folder.
+    for _, path in screenshots(source, state["last"] + DAY):
+        move_to_other(path)
+    # Allow screenshots already in progress to finish in the previous folder.
+    if now - state["expired"] > 600:
+        save({"folder": OTHER.name, "last": now})
+
+
+def folder_name(args):
+    if args == ["--check"]:
+        return None
+    if len(args) > 1:
+        sys.exit('Использование: save_notes ["имя папки"]')
+    while True:
+        name = args[0] if args else input("Название папки в ~/notes: ")
+        if name not in ("", ".", "..") and "/" not in name:
+            return name
+        message = "Введите одно название папки без косой черты."
+        if args:
+            sys.exit(message)
+        print(message, file=sys.stderr)
+
+
+def main():
+    name = folder_name(sys.argv[1:])
+
+    SUPPORT.mkdir(mode=0o700, parents=True, exist_ok=True)
+    with (SUPPORT / "state.lock").open("a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        check()
+        if name is not None:
+            select_folder(NOTES / name)
+            save({"folder": name, "last": time.time()})
+            print(f"Новые скриншоты будут сохраняться в {NOTES / name}")
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (EOFError, KeyboardInterrupt):
+        sys.exit(1)
+    except (OSError, ValueError, subprocess.CalledProcessError) as exc:
+        sys.exit(str(exc))
